@@ -1,57 +1,65 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Microdeleción 15q11.2 BP1-BP2 - Análisis Clínico</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <!-- Librería para gráficos (Chart.js) -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="utf-8" />
+  <title>Inicio – Microdeleción 15q11.2 BP1-BP2</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Plataforma colaborativa para el análisis clínico de la microdeleción 15q11.2 BP1-BP2" />
+  <link rel="icon" href="img/favicon.ico" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <h1>Análisis Clínico de Microdeleción 15q11.2 BP1-BP2</h1>
-        <p class="subtitle">Alteración genética vinculada a condiciones del neurodesarrollo</p>
-    </header>
+  <header>
+    <h1>Microdeleción 15q11.2 BP1-BP2</h1>
+    <p class="subtitle">Alteración genética vinculada a condiciones del neurodesarrollo</p>
+    <nav aria-label="Principal">
+      <a class="nav-link active" href="index.html">Inicio</a>
+      <a class="nav-link" href="form.html">Agregar Caso</a>
+      <a class="nav-link" href="stats.html">Estadísticas</a>
+      <a class="nav-link" href="patients.html">Pacientes</a>
+    </nav>
+  </header>
 
-    <main>
-        <section class="about">
-            <h2>Sobre este estudio</h2>
-            <p>
-                [Tu texto aquí...]
-            </p>
-        </section>
+  <main class="container">
+    <section class="about card">
+      <h2>Sobre este estudio</h2>
+      <p>
+        Esta plataforma recopila casos clínicos de microdeleción 15q11.2 BP1-BP2
+        para facilitar la investigación colaborativa, generar estadísticas en
+        tiempo real y ofrecer recursos a familias y profesionales.
+      </p>
+    </section>
 
-        <!-- Formulario embebido de Google -->
-        <section class="form">
-            <h2>Contribuye con tus datos</h2>
-            <iframe src="https://docs.google.com/forms/d/e/1NJTZxOoV057l_XIwu8boj-oNndFzd6qpfBn07ycHNgY/viewform?embedded=true" 
-                    width="100%" 
-                    height="1200" 
-                    frameborder="0" 
-                    marginheight="0" 
-                    marginwidth="0">
-                Cargando…
-            </iframe>
-        </section>
+    <section class="form card">
+      <h2>Contribuye con tus datos</h2>
+      <iframe
+        title="Formulario de ingreso de caso"
+        src="https://docs.google.com/forms/d/e/1FAIpQLSflOhcRHnCXRPBr8TWlCI78yktvRBtssCQPufK_BqO3kj-29A/viewform?embedded=true"
+        width="100%"
+        height="1200"
+        style="border:0"
+        loading="lazy">
+      </iframe>
+    </section>
 
-        <!-- Gráficos (sección dinámica) -->
-        <section class="charts">
-            <h2>Patrones y Estadísticas</h2>
-            <div class="chart-container">
-                <canvas id="symptomsChart"></canvas>
-            </div>
-            <div class="chart-container">
-                <canvas id="ageDiagnosisChart"></canvas>
-            </div>
-        </section>
-    </main>
+    <section class="charts card">
+      <h2>Patrones y Estadísticas</h2>
+      <div class="chart-container">
+        <canvas id="symptomsChart" aria-label="Síntomas más comunes" role="img"></canvas>
+      </div>
+      <div class="chart-container">
+        <canvas id="ageDiagnosisChart" aria-label="Edad al diagnóstico" role="img"></canvas>
+      </div>
+    </section>
+  </main>
 
-    <footer>
-        <p>© 2024 - Datos recopilados para investigación clínica</p>
-    </footer>
+  <footer>
+    <p>© 2025 – Datos recopilados únicamente con fines de investigación clínica</p>
+  </footer>
 
-    <!-- Script para procesar datos y generar gráficos -->
-    <script src="js/analytics.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" integrity="sha384-zM8l/bb0VHQ0xCHpYcQp1T/KqKj8qOqF3uNRG2qK3hJ1z0fW1C6h5Qh3Z7s1p9q1q1" crossorigin="anonymous" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/tabletop@1.6.0/tabletop.min.js" defer></script>
+  <script type="module" src="js/analytics.js" defer></script>
 </body>
 </html>
