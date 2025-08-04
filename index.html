@@ -3,350 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Análisis Clínico de Microdeleción 15q11.2</title>
+    <title>Microdeleción 15q11.2 BP1-BP2 - Análisis Clínico</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Librería para gráficos (Chart.js) -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
-    <style>
-        :root {
-            --color-primary: #2c3e50;
-            --color-secondary: #3498db;
-            --color-accent: #e74c3c;
-            --color-light: #ecf0f1;
-            --color-dark: #34495e;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            line-height: 1.6;
-            color: var(--color-dark);
-            background-color: #f9f9f9;
-            margin: 0;
-            padding: 0;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        header {
-            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
-            color: white;
-            padding: 40px 20px;
-            text-align: center;
-            border-radius: 0 0 20px 20px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        
-        h1 {
-            font-size: 2.5rem;
-            margin: 0 0 10px 0;
-        }
-        
-        .subtitle {
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-            font-weight: 300;
-        }
-        
-        h2 {
-            color: var(--color-secondary);
-            border-left: 5px solid var(--color-accent);
-            padding-left: 15px;
-            margin-top: 40px;
-        }
-        
-        .intro-card {
-            background: white;
-            border-radius: 10px;
-            padding: 30px;
-            margin-bottom: 40px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            border-top: 4px solid var(--color-accent);
-        }
-        
-        .card {
-            background: white;
-            border-radius: 10px;
-            padding: 25px;
-            margin-bottom: 30px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            transition: transform 0.3s ease;
-        }
-        
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
-        }
-        
-        .chart-container {
-            position: relative;
-            height: 400px;
-            margin: 30px 0;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        
-        .btn {
-            display: inline-block;
-            background: var(--color-secondary);
-            color: white;
-            padding: 12px 25px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            font-weight: 500;
-            margin: 10px 5px;
-            font-size: 1rem;
-        }
-        
-        .btn:hover {
-            background: #2980b9;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        
-        .btn-accent {
-            background: var(--color-accent);
-        }
-        
-        .btn-accent:hover {
-            background: #c0392b;
-        }
-        
-        .form-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 30px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--color-primary);
-        }
-        
-        input, textarea, select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-family: inherit;
-            font-size: 1rem;
-        }
-        
-        footer {
-            text-align: center;
-            padding: 30px;
-            margin-top: 50px;
-            background-color: var(--color-dark);
-            color: white;
-            border-radius: 10px 10px 0 0;
-        }
-        
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2rem;
-            }
-            
-            .chart-container {
-                height: 300px;
-            }
-        }
-    </style>
 </head>
 <body>
     <header>
-        <div class="container">
-            <h1>Análisis Clínico de Microdeleción 15q11.2</h1>
-            <p class="subtitle">BP1-BP2 - Alteración genética vinculada a condiciones del neurodesarrollo</p>
-        </div>
+        <h1>Análisis Clínico de Microdeleción 15q11.2 BP1-BP2</h1>
+        <p class="subtitle">Alteración genética vinculada a condiciones del neurodesarrollo</p>
     </header>
 
-    <div class="container">
-        <div class="intro-card">
+    <main>
+        <section class="about">
             <h2>Sobre este estudio</h2>
-            <p>Este sitio presenta una síntesis interactiva sobre la microdeleción 15q11.2 (BP1-BP2), una alteración genética vinculada a condiciones del neurodesarrollo como el autismo, la hipotonía y retrasos cognitivos. El objetivo es facilitar el análisis clínico y la recolección de datos mediante un formulario accesible para médicos, terapeutas y familiares.</p>
-            
-            <p>Puedes contribuir al estudio agregando un nuevo caso clínico mediante el formulario. Los datos serán revisados y utilizados para enriquecer futuras versiones de esta plataforma.</p>
-            
-            <a href="#formulario" class="btn btn-accent">Contribuir con un caso</a>
-        </div>
+            <p>
+                [Tu texto aquí...]
+            </p>
+        </section>
 
-        <!-- Sección del formulario -->
-        <div id="formulario" class="form-container">
-            <h2>Formulario de Registro</h2>
-            <form id="casoForm">
-                <div class="form-group">
-                    <label for="nombre">Nombre del paciente (opcional):</label>
-                    <input type="text" id="nombre" placeholder="Puede ser un identificador o iniciales">
-                </div>
-                
-                <div class="form-group">
-                    <label for="edad">Edad:</label>
-                    <input type="number" id="edad" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="genero">Género:</label>
-                    <select id="genero" required>
-                        <option value="">Seleccionar...</option>
-                        <option value="Masculino">Masculino</option>
-                        <option value="Femenino">Femenino</option>
-                        <option value="Otro">Otro</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label>Síntomas principales (selecciona todos los que apliquen):</label>
-                    <div>
-                        <input type="checkbox" id="tea" name="sintomas" value="TEA">
-                        <label for="tea" style="display: inline; font-weight: normal;">TEA (Trastorno del Espectro Autista)</label>
-                    </div>
-                    <div>
-                        <input type="checkbox" id="hipotonia" name="sintomas" value="Hipotonía">
-                        <label for="hipotonia" style="display: inline; font-weight: normal;">Hipotonía</label>
-                    </div>
-                    <div>
-                        <input type="checkbox" id="epilepsia" name="sintomas" value="Epilepsia">
-                        <label for="epilepsia" style="display: inline; font-weight: normal;">Epilepsia</label>
-                    </div>
-                    <!-- Más opciones de síntomas -->
-                </div>
-                
-                <div class="form-group">
-                    <label for="observaciones">Observaciones adicionales:</label>
-                    <textarea id="observaciones" rows="4"></textarea>
-                </div>
-                
-                <button type="submit" class="btn">Enviar Caso Clínico</button>
-            </form>
-        </div>
+        <!-- Formulario embebido de Google -->
+        <section class="form">
+            <h2>Contribuye con tus datos</h2>
+            <iframe src="https://docs.google.com/forms/d/e/1NJTZxOoV057l_XIwu8boj-oNndFzd6qpfBn07ycHNgY/viewform?embedded=true" 
+                    width="100%" 
+                    height="1200" 
+                    frameborder="0" 
+                    marginheight="0" 
+                    marginwidth="0">
+                Cargando…
+            </iframe>
+        </section>
 
-        <!-- Sección de análisis (que estaba antes en el index) -->
-        <div class="card" style="margin-top: 50px;">
-            <h2>Resumen Clínico</h2>
+        <!-- Gráficos (sección dinámica) -->
+        <section class="charts">
+            <h2>Patrones y Estadísticas</h2>
             <div class="chart-container">
-                <canvas id="demographicChart"></canvas>
+                <canvas id="symptomsChart"></canvas>
             </div>
-            
-            <div style="text-align: center; margin-top: 20px;">
-                <button class="btn" onclick="exportToExcel()">
-                    Exportar Datos a Excel
-                </button>
+            <div class="chart-container">
+                <canvas id="ageDiagnosisChart"></canvas>
             </div>
-        </div>
-    </div>
+        </section>
+    </main>
 
     <footer>
-        <div class="container">
-            <p>© 2025 Análisis de Microdeleción 15q11.2 | Plataforma colaborativa</p>
-        </div>
+        <p>© 2024 - Datos recopilados para investigación clínica</p>
     </footer>
 
-    <script>
-        // Función para inicializar gráficos
-        function initCharts() {
-            // Gráfico demográfico
-            new Chart(document.getElementById('demographicChart'), {
-                type: 'pie',
-                data: {
-                    labels: ['0-5 años', '6-10 años', '11-15 años', '16+ años'],
-                    datasets: [{
-                        data: [3, 14, 9, 10],
-                        backgroundColor: [
-                            '#3498db',
-                            '#2ecc71',
-                            '#f39c12',
-                            '#e74c3c'
-                        ]
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Distribución por Edad',
-                            font: {
-                                size: 16
-                            }
-                        }
-                    }
-                }
-            });
-        }
-        
-        // Función para exportar a Excel
-        async function exportToExcel() {
-            const workbook = new ExcelJS.Workbook();
-            const worksheet = workbook.addWorksheet('Datos Microdeleción');
-            
-            // Encabezados
-            worksheet.addRow(['Grupo de Edad', 'Número de Casos']);
-            worksheet.addRow(['0-5 años', 3]);
-            worksheet.addRow(['6-10 años', 14]);
-            worksheet.addRow(['11-15 años', 9]);
-            worksheet.addRow(['16+ años', 10]);
-            
-            // Estilo para encabezados
-            worksheet.getRow(1).eachCell(cell => {
-                cell.font = { bold: true };
-                cell.fill = {
-                    type: 'pattern',
-                    pattern: 'solid',
-                    fgColor: { argb: 'FF2C3E50' }
-                };
-                cell.alignment = { vertical: 'middle', horizontal: 'center' };
-            });
-            
-            // Generar archivo
-            const buffer = await workbook.xlsx.writeBuffer();
-            const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'Microdelecion_15q11.2_Datos.xlsx';
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-        
-        // Manejo del formulario
-        document.getElementById('casoForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Gracias por contribuir al estudio. Revisaremos tu caso y lo incorporaremos en futuras actualizaciones.');
-            this.reset();
-        });
-        
-        // Inicialización
-        document.addEventListener('DOMContentLoaded', function() {
-            initCharts();
-            
-            // Animación suave al hacer clic en enlaces
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    document.querySelector(this.getAttribute('href')).scrollIntoView({
-                        behavior: 'smooth'
-                    });
-                });
-            });
-        });
-    </script>
+    <!-- Script para procesar datos y generar gráficos -->
+    <script src="js/analytics.js"></script>
 </body>
 </html>
