@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis de Microdeleción - Pacientes</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Listado Completo de Pacientes</h1>
+            <p>36 casos documentados | Actualizado: Agosto 2025</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <a href="index.html" class="back-link">← Volver al inicio</a>
+        
+        <div class="card">
+            <div class="patient-grid" id="patientContainer">
+                <!-- JavaScript generará las tarjetas aquí -->
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>© 2025 Análisis de Microdeleción</p>
+        </div>
+    </footer>
+
+    <script>
+        const patients = [
+            {
+                name: "Lander",
+                age: 13,
+                gender: "Masculino",
+                symptoms: ["TEA tipo 1", "Hipotonía", "Problemas digestivos"],
+                category: "TEA + Colagenopatía"
+            },
+            {
+                name: "Isaac",
+                age: 2,
+                gender: "Masculino",
+                symptoms: ["Hipotonía", "Retraso motor"],
+                category: "Hipotonía"
+            }
+        ];
+
+        function renderPatients() {
+            const container = document.getElementById('patientContainer');
+            container.innerHTML = patients.map(patient => `
+                <div class="patient-card">
+                    <h3>${patient.name} <small>(${patient.age} años)</small></h3>
+                    <p><strong>Género:</strong> ${patient.gender}</p>
+                    <p><strong>Síntomas:</strong> ${patient.symptoms.join(', ')}</p>
+                    <p><strong>Categoría:</strong> ${patient.category}</p>
+                </div>
+            `).join('');
+        }
+
+        document.addEventListener('DOMContentLoaded', renderPatients);
+    </script>
+</body>
+</html>
