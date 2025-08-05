@@ -7,6 +7,8 @@
   <meta name="description" content="Conoce la microdeleción 15q11.2 BP1-BP2 y colabora con datos clínicos para avanzar en la investigación.">
   <link rel="stylesheet" href="css/styles.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Iconos -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
   <header>
@@ -18,7 +20,7 @@
     </nav>
   </header>
 
-  <!-- HERO -->
+  <!-- HERO con animación -->
   <section class="hero">
     <h2>¿Sabías que una micro-deleción del cromosoma 15 puede alterar el neurodesarrollo?</h2>
     <p>
@@ -28,18 +30,28 @@
     <a class="cta-button" href="form.html">Agregar mi caso</a>
   </section>
 
-  <!-- QUÉ ES -->
   <main class="container">
+    <!-- ¿Qué es? + iconos -->
     <section class="card">
-      <h3>¿Qué es exactamente?</h3>
-      <p>
-        Es la pérdida de una pequeña porción de ADN en la región 15q11.2.<br>
-        Esta zona contiene genes cruciales para el desarrollo neurológico y muscular.<br>
-        Los síntomas varían: desde leves hasta TEA, retraso motor o problemas gastrointestinales.
-      </p>
+      <h3><i class="fas fa-dna"></i> ¿Qué es la microdeleción 15q11.2?</h3>
+      <ul class="icon-list">
+        <li><i class="fas fa-brain"></i> Pérdida de ADN en la región 15q11.2</li>
+        <li><i class="fas fa-baby"></i> Afecta neurodesarrollo y tono muscular</li>
+        <li><i class="fas fa-chart-line"></i> Cada caso ayuda a entender el espectro</li>
+      </ul>
     </section>
 
-    <!-- STATS PREVIEW -->
+    <!-- Galería deslizable -->
+    <section class="card gallery">
+      <h3>Galería visual</h3>
+      <div class="slider">
+        <img src="img/hero-bg.jpg"   alt="Niños jugando">
+        <img src="img/neurons.jpg"   alt="Red neuronal">
+        <img src="img/family.jpg"    alt="Familia">
+      </div>
+    </section>
+
+    <!-- Stats preview -->
     <section class="card">
       <h3>Números hasta hoy</h3>
       <div class="stats-preview">
@@ -58,7 +70,7 @@
       </div>
     </section>
 
-    <!-- CALL TO ACTION -->
+    <!-- CTA final -->
     <section class="card" style="text-align:center">
       <h3>¿Tienes un caso?</h3>
       <p>Tu información es anónima y multiplica la investigación.</p>
@@ -70,7 +82,7 @@
     <p>© 2025 – Datos recopilados únicamente con fines de investigación clínica</p>
   </footer>
 
-  <!-- mini script para cargar 3 cifras rápidas -->
+  <!-- Mini script para cifras rápidas -->
   <script type="module" src="js/analytics.js" defer></script>
 </body>
 </html>
