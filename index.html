@@ -2,19 +2,14 @@
 <html lang="es">
 <head>
   <meta charset="utf-8" />
-  <title>Inicio – Microdeleción 15q11.2 BP1-BP2</title>
+  <title>Microdeleción 15q11.2 – Portal Colaborativo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Plataforma colaborativa para el análisis clínico de la microdeleción 15q11.2 BP1-BP2" />
-  <link rel="icon" href="img/favicon.ico" />
+  <meta name="description" content="Conoce la microdeleción 15q11.2 BP1-BP2 y colabora con datos clínicos para avanzar en la investigación.">
   <link rel="stylesheet" href="css/styles.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
   <header>
-    <h1>Microdeleción 15q11.2 BP1-BP2</h1>
-    <p class="subtitle">Alteración genética vinculada a condiciones del neurodesarrollo</p>
     <nav aria-label="Principal">
       <a class="nav-link active" href="index.html">Inicio</a>
       <a class="nav-link" href="form.html">Agregar Caso</a>
@@ -23,36 +18,51 @@
     </nav>
   </header>
 
+  <!-- HERO -->
+  <section class="hero">
+    <h2>¿Sabías que una micro-deleción del cromosoma 15 puede alterar el neurodesarrollo?</h2>
+    <p>
+      La microdeleción 15q11.2 BP1-BP2 afecta a menos del 1 % de la población,<br>
+      pero cada caso aporta piezas clave para entender autismo, hipotonía y más.
+    </p>
+    <a class="cta-button" href="form.html">Agregar mi caso</a>
+  </section>
+
+  <!-- QUÉ ES -->
   <main class="container">
-    <section class="about card">
-      <h2>Sobre este estudio</h2>
+    <section class="card">
+      <h3>¿Qué es exactamente?</h3>
       <p>
-        Esta plataforma recopila casos clínicos de microdeleción 15q11.2 BP1-BP2
-        para facilitar la investigación colaborativa, generar estadísticas en
-        tiempo real y ofrecer recursos a familias y profesionales.
+        Es la pérdida de una pequeña porción de ADN en la región 15q11.2.<br>
+        Esta zona contiene genes cruciales para el desarrollo neurológico y muscular.<br>
+        Los síntomas varían: desde leves hasta TEA, retraso motor o problemas gastrointestinales.
       </p>
     </section>
 
-    <section class="form card">
-      <h2>Contribuye con tus datos</h2>
-      <iframe
-        title="Formulario de ingreso de caso"
-        src="https://docs.google.com/forms/d/e/1FAIpQLSflOhcRHnCXRPBr8TWlCI78yktvRBtssCQPufK_BqO3kj-29A/viewform?embedded=true"
-        width="100%"
-        height="1200"
-        style="border:0"
-        loading="lazy">
-      </iframe>
+    <!-- STATS PREVIEW -->
+    <section class="card">
+      <h3>Números hasta hoy</h3>
+      <div class="stats-preview">
+        <div class="stat-item">
+          <strong id="casesCount">—</strong>
+          <span>Casos registrados</span>
+        </div>
+        <div class="stat-item">
+          <strong id="avgAge">—</strong>
+          <span>Edad promedio</span>
+        </div>
+        <div class="stat-item">
+          <strong id="malePercent">—</strong>
+          <span>% Masculino</span>
+        </div>
+      </div>
     </section>
 
-    <section class="charts card">
-      <h2>Patrones y Estadísticas</h2>
-      <div class="chart-container">
-        <canvas id="symptomsChart" aria-label="Síntomas más comunes" role="img"></canvas>
-      </div>
-      <div class="chart-container">
-        <canvas id="ageDiagnosisChart" aria-label="Edad al diagnóstico" role="img"></canvas>
-      </div>
+    <!-- CALL TO ACTION -->
+    <section class="card" style="text-align:center">
+      <h3>¿Tienes un caso?</h3>
+      <p>Tu información es anónima y multiplica la investigación.</p>
+      <a class="cta-button" href="form.html">Compartir ahora</a>
     </section>
   </main>
 
@@ -60,8 +70,7 @@
     <p>© 2025 – Datos recopilados únicamente con fines de investigación clínica</p>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" integrity="sha384-zM8l/bb0VHQ0xCHpYcQp1T/KqKj8qOqF3uNRG2qK3hJ1z0fW1C6h5Qh3Z7s1p9q1q1" crossorigin="anonymous" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/tabletop@1.6.0/tabletop.min.js" defer></script>
-  <script src="js/analytics.js" defer></script>
+  <!-- mini script para cargar 3 cifras rápidas -->
+  <script type="module" src="js/analytics.js" defer></script>
 </body>
 </html>
