@@ -1,29 +1,33 @@
-// js/patients.js  (versión con datos reales)
-const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRSYFRG8sb61AiPcOU8ZkKZ-qB78TTeznBcqEs-ey45ANLr7kK7X8iqN34IupCOR0dZEqwBlgkJ6VLY/pub?output=csv';
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Pacientes – Microdeleción 15q11.2</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <h1>Listado Completo de Pacientes</h1>
+    <p id="stats">Cargando…</p>
+    <nav aria-label="Principal">
+      <a class="nav-link" href="index.html">Inicio</a>
+      <a class="nav-link" href="form.html">Agregar Caso</a>
+      <a class="nav-link" href="stats.html">Estadísticas</a>
+      <a class="nav-link active" href="patients.html">Pacientes</a>
+    </nav>
+  </header>
 
-async function loadPatients() {
-  const res = await fetch(SHEET_URL);
-  const csv = await res.text();
-  const rows = csv.split('\n').slice(1);           // salta cabecera
-  const patients = rows.map(r => {
-    const [name, age, gender, symptoms, category] = r.split(',').map(c => c.trim());
-    return { name, age, gender, symptoms: symptoms.split(';'), category };
-  });
-  renderPatients(patients);
-}
+  <main class="container">
+    <a href="index.html" class="back-link">← Volver al inicio</a>
+    <div id="patientContainer" class="patient-grid"></div>
+  </main>
 
-function renderPatients(list) {
-  const container = document.getElementById('patientContainer');
-  const stats = document.getElementById('stats');
-  stats.textContent = `${list.length} casos documentados | Actualizado: ${new Date().toLocaleDateString('es-ES', { year: 'numeric', month: 'long' })}`;
-  container.innerHTML = list.map(p => `
-    <article class="patient-card">
-      <h3>${p.name} <small>(${p.age} años)</small></h3>
-      <p><strong>Género:</strong> ${p.gender}</p>
-      <p><strong>Síntomas:</strong> ${p.symptoms.join(', ')}</p>
-      <p><strong>Categoría:</strong> ${p.category}</p>
-    </article>
-  `).join('');
-}
+  <footer>
+    <p>© 2025 – Análisis de Microdeleción</p>
+  </footer>
 
-document.addEventListener('DOMContentLoaded', loadPatients);
+  <script type="module" src="js/patients.js" defer></script>
+</body>
+</html>
