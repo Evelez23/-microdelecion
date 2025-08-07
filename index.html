@@ -1,231 +1,163 @@
 <!doctype html>
-
 <html lang="es">
-
 <head>
-
   <meta charset="utf-8" />
-
   <title>Microdeleción 15q11.2 – Portal Colaborativo</title>
-
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
   <meta name="description" content="Conoce la microdeleción 15q11.2 BP1-BP2 y colabora con datos clínicos para avanzar en la investigación.">
-
+  
+  <!-- Preload critical resources -->
+  <link rel="preload" href="css/styles.css" as="style">
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" as="font" crossorigin>
+  
   <link rel="stylesheet" href="css/styles.css" />
-
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-
-
-  <!-- Iconos -->
-
-
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
+  <!-- Favicon -->
+  <link rel="icon" href="img/dna-icon.svg" type="image/svg+xml">
 </head>
 
 <body>
-
   <header>
-
     <nav aria-label="Principal">
-
-      <a class="nav-link active" href="index.html">Inicio</a>
-
-      <a class="nav-link" href="form.html">Agregar Caso</a>
-
-      <a class="nav-link" href="stats.html">Estadísticas</a>
-
-      <a class="nav-link" href="patients.html">Pacientes</a>
-
+      <a class="nav-link active" href="index.html" aria-current="page"><i class="fas fa-home"></i> Inicio</a>
+      <a class="nav-link" href="form.html"><i class="fas fa-plus-circle"></i> Agregar Caso</a>
+      <a class="nav-link" href="stats.html"><i class="fas fa-chart-bar"></i> Estadísticas</a>
+      <a class="nav-link" href="patients.html"><i class="fas fa-users"></i> Pacientes</a>
     </nav>
-
   </header>
 
-
-
-
   <!-- HERO -->
-
-
-  <!-- HERO con animación -->
-
-  <section class="hero">
-
-    <h2>¿Sabías que una micro-deleción del cromosoma 15 puede alterar el neurodesarrollo?</h2>
-
-    <p>
-
-      La microdeleción 15q11.2 BP1-BP2 afecta a menos del 1 % de la población,<br>
-
-      pero cada caso aporta piezas clave para entender autismo, hipotonía y más.
-
-    </p>
-
-    <a class="cta-button" href="form.html">Agregar mi caso</a>
-
+  <section class="hero" aria-labelledby="hero-heading">
+    <div class="hero-content">
+      <h2 id="hero-heading">¿Sabías que una microdeleción del cromosoma 15 puede alterar el neurodesarrollo?</h2>
+      <p>
+        La microdeleción 15q11.2 BP1-BP2 afecta a menos del 1% de la población,
+        pero cada caso aporta piezas clave para entender autismo, hipotonía y más.
+      </p>
+      <a class="cta-button" href="form.html" aria-label="Agregar mi caso a la investigación">
+        <i class="fas fa-plus"></i> Agregar mi caso
+      </a>
+    </div>
   </section>
 
-
-
-
-  <!-- QUÉ ES -->
-
+  <!-- MAIN CONTENT -->
   <main class="container">
-
-
-    <!-- ¿Qué es? + iconos -->
-
-    <section class="card">
-
-
-      <h3>¿Qué es exactamente?</h3>
-
-
+    <!-- ¿Qué es? -->
+    <section class="card" aria-labelledby="que-es-heading">
+      <h3 id="que-es-heading"><i class="fas fa-dna"></i> ¿Qué es la microdeleción 15q11.2?</h3>
       <p>
-
-
-        Es la pérdida de una pequeña porción de ADN en la región 15q11.2.<br>
-
-
-        Esta zona contiene genes cruciales para el desarrollo neurológico y muscular.<br>
-
-
-        Los síntomas varían: desde leves hasta TEA, retraso motor o problemas gastrointestinales.
-
-
+        Es la pérdida de una pequeña porción de ADN en la región 15q11.2 del cromosoma 15.
+        Esta zona contiene cuatro genes cruciales (<em>CYFIP1, NIPA1, NIPA2, TUBGCP5</em>)
+        que afectan el desarrollo neurológico y muscular.
       </p>
-
-
-      <h3><i class="fas fa-dna"></i> ¿Qué es la microdeleción 15q11.2?</h3>
-
-
-      <ul class="icon-list">
-
-
-        <li><i class="fas fa-brain"></i> Pérdida de ADN en la región 15q11.2</li>
-
-
-        <li><i class="fas fa-baby"></i> Afecta neurodesarrollo y tono muscular</li>
-
-
-        <li><i class="fas fa-chart-line"></i> Cada caso ayuda a entender el espectro</li>
-
-
-      </ul>
-
-    </section>
-
-
-
-
-    <!-- STATS PREVIEW -->
-
-
-    <!-- Galería deslizable -->
-
-
-    <section class="card gallery">
-
-
-      <h3>Galería visual</h3>
-
-
-      <div class="slider">
-
-
-        <img src="img/hero-bg.jpg"   alt="Niños jugando">
-
-
-        <img src="img/neurons.jpg"   alt="Red neuronal">
-
-
-        <img src="img/family.jpg"    alt="Familia">
-
-
+      
+      <div class="icon-grid">
+        <div class="icon-item">
+          <i class="fas fa-brain"></i>
+          <p>Problemas de neurodesarrollo</p>
+        </div>
+        <div class="icon-item">
+          <i class="fas fa-dna"></i>
+          <p>Transmisión autosómica dominante</p>
+        </div>
+        <div class="icon-item">
+          <i class="fas fa-child"></i>
+          <p>Hipotonía muscular</p>
+        </div>
       </div>
-
-
     </section>
 
-
-
-
-
-    <!-- Stats preview -->
-
-    <section class="card">
-
-      <h3>Números hasta hoy</h3>
-
-      <div class="stats-preview">
-
-        <div class="stat-item">
-
-          <strong id="casesCount">—</strong>
-
-          <span>Casos registrados</span>
-
-        </div>
-
-        <div class="stat-item">
-
-          <strong id="avgAge">—</strong>
-
-          <span>Edad promedio</span>
-
-        </div>
-
-        <div class="stat-item">
-
-          <strong id="malePercent">—</strong>
-
-          <span>% Masculino</span>
-
-        </div>
-
+    <!-- GALERÍA -->
+    <section class="card" aria-labelledby="galeria-heading">
+      <h3 id="galeria-heading"><i class="fas fa-images"></i> Galería visual</h3>
+      <div class="slider" role="region" aria-label="Galería de imágenes">
+        <figure>
+          <img src="img/hero-bg.jpg" alt="Niño con microdeleción jugando con terapeuta" loading="lazy">
+          <figcaption>Terapia de apoyo</figcaption>
+        </figure>
+        <figure>
+          <img src="img/neurons.jpg" alt="Representación de conexiones neuronales afectadas" loading="lazy">
+          <figcaption>Impacto neurológico</figcaption>
+        </figure>
       </div>
-
     </section>
 
-
-
-
-    <!-- CALL TO ACTION -->
-
-
-    <!-- CTA final -->
-
-    <section class="card" style="text-align:center">
-
-      <h3>¿Tienes un caso?</h3>
-
-      <p>Tu información es anónima y multiplica la investigación.</p>
-
-      <a class="cta-button" href="form.html">Compartir ahora</a>
-
+    <!-- ESTADÍSTICAS EN TIEMPO REAL -->
+    <section class="card" aria-labelledby="estadisticas-heading">
+      <h3 id="estadisticas-heading"><i class="fas fa-chart-line"></i> Datos actualizados</h3>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="total-cases">0</div>
+          <div class="stat-label">Casos registrados</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="avg-age">0</div>
+          <div class="stat-label">Edad promedio</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="female-percent">0%</div>
+          <div class="stat-label">Mujeres</div>
+        </div>
+      </div>
+      <a href="stats.html" class="text-link">Ver análisis completo →</a>
     </section>
 
+    <!-- CTA FINAL -->
+    <section class="card cta-card" aria-labelledby="cta-heading">
+      <h3 id="cta-heading"><i class="fas fa-hands-helping"></i> Tu aporte marca la diferencia</h3>
+      <p>
+        Cada caso registrado ayuda a los investigadores a entender mejor este síndrome
+        y desarrollar terapias más efectivas.
+      </p>
+      <div class="cta-buttons">
+        <a href="form.html" class="cta-button primary"><i class="fas fa-plus"></i> Agregar caso</a>
+        <a href="patients.html" class="cta-button secondary"><i class="fas fa-search"></i> Ver casos</a>
+      </div>
+    </section>
   </main>
 
-
-
   <footer>
-
-    <p>© 2025 – Datos recopilados únicamente con fines de investigación clínica</p>
-
+    <div class="footer-content">
+      <p>© 2025 – Investigación colaborativa sobre microdeleción 15q11.2</p>
+      <div class="footer-links">
+        <a href="privacy.html">Privacidad</a>
+        <a href="ethics.html">Ética</a>
+        <a href="contact.html">Contacto</a>
+      </div>
+    </div>
   </footer>
 
-
-
-
-  <!-- mini script para cargar 3 cifras rápidas -->
-
-
-  <!-- Mini script para cifras rápidas -->
-
-  <script type="module" src="js/analytics.js" defer></script>
-
+  <!-- Cargar estadísticas desde el mismo Excel que patients.js -->
+  <script type="module">
+    import { read, utils } from 'https://cdn.sheetjs.com/xlsx-0.19.3/package/xlsx.mjs';
+    
+    async function loadStats() {
+      try {
+        const response = await fetch('https://github.com/Evelez23/-microdelecion/raw/main/listaPacientes.xlsx');
+        const data = await response.arrayBuffer();
+        const workbook = read(data);
+        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+        const pacientes = utils.sheet_to_json(firstSheet);
+        
+        // Procesar estadísticas
+        const total = pacientes.length;
+        const edades = pacientes.map(p => parseFloat(p.Edad) || 0).filter(edad => edad > 0);
+        const avgAge = edades.length ? (edades.reduce((a, b) => a + b, 0) / edades.length).toFixed(1) : 0;
+        const femalePercent = Math.round((pacientes.filter(p => p['*GÃ©nero'] === 'F').length / total) * 100) || 0;
+        
+        // Actualizar DOM
+        document.getElementById('total-cases').textContent = total;
+        document.getElementById('avg-age').textContent = avgAge;
+        document.getElementById('female-percent').textContent = `${femalePercent}%`;
+        
+      } catch (error) {
+        console.error('Error cargando estadísticas:', error);
+      }
+    }
+    
+    document.addEventListener('DOMContentLoaded', loadStats);
+  </script>
 </body>
-
 </html>
