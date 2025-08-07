@@ -1,88 +1,101 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <title>Microdeleción 15q11.2 – Portal Colaborativo</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Conoce la microdeleción 15q11.2 BP1-BP2 y colabora con datos clínicos para avanzar en la investigación.">
-  <link rel="stylesheet" href="css/styles.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-  <!-- Iconos -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pacientes Microdeleción 15q11.2</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background: linear-gradient(to bottom right, #e3f2fd, #fff3e0);
+      margin: 0;
+      padding: 2rem;
+    }
+    h1 {
+      text-align: center;
+      color: #37474f;
+    }
+    .paciente-lista {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+    }
+    .paciente-boton {
+      padding: 0.75rem 1.5rem;
+      background-color: #ffcc80;
+      border: none;
+      border-radius: 1rem;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.3s;
+    }
+    .paciente-boton:hover {
+      background-color: #ffa726;
+    }
+    .tarjeta {
+      margin-top: 2rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      background-color: #ffffffcc;
+      border: 2px dashed #90caf9;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .icono {
+      font-size: 2rem;
+    }
+    .etiqueta {
+      font-weight: bold;
+      color: #1e88e5;
+    }
+    .valor {
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <nav aria-label="Principal">
-      <a class="nav-link active" href="index.html">Inicio</a>
-      <a class="nav-link" href="form.html">Agregar Caso</a>
-      <a class="nav-link" href="stats.html">Estadísticas</a>
-      <a class="nav-link" href="patients.html">Pacientes</a>
-    </nav>
-  </header>
+  <h1>Pacientes Registrados</h1>
+  <div class="paciente-lista" id="listaPacientes"></div>
+  <div class="tarjeta" id="tarjetaPaciente" style="display: none;"></div>
 
-  <!-- HERO con animación -->
-  <section class="hero">
-    <h2>¿Sabías que una micro-deleción del cromosoma 15 puede alterar el neurodesarrollo?</h2>
-    <p>
-      La microdeleción 15q11.2 BP1-BP2 afecta a menos del 1 % de la población,<br>
-      pero cada caso aporta piezas clave para entender autismo, hipotonía y más.
-    </p>
-    <a class="cta-button" href="form.html">Agregar mi caso</a>
-  </section>
+  <script>
+    async function cargarPacientes() {
+      const respuesta = await fetch('pacientes_microdelecion.json');
+      const pacientes = await respuesta.json();
+      const lista = document.getElementById('listaPacientes');
+      const tarjeta = document.getElementById('tarjetaPaciente');
 
-  <main class="container">
-    <!-- ¿Qué es? + iconos -->
-    <section class="card">
-      <h3><i class="fas fa-dna"></i> ¿Qué es la microdeleción 15q11.2?</h3>
-      <ul class="icon-list">
-        <li><i class="fas fa-brain"></i> Pérdida de ADN en la región 15q11.2</li>
-        <li><i class="fas fa-baby"></i> Afecta neurodesarrollo y tono muscular</li>
-        <li><i class="fas fa-chart-line"></i> Cada caso ayuda a entender el espectro</li>
-      </ul>
-    </section>
+      pacientes.forEach((p, index) => {
+        const boton = document.createElement('button');
+        boton.className = 'paciente-boton';
+        boton.textContent = p.nombre;
+        boton.onclick = () => mostrarTarjeta(p);
+        lista.appendChild(boton);
+      });
 
-    <!-- Galería deslizable -->
-    <section class="card gallery">
-      <h3>Galería visual</h3>
-      <div class="slider">
-        <img src="img/hero-bg.jpg"   alt="Niños jugando">
-        <img src="img/neurons.jpg"   alt="Red neuronal">
-        <img src="img/family.jpg"    alt="Familia">
-      </div>
-    </section>
+      function mostrarTarjeta(p) {
+        tarjeta.style.display = 'block';
+        tarjeta.innerHTML = `
+          <div class="icono">${p.genero === 'M' ? '👦' : '👧'}</div>
+          <div><span class="etiqueta">Nombre:</span> <span class="valor">${p.nombre}</span></div>
+          <div><span class="etiqueta">Edad:</span> <span class="valor">${p.edad}</span></div>
+          <div><span class="etiqueta">Pruebas realizadas:</span> <span class="valor">${p.pruebas}</span></div>
+          <div><span class="etiqueta">Síntomas:</span> <span class="valor">${p.sintomas}</span></div>
+          <div><span class="etiqueta">Nivel de afectación:</span> <span class="valor">${p.nivel_afectacion}</span></div>
+          <div><span class="etiqueta">Medicamentos:</span> <span class="valor">${p.medicamentos}</span></div>
+          <div><span class="etiqueta">Terapias:</span> <span class="valor">${p.terapias}</span></div>
+          <div><span class="etiqueta">Participación en estudios:</span> <span class="valor">${p.participacion_estudios}</span></div>
+          <div><span class="etiqueta">Necesidades y desafíos:</span> <span class="valor">${p.necesidades}</span></div>
+        `;
+        window.scrollTo({ top: tarjeta.offsetTop, behavior: 'smooth' });
+      }
+    }
 
-    <!-- Stats preview -->
-    <section class="card">
-      <h3>Números hasta hoy</h3>
-      <div class="stats-preview">
-        <div class="stat-item">
-          <strong id="casesCount">—</strong>
-          <span>Casos registrados</span>
-        </div>
-        <div class="stat-item">
-          <strong id="avgAge">—</strong>
-          <span>Edad promedio</span>
-        </div>
-        <div class="stat-item">
-          <strong id="malePercent">—</strong>
-          <span>% Masculino</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- CTA final -->
-    <section class="card" style="text-align:center">
-      <h3>¿Tienes un caso?</h3>
-      <p>Tu información es anónima y multiplica la investigación.</p>
-      <a class="cta-button" href="form.html">Compartir ahora</a>
-    </section>
-  </main>
-
-  <footer>
-    <p>© 2025 – Datos recopilados únicamente con fines de investigación clínica</p>
-  </footer>
-
-  <!-- Mini script para cifras rápidas -->
-  <script type="module" src="js/analytics.js" defer></script>
+    cargarPacientes();
+  </script>
 </body>
 </html>
