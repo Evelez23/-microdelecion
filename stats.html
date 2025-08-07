@@ -1,30 +1,125 @@
-<script type="module">
-  import { read, utils } from 'https://cdn.sheetjs.com/xlsx-0.19.3/package/xlsx.mjs';
-  import { Chart } from 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/+esm';
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Estadísticas – Microdeleción 15q11.2</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .chart-container {
+      width: 100%;
+      height: 400px;
+      margin: 20px 0;
+    }
+    canvas {
+      width: 100% !important;
+      height: 100% !important;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Estadísticas de Casos</h1>
+    <nav aria-label="Principal">
+      <a class="nav-link" href="index.html">Inicio</a>
+      <a class="nav-link" href="form.html">Agregar Caso</a>
+      <a class="nav-link active" href="stats.html">Estadísticas</a>
+      <a class="nav-link" href="patients.html">Pacientes</a>
+    </nav>
+  </header>
 
-  async function loadCharts() {
-    const response = await fetch('https://raw.githubusercontent.com/Evelez23/-microdelecion/main/listaPacientes.xlsx');
-    const data = await response.arrayBuffer();
-    const workbook = read(data);
-    const pacientes = utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+  <main class="container">
+    <div class="card">
+      <div class="chart-container">
+        <canvas id="edadChart"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="chart-container">
+        <canvas id="generoChart"></canvas>
+      </div>
+    </div>
+  </main>
 
-    // Procesar datos para gráficos
-    const generos = pacientes.reduce((acc, p) => {
-      acc[p['*GÃ©nero']] = (acc[p['*GÃ©nero']] || 0) + 1;
-      return acc;
-    }, {});
+  <!-- Cargar Chart.js primero -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  
+  <script type="module">
+    import { read, utils } from 'https://cdn.sheetjs.com/xlsx-0.19.3/package/xlsx.mjs';
 
-    new Chart(document.getElementById('generoChart'), {
-      type: 'pie',
-      data: {
-        labels: Object.keys(generos),
-        datasets: [{
-          data: Object.values(generos),
-          backgroundColor: ['#FF6B6B', '#4A6FA5']
-        }]
+    // Esperar a que el DOM esté completamente cargado
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        // 1. Cargar datos
+        const excelUrl = 'https://raw.githubusercontent.com/Evelez23/-microdelecion/main/listaPacientes.xlsx';
+        const response = await fetch(excelUrl);
+        const data = await response.arrayBuffer();
+        const workbook = read(data);
+        const pacientes = utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+
+        // 2. Procesar datos
+        const edades = pacientes.map(p => {
+          const edad = parseInt(p.Edad) || 0;
+          return edad > 0 ? edad : null;
+        }).filter(edad => edad !== null);
+
+        const generos = pacientes.reduce((acc, p) => {
+          const genero = p['*GÃ©nero'] === 'F' ? 'Femenino' : 'Masculino';
+          acc[genero] = (acc[genero] || 0) + 1;
+          return acc;
+        }, {});
+
+        // 3. Crear gráficos
+        createAgeChart(edades);
+        createGenderChart(generos);
+
+      } catch (error) {
+        console.error("Error:", error);
+        document.querySelector('main').innerHTML = `
+          <div class="error">
+            <p>Error al cargar los datos. Intenta recargar la página.</p>
+            <small>${error.message}</small>
+          </div>
+        `;
       }
     });
-  }
 
-  loadCharts();
-</script>
+    function createAgeChart(edades) {
+      const ctx = document.getElementById('edadChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: edades.map((_, i) => `Paciente ${i+1}`),
+          datasets: [{
+            label: 'Edad',
+            data: edades,
+            backgroundColor: '#4A6FA5'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false
+        }
+      });
+    }
+
+    function createGenderChart(generos) {
+      const ctx = document.getElementById('generoChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: Object.keys(generos),
+          datasets: [{
+            data: Object.values(generos),
+            backgroundColor: ['#FF6B6B', '#4A6FA5']
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false
+        }
+      });
+    }
+  </script>
+</body>
+</html>
