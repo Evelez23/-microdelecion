@@ -1,23 +1,110 @@
-document.addEventListener('DOMContentLoaded', async () => {
-  try {
-    const excelUrl = 'https://raw.githubusercontent.com/Evelez23/-microdelecion/main/listaPacientes.xlsx';
-    const response = await fetch(excelUrl);
-    
-    // Depuración paso a paso
-    console.log("Respuesta HTTP:", response.status); // Debe ser 200
-    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-    
-    const data = await response.arrayBuffer();
-    console.log("Datos descargados:", data.byteLength, "bytes"); // Debe ser > 0
-    
-    const workbook = read(data);
-    console.log("Hojas disponibles:", workbook.SheetNames); // Debe mostrar ["Sheet1"]
-    
-    const pacientes = utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
-    console.log("Primer paciente:", pacientes[0]); // Verifica estructura
-    
-    // Resto de tu código...
-  } catch (error) {
-    console.error("Error completo:", error);
-  }
-});
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Estadísticas – Microdeleción 15q11.2</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .chart-container {
+      width: 100%;
+      min-height: 400px;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Estadísticas de Casos</h1>
+    <nav aria-label="Principal">
+      <a class="nav-link" href="index.html">Inicio</a>
+      <a class="nav-link" href="form.html">Agregar Caso</a>
+      <a class="nav-link active" href="stats.html">Estadísticas</a>
+      <a class="nav-link" href="patients.html">Pacientes</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <div class="card">
+      <h2>Distribución por Edades</h2>
+      <div class="chart-container">
+        <canvas id="edadChart"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Distribución por Género</h2>
+      <div class="chart-container">
+        <canvas id="generoChart"></canvas>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script type="module">
+    import { read, utils } from 'https://cdn.sheetjs.com/xlsx-0.19.3/package/xlsx.mjs';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        // 1. Cargar Excel (¡verifica que la URL sea correcta!)
+        const excelUrl = 'https://raw.githubusercontent.com/Evelez23/-microdelecion/main/listaPacientes.xlsx';
+        const response = await fetch(excelUrl);
+        if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
+        
+        const data = await response.arrayBuffer();
+        const workbook = read(data);
+        const pacientes = utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+
+        // 2. Procesar datos
+        const edades = pacientes.map(p => parseInt(p.Edad) || 0;
+        const generos = {
+          Femenino: pacientes.filter(p => p['*GÃ©nero'] === 'F').length,
+          Masculino: pacientes.filter(p => p['*GÃ©nero'] === 'M').length
+        };
+
+        // 3. Renderizar gráficos
+        new Chart(
+          document.getElementById('edadChart').getContext('2d'),
+          {
+            type: 'bar',
+            data: {
+              labels: edades.map((_, i) => `Paciente ${i+1}`),
+              datasets: [{
+                label: 'Edad',
+                data: edades,
+                backgroundColor: '#4A6FA5'
+              }]
+            }
+          }
+        );
+
+        new Chart(
+          document.getElementById('generoChart').getContext('2d'),
+          {
+            type: 'pie',
+            data: {
+              labels: Object.keys(generos),
+              datasets: [{
+                data: Object.values(generos),
+                backgroundColor: ['#FF6B6B', '#4A6FA5']
+              }]
+            }
+          }
+        );
+
+      } catch (error) {
+        console.error("Error:", error);
+        document.querySelector('main').innerHTML = `
+          <div class="error" style="color: red; padding: 20px;">
+            <p>Error al cargar estadísticas. Verifica:</p>
+            <ul>
+              <li>Que el archivo Excel esté en <code>main/listaPacientes.xlsx</code></li>
+              <li>Que la conexión a internet funcione</li>
+            </ul>
+            <small>Detalle: ${error.message}</small>
+          </div>
+        `;
+      }
+    });
+  </script>
+</body>
+</html>
