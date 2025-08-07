@@ -1,47 +1,38 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <!-- Metadatos existentes... -->
-  <script>
-    async function submitForm(e) {
-      e.preventDefault();
-      const formData = new FormData(e.target);
-      const data = Object.fromEntries(formData.entries());
-      
-      try {
-        // Aquí iría la lógica para enviar a Google Sheets/Excel
-        console.log("Datos a enviar:", data);
-        alert("¡Caso registrado! (Implementa el envío real)");
-        e.target.reset();
-      } catch (error) {
-        console.error("Error:", error);
-        alert("Error al enviar. Intenta más tarde.");
-      }
-    }
-  </script>
+  <meta charset="utf-8" />
+  <title>Agregar Caso – Microdeleción 15q11.2</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
+  <header>
+    <h1>Formulario para Ingreso de Nuevo Caso Clínico</h1>
+    <nav aria-label="Principal">
+      <a class="nav-link" href="index.html">Inicio</a>
+      <a class="nav-link active" href="form.html">➕ Agregar Caso</a>
+      <a class="nav-link" href="stats.html">📊 Estadísticas</a>
+      <a class="nav-link" href="patients.html">Pacientes</a>
+    </nav>
+  </header>
+
   <main class="container">
-    <form id="caseForm" onsubmit="submitForm(event)">
-      <h2>Nuevo Caso Clínico</h2>
-      
-      <label>Nombre (opcional): <input type="text" name="nombre"></label>
-      
-      <label>Edad: <input type="number" name="edad" required></label>
-      
-      <label>Género:
-        <select name="genero" required>
-          <option value="F">Femenino</option>
-          <option value="M">Masculino</option>
-        </select>
-      </label>
-      
-      <label>Síntomas principales: 
-        <textarea name="sintomas" required></textarea>
-      </label>
-      
-      <button type="submit">Enviar</button>
-    </form>
+    <iframe
+      src="https://docs.google.com/forms/d/e/1FAIpQLSflOhcRHnCXRPBr8TWlCI78yktvRBtssCQPufK_BqO3kj-29A/viewform?embedded=true"
+      frameborder="0"
+      marginheight="0"
+      marginwidth="0"
+      width="100%"
+      height="1200"
+      style="border:0">
+      Cargando…
+    </iframe>
   </main>
+
+  <footer>
+    <p>© 2025 – Análisis de Microdeleción</p>
+  </footer>
 </body>
 </html>
