@@ -1,0 +1,97 @@
+<!DOCTYPE html><html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pacientes Microdeleción 15q11.2</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background: linear-gradient(to bottom right, #e3f2fd, #fff3e0);
+      margin: 0;
+      padding: 2rem;
+    }
+    h1 {
+      text-align: center;
+      color: #37474f;
+    }
+    .paciente-lista {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+    }
+    .paciente-boton {
+      padding: 0.75rem 1.5rem;
+      background-color: #ffcc80;
+      border: none;
+      border-radius: 1rem;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.3s;
+    }
+    .paciente-boton:hover {
+      background-color: #ffa726;
+    }
+    .tarjeta {
+      margin-top: 2rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      background-color: #ffffffcc;
+      border: 2px dashed #90caf9;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .icono {
+      font-size: 2rem;
+    }
+    .etiqueta {
+      font-weight: bold;
+      color: #1e88e5;
+    }
+    .valor {
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <h1>Pacientes Registrados</h1>
+  <div class="paciente-lista" id="listaPacientes"></div>
+  <div class="tarjeta" id="tarjetaPaciente" style="display: none;"></div>  <script>
+    async function cargarPacientes() {
+      const respuesta = await fetch('pacientes_microdelecion.json');
+      const pacientes = await respuesta.json();
+      const lista = document.getElementById('listaPacientes');
+      const tarjeta = document.getElementById('tarjetaPaciente');
+
+      pacientes.forEach((p, index) => {
+        const boton = document.createElement('button');
+        boton.className = 'paciente-boton';
+        boton.textContent = p.nombre;
+        boton.onclick = () => mostrarTarjeta(p);
+        lista.appendChild(boton);
+      });
+
+      function mostrarTarjeta(p) {
+        tarjeta.style.display = 'block';
+        tarjeta.innerHTML = `
+          <div class="icono">${p.genero === 'M' ? '👦' : '👧'}</div>
+          <div><span class="etiqueta">Nombre:</span> <span class="valor">${p.nombre}</span></div>
+          <div><span class="etiqueta">Edad:</span> <span class="valor">${p.edad}</span></div>
+          <div><span class="etiqueta">Pruebas realizadas:</span> <span class="valor">${p.pruebas}</span></div>
+          <div><span class="etiqueta">Síntomas:</span> <span class="valor">${p.sintomas}</span></div>
+          <div><span class="etiqueta">Nivel de afectación:</span> <span class="valor">${p.nivel_afectacion}</span></div>
+          <div><span class="etiqueta">Medicamentos:</span> <span class="valor">${p.medicamentos}</span></div>
+          <div><span class="etiqueta">Terapias:</span> <span class="valor">${p.terapias}</span></div>
+          <div><span class="etiqueta">Participación en estudios:</span> <span class="valor">${p.participacion_estudios}</span></div>
+          <div><span class="etiqueta">Necesidades y desafíos:</span> <span class="valor">${p.necesidades}</span></div>
+        `;
+        window.scrollTo({ top: tarjeta.offsetTop, behavior: 'smooth' });
+      }
+    }
+
+    cargarPacientes();
+  </script></body>
+</html>
