@@ -1,26 +1,145 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8">
   <title>Microdeleción 15q11.2 – Portal Colaborativo</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Conoce la microdeleción 15q11.2 BP1-BP2 y colabora con datos clínicos para avanzar en la investigación.">
   
-  <!-- Preload critical resources -->
-  <link rel="preload" href="css/styles.css" as="style">
-  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" as="font" crossorigin>
-  
-  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/styles.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-  <!-- Favicon -->
   <link rel="icon" href="img/dna-icon.svg" type="image/svg+xml">
+
+  <style>
+    /* Estilos para estadísticas y errores */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    .stat-card {
+      text-align: center;
+      padding: 1rem;
+      background: #f8fafc;
+      border-radius: 8px;
+    }
+    .stat-value {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #2b6cb0;
+      margin-bottom: 0.5rem;
+    }
+    .stat-label {
+      font-size: 0.9rem;
+      color: #4a5568;
+    }
+    .error {
+      background: #fff5f5;
+      color: #e53e3e;
+      padding: 1rem;
+      border-radius: 8px;
+      margin: 1rem 0;
+      text-align: center;
+    }
+  </style>
 </head>
 
 <body>
-  <!-- [Todo el contenido del header, hero y main se mantiene igual hasta el footer] -->
-  
+  <header>
+    <nav aria-label="Principal">
+      <a class="nav-link active" href="index.html" aria-current="page"><i class="fas fa-home"></i> Inicio</a>
+      <a class="nav-link" href="form.html"><i class="fas fa-plus-circle"></i> Agregar Caso</a>
+      <a class="nav-link" href="stats.html"><i class="fas fa-chart-bar"></i> Estadísticas</a>
+      <a class="nav-link" href="patients.html"><i class="fas fa-users"></i> Pacientes</a>
+    </nav>
+  </header>
+
+  <section class="hero" aria-labelledby="hero-heading">
+    <div class="hero-content">
+      <h2 id="hero-heading">¿Sabías que una microdeleción del cromosoma 15 puede alterar el neurodesarrollo?</h2>
+      <p>
+        La microdeleción 15q11.2 BP1-BP2 afecta a menos del 1% de la población,
+        pero cada caso aporta piezas clave para entender autismo, hipotonía y más.
+      </p>
+      <a class="cta-button" href="form.html" aria-label="Agregar mi caso a la investigación">
+        <i class="fas fa-plus"></i> Agregar mi caso
+      </a>
+    </div>
+  </section>
+
+  <main class="container">
+    <section class="card" aria-labelledby="que-es-heading">
+      <h3 id="que-es-heading"><i class="fas fa-dna"></i> ¿Qué es la microdeleción 15q11.2?</h3>
+      <p>
+        Es la pérdida de una pequeña porción de ADN en la región 15q11.2 del cromosoma 15.
+        Esta zona contiene cuatro genes cruciales (<em>CYFIP1, NIPA1, NIPA2, TUBGCP5</em>)
+        que afectan el desarrollo neurológico y muscular.
+      </p>
+      
+      <div class="icon-grid">
+        <div class="icon-item">
+          <i class="fas fa-brain"></i>
+          <p>Problemas de neurodesarrollo</p>
+        </div>
+        <div class="icon-item">
+          <i class="fas fa-dna"></i>
+          <p>Transmisión autosómica dominante</p>
+        </div>
+        <div class="icon-item">
+          <i class="fas fa-child"></i>
+          <p>Hipotonía muscular</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="galeria-heading">
+      <h3 id="galeria-heading"><i class="fas fa-images"></i> Galería visual</h3>
+      <div class="slider" role="region" aria-label="Galería de imágenes">
+        <figure>
+          <img src="img/hero-bg.jpg" alt="Niño con microdeleción jugando con terapeuta" loading="lazy">
+          <figcaption>Terapia de apoyo</figcaption>
+        </figure>
+        <figure>
+          <img src="img/neurons.jpg" alt="Representación de conexiones neuronales afectadas" loading="lazy">
+          <figcaption>Impacto neurológico</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="estadisticas-heading">
+      <h3 id="estadisticas-heading"><i class="fas fa-chart-line"></i> Datos actualizados</h3>
+      <div class="stats-grid" id="stats-container">
+        <div class="stat-card">
+          <div class="stat-value" id="total-cases">--</div>
+          <div class="stat-label">Casos registrados</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="avg-age">--</div>
+          <div class="stat-label">Edad promedio</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="female-percent">--%</div>
+          <div class="stat-label">Mujeres</div>
+        </div>
+      </div>
+      <a href="stats.html" class="text-link">Ver análisis completo →</a>
+    </section>
+
+    <section class="card cta-card" aria-labelledby="cta-heading">
+      <h3 id="cta-heading"><i class="fas fa-hands-helping"></i> Tu aporte marca la diferencia</h3>
+      <p>
+        Cada caso registrado ayuda a los investigadores a entender mejor este síndrome
+        y desarrollar terapias más efectivas.
+      </p>
+      <div class="cta-buttons">
+        <a href="form.html" class="cta-button primary"><i class="fas fa-plus"></i> Agregar caso</a>
+        <a href="patients.html" class="cta-button secondary"><i class="fas fa-search"></i> Ver casos</a>
+      </div>
+    </section>
+  </main>
+
   <footer>
     <div class="footer-content">
       <p>© 2025 – Investigación colaborativa sobre microdeleción 15q11.2</p>
@@ -32,75 +151,68 @@
     </div>
   </footer>
 
-  <!-- Código corregido para cargar estadísticas -->
-  <script type="module">
-    // Solución CORS usando proxy
-    const getExcelUrl = () => {
-      const baseUrl = 'https://raw.githubusercontent.com/Evelez23/-microdelecion/main/listaPacientes.xlsx';
-      return `https://api.allorigins.win/raw?url=${encodeURIComponent(baseUrl)}`;
-    };
-
+  <script>
+    // Solución definitiva para CORS
     async function loadStats() {
       try {
-        // 1. Cargar datos con proxy CORS
-        const response = await fetch(getExcelUrl());
-        if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
+        // 1. Configuración segura
+        const STATS_CONTAINER = document.getElementById('stats-container');
+        const TOTAL_CASES = document.getElementById('total-cases');
+        const AVG_AGE = document.getElementById('avg-age');
+        const FEMALE_PERCENT = document.getElementById('female-percent');
         
+        if (!STATS_CONTAINER || !TOTAL_CASES || !AVG_AGE || !FEMALE_PERCENT) {
+          throw new Error('Elementos de estadísticas no encontrados');
+        }
+
+        // 2. Carga con proxy confiable
+        const excelUrl = 'https://api.allorigins.win/raw?url=' + 
+          encodeURIComponent('https://raw.githubusercontent.com/Evelez23/-microdelecion/main/listaPacientes.xlsx');
+        
+        const response = await fetch(excelUrl);
+        if (!response.ok) throw new Error(`Error ${response.status}: ${response.statusText}`);
+        
+        // 3. Procesamiento de datos
         const data = await response.arrayBuffer();
         const { read, utils } = await import('https://cdn.sheetjs.com/xlsx-0.19.3/package/xlsx.mjs');
         const workbook = read(data);
-        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-        const pacientes = utils.sheet_to_json(firstSheet);
+        const pacientes = utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
 
-        // 2. Procesar estadísticas con manejo de errores
+        // 4. Cálculos seguros
         const total = pacientes.length;
         const edades = pacientes.map(p => {
-          const edad = parseFloat(p.Edad) || parseFloat(p.Edad?.match(/\d+/)?.[0]) || 0;
-          return edad > 0 ? edad : null;
-        }).filter(Boolean);
+          const edadStr = String(p.Edad || '').replace(/\D+/g, '');
+          return edadStr ? parseInt(edadStr) : null;
+        }).filter(edad => edad !== null && !isNaN(edad));
+        
+        const avgAge = edades.length ? (edades.reduce((a, b) => a + b, 0) / edades.length).toFixed(1) : 'N/D';
+        const femalePercent = total ? Math.round((pacientes.filter(p => p['*GÃ©nero'] === 'F').length / total) * 100) : 0;
 
-        const avgAge = edades.length ? (edades.reduce((a, b) => a + b, 0) / edades.length).toFixed(1) : 'N/A';
-        const femaleCount = pacientes.filter(p => p['*GÃ©nero'] === 'F').length;
-        const femalePercent = total > 0 ? Math.round((femaleCount / total) * 100) : 0;
-
-        // 3. Actualizar UI
-        document.getElementById('total-cases').textContent = total;
-        document.getElementById('avg-age').textContent = avgAge;
-        document.getElementById('female-percent').textContent = `${femalePercent}%`;
+        // 5. Actualización del DOM
+        TOTAL_CASES.textContent = total;
+        AVG_AGE.textContent = avgAge;
+        FEMALE_PERCENT.textContent = `${femalePercent}%`;
 
       } catch (error) {
-        console.error('Error:', error);
-        document.getElementById('stats-grid').innerHTML = `
-          <div class="error">
-            <p>Datos no disponibles temporalmente</p>
-            <small>Intenta recargar la página más tarde</small>
-          </div>
-        `;
+        console.error('Error al cargar estadísticas:', error);
+        const container = document.getElementById('stats-container') || document.querySelector('.stats-grid');
+        if (container) {
+          container.innerHTML = `
+            <div class="error">
+              <p>Datos no disponibles temporalmente</p>
+              <small>${error.message.includes('Error') ? error.message : 'Intente recargar la página'}</small>
+            </div>
+          `;
+        }
       }
     }
 
-    // Cargar después de que la página esté lista
+    // Control de carga
     if (document.readyState === 'complete') {
       loadStats();
     } else {
-      document.addEventListener('DOMContentLoaded', loadStats);
+      window.addEventListener('DOMContentLoaded', loadStats);
     }
   </script>
-
-  <!-- Estilos para mensajes de error -->
-  <style>
-    .error {
-      background: #fff5f5;
-      color: #e53e3e;
-      padding: 1rem;
-      border-radius: 8px;
-      margin: 1rem 0;
-      text-align: center;
-    }
-    .error small {
-      opacity: 0.8;
-      font-size: 0.9em;
-    }
-  </style>
 </body>
 </html>
