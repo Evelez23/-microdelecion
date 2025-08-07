@@ -1,43 +1,30 @@
-<!doctype html>
-<html lang="es">
-<head>
-  <meta charset="utf-8" />
-  <title>Estadísticas – Microdeleción 15q11.2</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="css/styles.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-</head>
-<body>
-  <header>
-    <h1>Estadísticas de Casos</h1>
-    <nav aria-label="Principal">
-      <a class="nav-link" href="index.html">Inicio</a>
-      <a class="nav-link" href="form.html">Agregar Caso</a>
-      <a class="nav-link active" href="stats.html">Estadísticas</a>
-      <a class="nav-link" href="patients.html">Pacientes</a>
-    </nav>
-  </header>
+<script type="module">
+  import { read, utils } from 'https://cdn.sheetjs.com/xlsx-0.19.3/package/xlsx.mjs';
+  import { Chart } from 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/+esm';
 
-  <main class="container">
-    <div class="card">
-      <canvas id="edadChart" aria-label="Distribución por edad" role="img"></canvas>
-    </div>
-    <div class="card">
-      <canvas id="generoChart" aria-label="Casos por género" role="img"></canvas>
-    </div>
-  </main>
+  async function loadCharts() {
+    const response = await fetch('https://raw.githubusercontent.com/Evelez23/-microdelecion/main/listaPacientes.xlsx');
+    const data = await response.arrayBuffer();
+    const workbook = read(data);
+    const pacientes = utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
 
-  <footer>
-    <p>© 2025 – Análisis de Microdeleción</p>
-  </footer>
+    // Procesar datos para gráficos
+    const generos = pacientes.reduce((acc, p) => {
+      acc[p['*GÃ©nero']] = (acc[p['*GÃ©nero']] || 0) + 1;
+      return acc;
+    }, {});
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/tabletop@1.6.0/tabletop.min.js" defer></script>
-  <script>
-    /* Re-uses the same JS logic that was in graficas.html,
-       moved to analytics.js to avoid duplication. */
-    const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRSYFRG8sb61AiPcOU8ZkKZ-qB78TTeznBcqEs-ey45ANLr7kK7X8iqN34IupCOR0dZEqwBlgkJ6VLY/pub?output=csv";
-    import('./js/analytics.js').then(m => m.initCharts(sheetURL));
-  </script>
-</body>
-</html>
+    new Chart(document.getElementById('generoChart'), {
+      type: 'pie',
+      data: {
+        labels: Object.keys(generos),
+        datasets: [{
+          data: Object.values(generos),
+          backgroundColor: ['#FF6B6B', '#4A6FA5']
+        }]
+      }
+    });
+  }
+
+  loadCharts();
+</script>
