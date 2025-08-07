@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" aria-hidden="true">
+  <!-- Cadena de ADN estilizada -->
+  <path fill="#4A6FA5" d="M50 10c-10 0-15 5-15 15v50c0 10 5 15 15 15s15-5 15-15V25c0-10-5-15-15-15zm0 10c3 0 5 2 5 5v50c0 3-2 5-5 5s-5-2-5-5V25c0-3 2-5 5-5z"/>
+  <!-- Lazos de ADN -->
+  <circle cx="35" cy="20" r="3" fill="#FF6B6B"/>
+  <circle cx="65" cy="30" r="3" fill="#6BFF6B"/>
+  <circle cx="35" cy="40" r="3" fill="#FF6B6B"/>
+  <circle cx="65" cy="50" r="3" fill="#6BFF6B"/>
+  <circle cx="35" cy="60" r="3" fill="#FF6B6B"/>
+  <circle cx="65" cy="70" r="3" fill="#6BFF6B"/>
+  <circle cx="35" cy="80" r="3" fill="#FF6B6B"/>
+</svg>
