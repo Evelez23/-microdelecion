@@ -1,41 +1,77 @@
-// js/patients.js  (versión segura)
-const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRSYFRG8sb61AiPcOU8ZkKZ-qB78TTeznBcqEs-ey45ANLr7kK7X8iqN34IupCOR0dZEqwBlgkJ6VLY/pub?output=csv';
-
-async function loadPatients() {
-  try {
-    const res = await fetch(SHEET_URL);
-    if (!res.ok) throw new Error('No se pudo leer la hoja');
-    const csv = await res.text();
-    const rows = csv.trim().split('\n').slice(1);   // saltamos cabecera
-
-    if (!rows.length) throw new Error('Hoja vacía');
-
-    const patients = rows.map(r => {
-      const [name, age, gender, symptoms, category] = r.split(',').map(c => c.trim());
-      return { name, age, gender, symptoms: symptoms.split(';'), category };
-    });
-
-    renderPatients(patients);
-  } catch (err) {
-    console.error(err);
-    document.getElementById('patientContainer').innerHTML =
-      '<p style="text-align:center;color:var(--accent)">Error al cargar pacientes. Revisa la consola.</p>';
-  }
+/* Estilos para las secciones de género */
+.gender-section {
+  margin-bottom: 30px;
 }
 
-function renderPatients(list) {
-  const container = document.getElementById('patientContainer');
-  const stats = document.getElementById('stats');
-  stats.textContent = `${list.length} casos documentados | Actualizado: ${new Date().toLocaleDateString('es-ES', { year: 'numeric', month: 'long' })}`;
-
-  container.innerHTML = list.map(p => `
-    <article class="patient-card">
-      <h3>${p.name} <small>(${p.age} años)</small></h3>
-      <p><strong>Género:</strong> ${p.gender}</p>
-      <p><strong>Síntomas:</strong> ${p.symptoms.join(', ')}</p>
-      <p><strong>Categoría:</strong> ${p.category}</p>
-    </article>
-  `).join('');
+.gender-section h2 {
+  color: #2c3e50;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 5px;
 }
 
-document.addEventListener('DOMContentLoaded', loadPatients);
+/* Botones de pacientes */
+.patient-buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.patient-button {
+  background: #e8f4fc;
+  border: none;
+  border-radius: 10px;
+  padding: 15px;
+  cursor: pointer;
+  text-align: left;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.patient-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.patient-name {
+  font-weight: bold;
+  display: block;
+  color: #2980b9;
+}
+
+.patient-age {
+  font-size: 0.9em;
+  color: #7f8c8d;
+}
+
+/* Modal */
+.patient-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.close-modal {
+  background: #e74c3c;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  margin-top: 15px;
+  cursor: pointer;
+}
