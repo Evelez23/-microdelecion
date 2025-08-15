@@ -1,5 +1,13 @@
 
 let DATA = [];
+
+async function initPacientes(){
+  DATA = await loadDataset();
+  renderList();
+  $('#q').addEventListener('input', renderList);
+  $('#src').addEventListener('change', renderList);
+}
+let DATA = [];
 function iconFor(r){
   const t = humanAgeSex(r);
   if(t==='niño') return '👦'; if(t==='niña') return '👧'; if(t==='adulto') return '👨'; if(t==='adulta') return '👩';
