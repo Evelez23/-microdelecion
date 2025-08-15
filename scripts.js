@@ -32,6 +32,21 @@ async function loadData(url) {
   return await response.json();
 }
 
+function setActiveNav() {
+  const path = location.pathname.split('/').pop();
+  $all('nav a').forEach(a => { 
+    if(a.getAttribute('href') === path) a.classList.add('active'); 
+  });
+}
+// Agrega esto a scripts.js si no está
+function humanAgeSex(r) {
+  const edad = Number(r['Edad'])||0;
+  const sexo = (r['Sexo']||'').toString().trim().toUpperCase();
+  const esNino = edad < 18;
+  if(sexo === 'M') return esNino ? 'niño' : 'adulto';
+  if(sexo === 'F') return esNino ? 'niña' : 'adulta';
+  return esNino ? 'menor' : 'persona adulta';
+}
 // Resto de tus funciones existentes (pct, gravBadge, humanAgeSex)
 // ... (mantén todo lo que ya tienes debajo de esto)
 
