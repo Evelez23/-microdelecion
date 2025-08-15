@@ -1,194 +1,162 @@
 [
- {
-  "Nombre": "Alejandro",
-  "Edad": 8,
-  "Sexo": "M",
-  "Localización": "Marbella",
-  "Síntomas": "TEA; Hipotonía",
-  "Gravedad": "Moderado"
- },
- {
-  "Nombre": "Aníbal",
-  "Edad": 6,
-  "Sexo": "M",
-  "Localización": "Sevilla",
-  "Síntomas": "Cardiopatía congénita; Talla baja",
-  "Gravedad": "Leve"
- },
- {
-  "Nombre": "Ángel",
-  "Edad": 15,
-  "Sexo": "M",
-  "Localización": "Segovia",
-  "Síntomas": "TEA; Dificultades aprendizaje",
-  "Gravedad": "Leve"
- },
- {
-  "Nombre": "Álex",
-  "Edad": 12,
-  "Sexo": "M",
-  "Localización": "Segovia",
-  "Síntomas": "TEA; Dificultades aprendizaje",
-  "Gravedad": "Leve"
- },
- {
-  "Nombre": "Carlos (Cristina)",
-  "Edad": 11,
-  "Sexo": "M",
-  "Localización": "Madrid",
-  "Síntomas": "TEA grado 3; Epilepsia",
-  "Gravedad": "Muy grave"
- },
- {
-  "Nombre": "Carlos (Ana)",
-  "Edad": 21,
-  "Sexo": "M",
-  "Localización": "Igualada, BCN",
-  "Síntomas": "TEA grado 1",
-  "Gravedad": "Leve"
- },
- {
-  "Nombre": "Carmen",
-  "Edad": 3.5,
-  "Sexo": "F",
-  "Localización": "Murcia",
-  "Síntomas": "Displasia cleidocraneal; Dolor óseo; Disfagia",
-  "Gravedad": "Grave"
- },
- {
-  "Nombre": "Christian",
-  "Edad": 7,
-  "Sexo": "M",
-  "Localización": "Valencia",
-  "Síntomas": "TEA",
-  "Gravedad": "Leve"
- },
- {
-  "Nombre": "Claudia",
-  "Edad": 12,
-  "Sexo": "F",
-  "Localización": "Sevilla",
-  "Síntomas": "TDAH",
-  "Gravedad": "Leve"
- },
- {
-  "Nombre": "Dana",
-  "Edad": 8,
-  "Sexo": "F",
-  "Localización": "Madrid",
-  "Síntomas": "Retraso global; Disfagia; Escoliosis",
-  "Gravedad": "Grave"
- },
- {
-  "Nombre": "Diego (Noelia)",
-  "Edad": 6,
-  "Sexo": "M",
-  "Localización": "Cartagena",
-  "Síntomas": "Hipotonía; Dispraxia; Disfagia",
-  "Gravedad": "Moderado"
- },
- {
-  "Nombre": "Diego (Virginia)",
-  "Edad": 11,
-  "Sexo": "M",
-  "Localización": "Madrid",
-  "Síntomas": "TEA; Hipotonía; Tics",
-  "Gravedad": "Grave"
- },
- {
-  "Nombre": "Eider",
-  "Edad": 8,
-  "Sexo": "M",
-  "Localización": "Zaragoza",
-  "Síntomas": "Retraso lenguaje; Hipotonía; Cerebelo pequeño",
-  "Gravedad": "Moderado"
- },
- {
-  "Nombre": "Elena (Virginia)",
-  "Edad": 13,
-  "Sexo": "F",
-  "Localización": "Madrid",
-  "Síntomas": "Dislexia; Discalculia",
-  "Gravedad": "Leve"
- },
- {
-  "Nombre": "Elena (Mari Ángeles)",
-  "Edad": 8,
-  "Sexo": "F",
-  "Localización": "Utrera, Sevilla",
-  "Síntomas": "TEA",
-  "Gravedad": "Moderado"
- },
- {
-  "Nombre": "Guille",
-  "Edad": 7,
-  "Sexo": "M",
-  "Localización": "Segovia",
-  "Síntomas": "TEA; Retraso global; Atresia de esófago",
-  "Gravedad": "Grave"
- },
- {
-  "Nombre": "Isaac",
-  "Edad": 2,
-  "Sexo": "M",
-  "Localización": "Honduras",
-  "Síntomas": "Hipotonía; Hernia testicular",
-  "Gravedad": "Moderado"
- },
- {
-  "Nombre": "Lander",
-  "Edad": 13,
-  "Sexo": "M",
-  "Localización": "Málaga",
-  "Síntomas": "Pectus excavatum; Dolores; Hiperlaxitud",
-  "Gravedad": "Moderado"
- },
- {
-  "Nombre": "Marco",
-  "Edad": 6,
-  "Sexo": "M",
-  "Localización": "Gijón, Asturias",
-  "Síntomas": "Problemas conducta; Dificultades aprendizaje",
-  "Gravedad": "Leve"
- },
- {
-  "Nombre": "Maya",
-  "Edad": 7,
-  "Sexo": "F",
-  "Localización": "Madrid",
-  "Síntomas": "TEA",
-  "Gravedad": "Leve"
- },
- {
-  "Nombre": "Nerea",
-  "Edad": 6,
-  "Sexo": "F",
-  "Localización": "Madrid",
-  "Síntomas": "TEA; Hipotonía; Retraso lenguaje",
-  "Gravedad": "Moderado"
- },
- {
-  "Nombre": "Naroa",
-  "Edad": 10,
-  "Sexo": "F",
-  "Localización": "Badalona",
-  "Síntomas": "TEA; TDAH; Epilepsia",
-  "Gravedad": "Grave"
- },
- {
-  "Nombre": "Sara",
-  "Edad": 7,
-  "Sexo": "F",
-  "Localización": "Oviedo, Asturias",
-  "Síntomas": "Dificultades aprendizaje leves",
-  "Gravedad": "Muy leve"
- },
- {
-  "Nombre": "Eva",
-  "Edad": 7,
-  "Sexo": "F",
-  "Localización": "Oviedo, Asturias",
-  "Síntomas": "Dificultades aprendizaje leves",
-  "Gravedad": "Muy leve"
- }
+  {
+    "Nombre": "Aníbal",
+    "Edad": 6,
+    "Sexo": "M",
+    "Localización": "Sevilla",
+    "Síntomas": "Cardiopatía congénita; Talla baja",
+    "Gravedad": "Leve"
+  },
+  {
+    "Nombre": "Ángel",
+    "Edad": 15,
+    "Sexo": "M",
+    "Localización": "Segovia",
+    "Síntomas": "TEA; Dificultades aprendizaje",
+    "Gravedad": "Leve"
+  },
+  {
+    "Nombre": "Álex",
+    "Edad": 12,
+    "Sexo": "M",
+    "Localización": "Segovia",
+    "Síntomas": "TEA; Dificultades aprendizaje",
+    "Gravedad": "Leve"
+  },
+  {
+    "Nombre": "Carlos (Cristina)",
+    "Edad": 11,
+    "Sexo": "M",
+    "Localización": "Madrid",
+    "Síntomas": "TEA grado 3; Epilepsia",
+    "Gravedad": "Muy grave"
+  },
+  {
+    "Nombre": "Carlos (Ana)",
+    "Edad": 21,
+    "Sexo": "M",
+    "Localización": "Igualada, BCN",
+    "Síntomas": "TEA grado 1",
+    "Gravedad": "Leve"
+  },
+  {
+    "Nombre": "Carmen",
+    "Edad": 3.5,
+    "Sexo": "F",
+    "Localización": "Murcia",
+    "Síntomas": "Displasia cleidocraneal; Dolor óseo; Disfagia",
+    "Gravedad": "Grave"
+  },
+  {
+    "Nombre": "Christian",
+    "Edad": 7,
+    "Sexo": "M",
+    "Localización": "Valencia",
+    "Síntomas": "TEA",
+    "Gravedad": "Leve"
+  },
+  {
+    "Nombre": "Claudia",
+    "Edad": 12,
+    "Sexo": "F",
+    "Localización": "Sevilla",
+    "Síntomas": "TDAH",
+    "Gravedad": "Leve"
+  },
+  {
+    "Nombre": "Dana",
+    "Edad": 8,
+    "Sexo": "F",
+    "Localización": "Madrid",
+    "Síntomas": "Retraso global; Disfagia; Escoliosis",
+    "Gravedad": "Grave"
+  },
+  {
+    "Nombre": "Diego (Noelia)",
+    "Edad": 6,
+    "Sexo": "M",
+    "Localización": "Cartagena",
+    "Síntomas": "Hipotonía; Dispraxia; Disfagia",
+    "Gravedad": "Moderado"
+  },
+  {
+    "Nombre": "Diego (Virginia)",
+    "Edad": 11,
+    "Sexo": "M",
+    "Localización": "Madrid",
+    "Síntomas": "TEA; Hipotonía; Tics",
+    "Gravedad": "Grave"
+  },
+  {
+    "Nombre": "Eider",
+    "Edad": 8,
+    "Sexo": "M",
+    "Localización": "Zaragoza",
+    "Síntomas": "Retraso lenguaje; Hipotonía; Cerebelo pequeño",
+    "Gravedad": "Moderado"
+  },
+  {
+    "Nombre": "Elena (Virginia)",
+    "Edad": 13,
+    "Sexo": "F",
+    "Localización": "Madrid",
+    "Síntomas": "Dislexia; Discalculia",
+    "Gravedad": "Leve"
+  },
+  {
+    "Nombre": "Elena (Mari Ángeles)",
+    "Edad": 8,
+    "Sexo": "F",
+    "Localización": "Utrera, Sevilla",
+    "Síntomas": "TEA",
+    "Gravedad": "Moderado"
+  },
+  {
+    "Nombre": "Guille",
+    "Edad": 7,
+    "Sexo": "M",
+    "Localización": "Segovia",
+    "Síntomas": "TEA; Retraso global; Atresia de esófago",
+    "Gravedad": "Grave"
+  },
+  {
+    "Nombre": "Marco",
+    "Edad": 6,
+    "Sexo": "M",
+    "Localización": "Gijón, Asturias",
+    "Síntomas": "Problemas conducta; Dificultades aprendizaje",
+    "Gravedad": "Leve"
+  },
+  {
+    "Nombre": "Maya",
+    "Edad": 7,
+    "Sexo": "F",
+    "Localización": "Madrid",
+    "Síntomas": "TEA",
+    "Gravedad": "Leve"
+  },
+  {
+    "Nombre": "Nerea",
+    "Edad": 6,
+    "Sexo": "F",
+    "Localización": "Madrid",
+    "Síntomas": "TEA; Hipotonía; Retraso lenguaje",
+    "Gravedad": "Moderado"
+  },
+  {
+    "Nombre": "Sara",
+    "Edad": 7,
+    "Sexo": "F",
+    "Localización": "Oviedo, Asturias",
+    "Síntomas": "Dificultades aprendizaje leves",
+    "Gravedad": "Muy leve"
+  },
+  {
+    "Nombre": "Eva",
+    "Edad": 7,
+    "Sexo": "F",
+    "Localización": "Oviedo, Asturias",
+    "Síntomas": "Dificultades aprendizaje leves",
+    "Gravedad": "Muy leve"
+  }
 ]
