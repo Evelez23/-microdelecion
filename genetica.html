@@ -5,9 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Genética | Microdeleción 15q11.2</title>
   <link rel="stylesheet" href="styles.css"/>
+  <style>
+    .dna-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 20px;
+      background: linear-gradient(135deg, rgba(110,168,254,0.1) 0%, rgba(0,209,209,0.1) 100%);
+      border-radius: 18px;
+      margin-bottom: 25px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .dna-img {
+      height: 100px;
+      filter: drop-shadow(0 0 10px rgba(0,209,209,0.3));
+      transition: transform 0.3s ease;
+    }
+    .dna-img:hover {
+      transform: scale(1.05);
+    }
+    .dna-text {
+      max-width: 600px;
+    }
+  </style>
   <script defer src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.20.0/xlsx.full.min.js"></script>
   <script defer src="scripts.js"></script>
   <script defer src="genetica.js"></script>
 </head>
@@ -27,20 +50,67 @@
   </nav>
 
   <section class="container">
-    <h2 style="margin:10px 0">Correlación genotipo-fenotipo</h2>
-    <p>Espacios preparados para tus imágenes/tablas genéticas.</p>
-    <div class="grid-2">
-      <div class="panel" style="min-height:220px">
-        <h3 style="margin-top:0">Genes potencialmente implicados</h3>
-        <canvas id="chartGenes" height="140"></canvas>
+    <div class="dna-header">
+      <img src="img/ícono%20DNA.png" alt="Estructura del ADN" class="dna-img">
+      <div class="dna-text">
+        <h2 style="margin:0 0 10px 0">Microdeleción 15q11.2</h2>
+        <p style="margin:0;color:var(--muted)">Alteración genética donde falta un pequeño fragmento del brazo largo del cromosoma 15, asociada con diversos fenotipos clínicos.</p>
       </div>
-      <div class="panel" style="min-height:220px">
-        <h3 style="margin-top:0">Modelo de herencia</h3>
-        <canvas id="chartHerencia" height="140"></canvas>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <h3 style="margin-top:0">🔬 Genes implicados</h3>
+        <div class="gene-info" style="margin-bottom:15px">
+          <p>Esta región crítica contiene cuatro genes principales:</p>
+          <ul style="padding-left:20px">
+            <li><strong>CYFIP1</strong>: Regula la síntesis de proteínas en sinapsis neuronales</li>
+            <li><strong>NIPA1/2</strong>: Transportadores de magnesio esenciales</li>
+            <li><strong>TUBGCP5</strong>: Participa en la organización microtubular</li>
+          </ul>
+        </div>
+        <canvas id="chartGenes" height="160"></canvas>
+      </div>
+      
+      <div class="panel">
+        <h3 style="margin-top:0">🧬 Patrón de herencia</h3>
+        <div class="inheritance-info" style="margin-bottom:15px">
+          <p>Características genéticas principales:</p>
+          <ul style="padding-left:20px">
+            <li>Herencia <strong>autosómica dominante</strong> con penetrancia variable</li>
+            <li>~65% de casos son <em>de novo</em> (no heredados)</li>
+            <li>Riesgo de recurrencia del 50% en descendencia</li>
+          </ul>
+        </div>
+        <canvas id="chartHerencia" height="160"></canvas>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:20px">
+      <h3>📊 Datos Clínicos Relevantes</h3>
+      <div class="grid-2" style="gap:15px">
+        <div>
+          <h4 style="margin-bottom:10px">Manifestaciones Principales</h4>
+          <ul style="padding-left:20px">
+            <li>Retraso del desarrollo (80-85%)</li>
+            <li>Trastorno del espectro autista (40-50%)</li>
+            <li>Dificultades de aprendizaje (70%)</li>
+            <li>Hipotonía muscular (30-40%)</li>
+          </ul>
+        </div>
+        <div>
+          <h4 style="margin-bottom:10px">Características Genómicas</h4>
+          <ul style="padding-left:20px">
+            <li>Localización: 15q11.2 (BP1-BP2)</li>
+            <li>Tamaño: ~350-500 kilobases</li>
+            <li>Método diagnóstico: Array genómico</li>
+            <li>Prevalencia: 1/5,000-10,000 nacimientos</li>
+          </ul>
+        </div>
       </div>
     </div>
   </section>
 
-  <footer class="footer">© 2025 | Estructura lista para tus recursos.</footer>
+  <footer class="footer">© 2025 | Información genética actualizada a 2025</footer>
 </body>
 </html>
