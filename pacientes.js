@@ -51,49 +51,75 @@ function renderList() {
 function openModal(idx) {
   const r = DATA[idx] || {};
   
-  // Función helper para obtener campos con múltiples nombres posibles
-  const getField = (keys, defaultValue = 'No especificado') => {
-    for (const key of keys) {
-      const value = r[key];
-      if (value !== undefined && value !== null && value !== '') {
-        return String(value).trim();
-      }
+  // Función inteligente para obtener cualquier campo
+  const getField = (possibleNames, defaultValue = 'No especificado') => {
+    // Busca coincidencia insensible a espacios/mayúsculas
+    const exactKey = Object.keys(r).find(key => 
+      possibleNames.some(name => 
+        key.trim().toLowerCase() === name.trim().toLowerCase()
+      )
+    );
+    const value = exactKey ? r[exactKey] : null;
+    
+    if (value !== undefined && value !== null && value !== '') {
+      return String(value).trim();
     }
     return defaultValue;
   };
 
-  // Normalización de campos
-  const paciente = {
-    nombre: getField(['Nombre', 'Nombre del paciente'], 'Sin nombre'),
-    edad: getField(['Edad', 'Edad '], 'No especificada'),
-    sexo: getField(['Sexo', 'Género'], '').charAt(0).toUpperCase(),
-    ubicacion: getField(['Localización', 'Ciudad', 'Ubicación'], 'No especificada'),
-    sintomas: getField(['Síntomas', 'síntomas principales', 'Sintomas'], 'No especificados'),
-    gravedad: getField(['Gravedad', 'Nivel de afectación'], 'No especificada'),
-    pruebas: getField(['Pruebas realizadas  (ej: array genético, EEG, resonancia)  '], 'No especificadas'),
-    medicamentos: getField(['Medicamentos actuales/pasados\n (ej: risperidona, magnesio):  '], 'Ninguno'),
-    terapias: getField(['Terapias recibidas\n(logopedia, psicoterapia, etc.):  '], 'Ninguna'),
-    estudios: getField(['Â¿Ha participado en estudios clÃ­nicos o genÃ©ticos?'], 'No especificado'),
-    necesidades: getField([' Necesidades y Desafíos'], 'No especificadas'),
-    origen: r.__origen || 'No especificado'
+  // Mapeo maestro de campos con todas las variantes posibles
+  const fieldMappings = {
+    nombre: [['Nombre', 'Nombre del paciente']],
+    edad: [['Edad', 'Edad ', 'Edad actual']],
+    sexo: [['Sexo', 'Género']],
+    ubicacion: [['Localización', 'Ciudad', 'Ubicación']],
+    sintomas: [['Síntomas', 'síntomas principales', 'síntomas principales  ', 'Sintomas']],
+    gravedad: [['Gravedad', 'Nivel de afectación']],
+    pruebas: [['Pruebas realizadas', 'Pruebas realizadas  (ej: array genético, EEG, resonancia)  ']],
+    medicamentos: [['Medicamentos actuales/pasados', 'Medicamentos actuales/pasados\n (ej: risperidona, magnesio):  ']],
+    terapias: [['Terapias recibidas', 'Terapias recibidas\n(logopedia, psicoterapia, etc.):  ']],
+    estudios: [['Participación en estudios', 'Â¿Ha participado en estudios clÃ­nicos o genÃ©ticos?']],
+    necesidades: [['Necesidades y Desafíos', ' Necesidades y Desafíos']],
+    origen: [['__origen']]
   };
 
+  // Normalización de todos los campos
+  const paciente = {};
+  Object.entries(fieldMappings).forEach(([field, possibleNames]) => {
+    paciente[field] = getField(possibleNames.flat(), 
+      field === 'origen' ? 'No especificado' : 
+      field === 'edad' ? 'No especificada' :
+      field === 'ubicacion' ? 'No especificada' :
+      field.endsWith('s') ? 'No especificados' : 'No especificado');
+  });
+
+  // Campos adicionales no mapeados
+  const additionalFields = Object.keys(r).filter(key => 
+    !Object.values(fieldMappings).flat().flat()
+      .some(mappedKey => mappedKey.trim().toLowerCase() === key.trim().toLowerCase())
+  );
+
+  // Generación del HTML
   $('#mTitle').textContent = paciente.nombre;
   
-  $('#mBody').innerHTML = `
+  let html = `
     <div class="grid-2">
       <div>
         <table class="table">
           <tbody>
-            <tr><th>Edad</th><td>${paciente.edad}</td></tr>
-            <tr><th>Sexo</th><td>${paciente.sexo} (${humanAgeSex(r)})</td></tr>
-            <tr><th>Localización</th><td>${paciente.ubicacion}</td></tr>
-            <tr><th>Gravedad</th><td><span class="${gravBadge(paciente.gravedad)}">${paciente.gravedad}</span></td></tr>
-            <tr><th>Pruebas realizadas</th><td>${paciente.pruebas}</td></tr>
-            <tr><th>Medicamentos</th><td>${paciente.medicamentos}</td></tr>
-            <tr><th>Terapias</th><td>${paciente.terapias}</td></tr>
-            <tr><th>Participación en estudios</th><td>${paciente.estudios}</td></tr>
-            <tr><th>Origen</th><td><span class="${paciente.origen === 'Validado' ? 'badge src-valid' : 'badge src-novalid'}">${paciente.origen}</span></td></tr>
+            ${Object.entries({
+              'Edad': paciente.edad,
+              'Sexo': `${paciente.sexo} (${humanAgeSex(r)})`,
+              'Localización': paciente.ubicacion,
+              'Gravedad': `<span class="${gravBadge(paciente.gravedad)}">${paciente.gravedad}</span>`,
+              'Pruebas realizadas': paciente.pruebas,
+              'Medicamentos': paciente.medicamentos,
+              'Terapias': paciente.terapias,
+              'Participación en estudios': paciente.estudios,
+              'Origen': `<span class="${paciente.origen === 'Validado' ? 'badge src-valid' : 'badge src-novalid'}">${paciente.origen}</span>`
+            }).map(([label, value]) => `
+              <tr><th>${label}</th><td>${value}</td></tr>
+            `).join('')}
           </tbody>
         </table>
       </div>
@@ -103,26 +129,22 @@ function openModal(idx) {
         
         <h4 style="margin:16px 0 8px">Necesidades y Desafíos</h4>
         <div style="white-space:pre-wrap;color:var(--muted)">${paciente.necesidades}</div>
-        
-        ${Object.entries(r)
-          .filter(([k]) => ![
-            'Nombre', 'Nombre del paciente', 'Edad', 'Edad ', 'Sexo', 'Género', 
-            'Localización', 'Ciudad', 'Ubicación', 'Síntomas', 'síntomas principales', 
-            'Sintomas', 'Gravedad', 'Nivel de afectación', '__origen',
-            'Pruebas realizadas  (ej: array genético, EEG, resonancia)  ',
-            'Medicamentos actuales/pasados\n (ej: risperidona, magnesio):  ',
-            'Terapias recibidas\n(logopedia, psicoterapia, etc.):  ',
-            'Â¿Ha participado en estudios clÃ­nicos o genÃ©ticos?',
-            ' Necesidades y Desafíos'
-          ].includes(k))
-          .map(([k, v]) => v ? `
-            <div style="margin-top:12px">
-              <strong>${k}:</strong> ${v}
-            </div>` : '')
-          .join('')}
-      </div>
-    </div>
   `;
+
+  // Campos adicionales
+  if (additionalFields.length > 0) {
+    html += `
+        <h4 style="margin:16px 0 8px">Información Adicional</h4>
+        ${additionalFields.map(key => `
+          <div style="margin-top:8px">
+            <strong>${key}:</strong> ${String(r[key]).trim() || 'N/A'}
+          </div>
+        `).join('')}
+    `;
+  }
+
+  html += `</div></div>`;
+  $('#mBody').innerHTML = html;
   $('#mb').style.display = 'flex';
 }
 
