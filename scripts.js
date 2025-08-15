@@ -20,13 +20,34 @@ function normalizeRow(row){
   const e = Number(out["Edad"]); if(!isNaN(e)) out["Edad"] = e;
   return out;
 }
-async function readExcel(url){
+// Reemplaza la función readExcel por esta versión que puede cargar tanto XLSX como JSON
+async function readExcel(url) {
+  // Si es JSON, lo cargamos directamente
+  if(url.endsWith('.json')) {
+    const res = await fetch(url);
+    if(!res.ok) throw new Error("No se pudo cargar "+url);
+    return await res.json();
+  }
+  
+  // Si es XLSX, mantenemos el código original
   const res = await fetch(url, {cache:'no-store'});
   if(!res.ok) throw new Error("No se pudo cargar "+url);
   const ab = await res.arrayBuffer();
   const wb = XLSX.read(ab, {type:'array'});
   const ws = wb.Sheets[wb.SheetNames[0]];
   return XLSX.utils.sheet_to_json(ws, {defval:""}).map(normalizeRow);
+}
+
+// Luego modifica loadDataset para usar archivos JSON
+async function loadDataset(){
+  const [nov, val] = await Promise.all([
+    readExcel('casos_no_validados.json').catch(()=>[]),
+    readExcel('casos_validados.json').catch(()=>[]),
+  ]);
+  const tagNov = nov.map(r => ({...r, __origen:'Sin validar'}));
+  const tagVal = val.map(r => ({...r, __origen:'Validado'}));
+  return [...tagVal, ...tagNov];
+}
 }
 async function loadDataset(){
   const [nov, val] = await Promise.all([
