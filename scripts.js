@@ -1,19 +1,42 @@
-// Funciones básicas
-function $(q, ctx=document) { return ctx.querySelector(q) }
-function $all(q, ctx=document) { return Array.from(ctx.querySelectorAll(q)) }
+// ======================
+// FUNCIONES BÁSICAS
+// ======================
+function $(q, ctx = document) { return ctx.querySelector(q) }
+function $all(q, ctx = document) { return Array.from(ctx.querySelectorAll(q)) }
 
-// Configuración de datos
-const DATA_URLS = {
-  validados: 'casos_validados.json',
-  noValidados: 'casos_no_validados.json'
-};
+// ======================
+// NORMALIZACIÓN DE DATOS
+// ======================
+function normalizeValidado(record) {
+  return {
+    "Nombre": record["Nombre"] || record["Nombre del paciente"] || "",
+    "Edad": Number(record["Edad"] || record["Edad actual"] || 0),
+    "Sexo": (record["Sexo"] || record["Género"] || "").toString().charAt(0).toUpperCase(),
+    "Localización": record["Localización"] || record["Ciudad"] || record["Ubicación"] || "",
+    "Síntomas": record["Síntomas"] || record["síntomas principales"] || record["Sintomas"] || "",
+    "Gravedad": record["Gravedad"] || record["Nivel de afectación"] || record["Severidad"] || ""
+  };
+}
 
-// Cargador de datos mejorado
+function normalizeNoValidado(record) {
+  return {
+    "Nombre": record["Nombre"] || "",
+    "Edad": Number(record["Edad"] || 0),
+    "Sexo": (record["Sexo"] || "").toString().charAt(0).toUpperCase(),
+    "Localización": record["Localización"] || "",
+    "Síntomas": record["Síntomas"] || "",
+    "Gravedad": record["Gravedad"] || ""
+  };
+}
+
+// ======================
+// CARGA DE DATOS
+// ======================
 async function loadDataset() {
   try {
     const [validados, noValidados] = await Promise.all([
-      loadData(DATA_URLS.validados),
-      loadData(DATA_URLS.noValidados)
+      loadData('casos_validados.json').then(data => data.map(normalizeValidado)),
+      loadData('casos_no_validados.json').then(data => data.map(normalizeNoValidado))
     ]);
     
     return [
@@ -27,28 +50,51 @@ async function loadDataset() {
 }
 
 async function loadData(url) {
-  const response = await fetch(url);
-  if (!response.ok) throw new Error(`Error al cargar ${url}`);
-  return await response.json();
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`Error ${response.status} al cargar ${url}`);
+    return await response.json();
+  } catch (error) {
+    console.error(`Error procesando ${url}:`, error);
+    return [];
+  }
 }
 
-function setActiveNav() {
-  const path = location.pathname.split('/').pop();
-  $all('nav a').forEach(a => { 
-    if(a.getAttribute('href') === path) a.classList.add('active'); 
-  });
+// ======================
+// FUNCIONES DE UTILIDAD
+// ======================
+function pct(part, total) { 
+  return total ? Math.round((part / total) * 100) : 0 
 }
-// Agrega esto a scripts.js si no está
+
+function gravBadge(g) {
+  const s = (g || '').toLowerCase();
+  if (s.includes('grave') || s.includes('sever')) return 'badge high';
+  if (s.includes('moderad') || s.includes('medio')) return 'badge med';
+  return 'badge ok';
+}
+
 function humanAgeSex(r) {
-  const edad = Number(r['Edad'])||0;
-  const sexo = (r['Sexo']||'').toString().trim().toUpperCase();
+  const edad = Number(r['Edad']) || 0;
+  const sexo = (r['Sexo'] || '').toString().trim().toUpperCase();
   const esNino = edad < 18;
-  if(sexo === 'M') return esNino ? 'niño' : 'adulto';
-  if(sexo === 'F') return esNino ? 'niña' : 'adulta';
+  
+  if (sexo === 'M') return esNino ? 'niño' : 'adulto';
+  if (sexo === 'F') return esNino ? 'niña' : 'adulta';
   return esNino ? 'menor' : 'persona adulta';
 }
-// Resto de tus funciones existentes (pct, gravBadge, humanAgeSex)
-// ... (mantén todo lo que ya tienes debajo de esto)
 
-// Inicialización
+// ======================
+// NAVEGACIÓN
+// ======================
+function setActiveNav() {
+  const path = location.pathname.split('/').pop() || 'index.html';
+  $all('nav a').forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === path);
+  });
+}
+
+// ======================
+// INICIALIZACIÓN
+// ======================
 document.addEventListener('DOMContentLoaded', setActiveNav);
