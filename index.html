@@ -7,22 +7,21 @@
   <link rel="stylesheet" href="styles.css"/>
   <script defer src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.20.0/xlsx.full.min.js"></script>
   <script defer src="scripts.js"></script>
   <script defer src="index.js"></script>
 </head>
 <body>
   <nav class="nav">
     <div class="inner">
-      <div class="brand">
-        <div class="logo">https://github.com/Evelez23/-microdelecion/blob/main/img/f2cdba1c-0c75-4aee-b880-f4d28dc75e10.png?raw=true</div>
-        <div>Microdeleción 15q11.2</div>
-      </div>
-      <div>
+      <div class="brand"><div class="logo"></div><div>Microdeleción 15q11.2</div></div>
+      <div class="nav-links">
         <a href="index.html">Inicio</a>
         <a href="resumen.html">Resumen</a>
         <a href="pacientes.html">Pacientes</a>
         <a href="genetica.html">Genética</a>
         <a href="estadisticas.html">Estadísticas</a>
+        <a class="btn-agregar" href="formulario.html">Agregar caso</a>
       </div>
     </div>
   </nav>
@@ -31,8 +30,8 @@
     <div class="container">
       <div class="wrap">
         <div>
-          <h1>Estudio clínico y demográfico de casos confirmados</h1>
-          <p>Datos sincronizados 1:1 con el archivo Excel original. Visualiza distribución por edad, prevalencia de síntomas y explora cada paciente.</p>
+          <h1>Estudio clínico y demográfico (en vivo desde Excel)</h1>
+          <p>La información se carga desde <strong>casos_validados.xlsx</strong> y <strong>casos_no_validados.xlsx</strong> ubicados en la carpeta del sitio.</p>
           <div class="cta">
             <a class="button" href="pacientes.html">Ver pacientes</a>
             <a class="button secondary" href="resumen.html">Explorar resumen</a>
@@ -41,9 +40,7 @@
         <div class="image"></div>
       </div>
 
-      <div class="cards" id="kpis">
-        <!-- KPIs dinámicos -->
-      </div>
+      <div class="cards" id="kpis"></div>
 
       <div class="grid-2">
         <div class="panel">
@@ -51,32 +48,13 @@
           <canvas id="chartAges" height="140"></canvas>
         </div>
         <div class="panel">
-          <h3 style="margin-top:0">Accesos rápidos</h3>
-          <div class="cards" style="grid-template-columns:repeat(2,1fr)">
-            <a class="card" href="pacientes.html">
-              <div class="k">Pacientes</div>
-              <div class="v">Listado completo</div>
-            </a>
-            <a class="card" href="estadisticas.html">
-              <div class="k">Estadísticas</div>
-              <div class="v">Gráficos en vivo</div>
-            </a>
-            <a class="card" href="resumen.html">
-              <div class="k">Resumen</div>
-              <div class="v">Hallazgos clave</div>
-            </a>
-            <a class="card" href="genetica.html">
-              <div class="k">Genética</div>
-              <div class="v">Estructura lista</div>
-            </a>
-          </div>
+          <h3 style="margin-top:0">Origen de los datos</h3>
+          <canvas id="chartOrigen" height="140"></canvas>
         </div>
       </div>
     </div>
   </section>
 
-  <footer class="footer">
-    © 2025 | Microdeleción 15q11.2 – Sitio generado a partir de datos de Excel. 
-  </footer>
+  <footer class="footer">© 2025 | Datos cargados directamente desde Excel.</footer>
 </body>
 </html>

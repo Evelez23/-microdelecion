@@ -14,40 +14,40 @@
   <nav class="nav">
     <div class="inner">
       <div class="brand"><div class="logo"></div><div>Microdeleción 15q11.2</div></div>
-      <div>
+      <div class="nav-links">
         <a href="index.html">Inicio</a>
         <a href="resumen.html">Resumen</a>
         <a href="pacientes.html">Pacientes</a>
         <a href="genetica.html">Genética</a>
         <a href="estadisticas.html">Estadísticas</a>
+        <a class="btn-agregar" href="formulario.html">Agregar caso</a>
       </div>
     </div>
   </nav>
 
   <section class="container">
-    <h2 style="margin:10px 0">Listado de pacientes</h2>
+    <h2 style="margin:10px 0">Pacientes</h2>
     <div class="controls">
-      <input class="input" id="q" placeholder="Buscar por nombre o síntoma…"/>
-      <select id="grav">
-        <option value="">Gravedad (todas)</option>
-        <option>Muy grave</option>
-        <option>Grave</option>
-        <option>Moderado</option>
-        <option>Leve</option>
-        <option>Asintomático</option>
-        <option>Muy leve</option>
+      <input class="input" id="q" placeholder="Buscar por nombre…"/>
+      <select id="src">
+        <option value="">Origen (todos)</option>
+        <option value="Validado">Validados</option>
+        <option value="Sin validar">Sin validar</option>
       </select>
-      <button class="button" onclick="exportTableToExcel('tblPacientes','Pacientes.xlsx')">Exportar</button>
     </div>
-
-    <table class="table" id="tblPacientes">
-      <thead>
-        <tr><th>Nombre</th><th>Edad</th><th>Sexo</th><th>Localización</th><th>Síntomas</th><th>Gravedad</th></tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+    <div class="list" id="listaPacientes"></div>
   </section>
 
-  <footer class="footer">© 2025 | Datos 100% tomados del Excel.</footer>
+  <div class="modal-backdrop" id="mb">
+    <div class="modal">
+      <div class="head">
+        <div id="mTitle">Detalle</div>
+        <button class="close" onclick="closeModal()">×</button>
+      </div>
+      <div class="body" id="mBody"></div>
+    </div>
+  </div>
+
+  <footer class="footer">© 2025 | Lista simplificada y detalles al click.</footer>
 </body>
 </html>

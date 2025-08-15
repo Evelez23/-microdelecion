@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="styles.css"/>
   <script defer src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.20.0/xlsx.full.min.js"></script>
   <script defer src="scripts.js"></script>
   <script defer src="resumen.js"></script>
 </head>
@@ -14,20 +15,19 @@
   <nav class="nav">
     <div class="inner">
       <div class="brand"><div class="logo"></div><div>Microdeleción 15q11.2</div></div>
-      <div>
+      <div class="nav-links">
         <a href="index.html">Inicio</a>
         <a href="resumen.html">Resumen</a>
         <a href="pacientes.html">Pacientes</a>
         <a href="genetica.html">Genética</a>
         <a href="estadisticas.html">Estadísticas</a>
+        <a class="btn-agregar" href="formulario.html">Agregar caso</a>
       </div>
     </div>
   </nav>
 
   <section class="container">
-    <h2 style="margin-top:16px">Resumen clínico</h2>
-    <p>Este resumen se genera dinámicamente a partir del Excel. Puedes exportar las tablas con un clic.</p>
-
+    <h2 style="margin-top:16px">Resumen clínico (en vivo desde Excel)</h2>
     <div class="grid-2">
       <div class="panel">
         <h3 style="margin-top:0">Distribución por grupos de edad</h3>
@@ -40,14 +40,8 @@
     </div>
 
     <div class="panel">
-      <h3 style="margin-top:0">Tabla de resumen</h3>
-      <table class="table" id="tblResumen">
-        <thead><tr><th>Grupo</th><th>Número</th><th>Porcentaje</th></tr></thead>
-        <tbody></tbody>
-      </table>
-      <div class="controls">
-        <button class="button" onclick="exportTableToExcel('tblResumen','Resumen_Microdelecion.xlsx')">Exportar</button>
-      </div>
+      <h3 style="margin-top:0">Origen de los casos</h3>
+      <canvas id="chartOrigenResumen" height="140"></canvas>
     </div>
   </section>
 

@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="styles.css"/>
   <script defer src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.20.0/xlsx.full.min.js"></script>
   <script defer src="scripts.js"></script>
   <script defer src="genetica.js"></script>
 </head>
@@ -14,43 +15,32 @@
   <nav class="nav">
     <div class="inner">
       <div class="brand"><div class="logo"></div><div>Microdeleción 15q11.2</div></div>
-      <div>
+      <div class="nav-links">
         <a href="index.html">Inicio</a>
         <a href="resumen.html">Resumen</a>
         <a href="pacientes.html">Pacientes</a>
         <a href="genetica.html">Genética</a>
         <a href="estadisticas.html">Estadísticas</a>
+        <a class="btn-agregar" href="formulario.html">Agregar caso</a>
       </div>
     </div>
   </nav>
 
   <section class="container">
     <h2 style="margin:10px 0">Correlación genotipo-fenotipo</h2>
-    <p>Esta sección queda preparada para integrar tus tablas/láminas genéticas (no están en el Excel). Te dejo espacios marcados.</p>
-
+    <p>Espacios preparados para tus imágenes/tablas genéticas.</p>
     <div class="grid-2">
       <div class="panel" style="min-height:220px">
         <h3 style="margin-top:0">Genes potencialmente implicados</h3>
         <canvas id="chartGenes" height="140"></canvas>
-        <!-- Imagen aquí: <img src="" alt="" /> -->
       </div>
       <div class="panel" style="min-height:220px">
         <h3 style="margin-top:0">Modelo de herencia</h3>
         <canvas id="chartHerencia" height="140"></canvas>
       </div>
     </div>
-
-    <div class="panel">
-      <h3 style="margin-top:0">Implicaciones por gen (plantilla)</h3>
-      <table class="table" id="tblGenes">
-        <thead><tr><th>Gen</th><th>Función</th><th>Manifestaciones</th><th>Casos</th></tr></thead>
-        <tbody>
-          <!-- Rellena con tus datos -->
-        </tbody>
-      </table>
-    </div>
   </section>
 
-  <footer class="footer">© 2025 | Estructura de genética lista para tus imágenes y tablas.</footer>
+  <footer class="footer">© 2025 | Estructura lista para tus recursos.</footer>
 </body>
 </html>

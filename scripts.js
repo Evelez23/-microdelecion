@@ -1,50 +1,42 @@
 
-/* Helpers y animaciones */
 function $(q, ctx=document){ return ctx.querySelector(q) }
 function $all(q, ctx=document){ return Array.from(ctx.querySelectorAll(q)) }
-
 function setActiveNav(){
   const path = location.pathname.split('/').pop();
-  $all('nav a').forEach(a => {
-    const href = a.getAttribute('href');
-    if(href === path) a.classList.add('active');
-  });
+  $all('nav a').forEach(a => { if(a.getAttribute('href') === path) a.classList.add('active'); });
 }
-
-/* Cargar JSON de datos */
-async function loadData(){
-  const res = await fetch('data.json', {cache:'no-store'});
-  return res.json();
+const EXPECTED = ["Nombre","Edad","Sexo","Localización","Síntomas","Gravedad"];
+const ALIASES = {
+  "Localizacion":"Localización",
+  "Localidad":"Localización",
+  "Sintomas":"Síntomas",
+  "Grado":"Gravedad",
+  "Gravedad clínica":"Gravedad"
+};
+function normalizeRow(row){
+  const out = {};
+  for(const k in row){ out[ALIASES[k] || k] = row[k]; }
+  EXPECTED.forEach(k => { if(!(k in out)) out[k] = "" });
+  const e = Number(out["Edad"]); if(!isNaN(e)) out["Edad"] = e;
+  return out;
 }
-
-/* Exportar una tabla HTML a Excel (cliente) */
-async function exportTableToExcel(tableId, filename='export.xlsx'){
-  const table = document.getElementById(tableId);
-  if(!table){ alert('Tabla no encontrada'); return; }
-  const rows = [['Nombre','Edad','Sexo','Localización','Síntomas','Gravedad']];
-  $all('tbody tr', table).forEach(tr => {
-    const cells = $all('td', tr).map(td => td.innerText.trim());
-    rows.push(cells);
-  });
-
-  // Construir un archivo xlsx simple usando SheetJS si está disponible; si no, CSV
-  if(window.XLSX){
-    const ws = XLSX.utils.aoa_to_sheet(rows);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Datos');
-    XLSX.writeFile(wb, filename);
-  }else{
-    const csv = rows.map(r => r.map(v => `"${(v||'').replace(/"/g,'""')}"`).join(',')).join('\n');
-    const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = filename.replace(/\.xlsx?$/i,'.csv');
-    a.click();
-    URL.revokeObjectURL(a.href);
-  }
+async function readExcel(url){
+  const res = await fetch(url, {cache:'no-store'});
+  if(!res.ok) throw new Error("No se pudo cargar "+url);
+  const ab = await res.arrayBuffer();
+  const wb = XLSX.read(ab, {type:'array'});
+  const ws = wb.Sheets[wb.SheetNames[0]];
+  return XLSX.utils.sheet_to_json(ws, {defval:""}).map(normalizeRow);
 }
-
-/* Formateo y utilidades */
+async function loadDataset(){
+  const [nov, val] = await Promise.all([
+    readExcel('casos_no_validados.xlsx').catch(()=>[]),
+    readExcel('casos_validados.xlsx').catch(()=>[]),
+  ]);
+  const tagNov = nov.map(r => ({...r, __origen:'Sin validar'}));
+  const tagVal = val.map(r => ({...r, __origen:'Validado'}));
+  return [...tagVal, ...tagNov];
+}
 function pct(part, total){ return total ? Math.round((part/total)*100) : 0 }
 function gravBadge(g){
   const s = (g||'').toLowerCase();
@@ -52,6 +44,12 @@ function gravBadge(g){
   if(s.includes('moderad')) return 'badge med';
   return 'badge ok';
 }
-
-/* init */
+function humanAgeSex(r){
+  const edad = Number(r['Edad'])||0;
+  const sexo = (r['Sexo']||'').toString().trim().toUpperCase();
+  const esNino = edad < 18;
+  if(sexo === 'M') return esNino ? 'niño' : 'adulto';
+  if(sexo === 'F') return esNino ? 'niña' : 'adulta';
+  return esNino ? 'menor' : 'persona adulta';
+}
 document.addEventListener('DOMContentLoaded', setActiveNav);
