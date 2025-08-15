@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Pacientes | Microdeleción 15q11.2</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <script defer src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.20.0/xlsx.full.min.js"></script>
+  <script defer src="scripts.js"></script>
+  <script defer src="pacientes.js"></script>
+</head>
+<body>
+  <nav class="nav">
+    <div class="inner">
+      <div class="brand"><div class="logo"></div><div>Microdeleción 15q11.2</div></div>
+      <div>
+        <a href="index.html">Inicio</a>
+        <a href="resumen.html">Resumen</a>
+        <a href="pacientes.html">Pacientes</a>
+        <a href="genetica.html">Genética</a>
+        <a href="estadisticas.html">Estadísticas</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="container">
+    <h2 style="margin:10px 0">Listado de pacientes</h2>
+    <div class="controls">
+      <input class="input" id="q" placeholder="Buscar por nombre o síntoma…"/>
+      <select id="grav">
+        <option value="">Gravedad (todas)</option>
+        <option>Muy grave</option>
+        <option>Grave</option>
+        <option>Moderado</option>
+        <option>Leve</option>
+        <option>Asintomático</option>
+        <option>Muy leve</option>
+      </select>
+      <button class="button" onclick="exportTableToExcel('tblPacientes','Pacientes.xlsx')">Exportar</button>
+    </div>
+
+    <table class="table" id="tblPacientes">
+      <thead>
+        <tr><th>Nombre</th><th>Edad</th><th>Sexo</th><th>Localización</th><th>Síntomas</th><th>Gravedad</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <footer class="footer">© 2025 | Datos 100% tomados del Excel.</footer>
+</body>
+</html>
