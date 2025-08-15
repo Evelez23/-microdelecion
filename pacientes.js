@@ -1,4 +1,4 @@
-// pacientes.js - Versión completa y sin errores de sintaxis
+// pacientes.js - Versión optimizada y sin duplicados
 let DATA = [];
 
 function iconFor(r) {
@@ -49,16 +49,32 @@ function renderList() {
 }
 
 function openModal(idx) {
-  const r = DATA[idx];
+  const r = DATA[idx] || {};
   
+  // Función helper para obtener campos con múltiples nombres posibles
+  const getField = (keys, defaultValue = 'No especificado') => {
+    for (const key of keys) {
+      const value = r[key];
+      if (value !== undefined && value !== null && value !== '') {
+        return String(value).trim();
+      }
+    }
+    return defaultValue;
+  };
+
   // Normalización de campos
   const paciente = {
-    nombre: r['Nombre'] || r['Nombre del paciente'] || '(Sin nombre)',
-    edad: r['Edad'] || r['Edad actual'] || 'No especificada',
-    sexo: (r['Sexo'] || r['Género'] || '').toString().charAt(0).toUpperCase(),
-    ubicacion: r['Localización'] || r['Ciudad'] || r['Ubicación'] || 'No especificada',
-    sintomas: r['Síntomas'] || r['síntomas principales'] || r['Sintomas'] || 'No especificados',
-    gravedad: r['Gravedad'] || r['Nivel de afectación'] || 'No especificada',
+    nombre: getField(['Nombre', 'Nombre del paciente'], 'Sin nombre'),
+    edad: getField(['Edad', 'Edad '], 'No especificada'),
+    sexo: getField(['Sexo', 'Género'], '').charAt(0).toUpperCase(),
+    ubicacion: getField(['Localización', 'Ciudad', 'Ubicación'], 'No especificada'),
+    sintomas: getField(['Síntomas', 'síntomas principales', 'Sintomas'], 'No especificados'),
+    gravedad: getField(['Gravedad', 'Nivel de afectación'], 'No especificada'),
+    pruebas: getField(['Pruebas realizadas  (ej: array genético, EEG, resonancia)  '], 'No especificadas'),
+    medicamentos: getField(['Medicamentos actuales/pasados\n (ej: risperidona, magnesio):  '], 'Ninguno'),
+    terapias: getField(['Terapias recibidas\n(logopedia, psicoterapia, etc.):  '], 'Ninguna'),
+    estudios: getField(['Â¿Ha participado en estudios clÃ­nicos o genÃ©ticos?'], 'No especificado'),
+    necesidades: getField([' Necesidades y Desafíos'], 'No especificadas'),
     origen: r.__origen || 'No especificado'
   };
 
@@ -73,6 +89,10 @@ function openModal(idx) {
             <tr><th>Sexo</th><td>${paciente.sexo} (${humanAgeSex(r)})</td></tr>
             <tr><th>Localización</th><td>${paciente.ubicacion}</td></tr>
             <tr><th>Gravedad</th><td><span class="${gravBadge(paciente.gravedad)}">${paciente.gravedad}</span></td></tr>
+            <tr><th>Pruebas realizadas</th><td>${paciente.pruebas}</td></tr>
+            <tr><th>Medicamentos</th><td>${paciente.medicamentos}</td></tr>
+            <tr><th>Terapias</th><td>${paciente.terapias}</td></tr>
+            <tr><th>Participación en estudios</th><td>${paciente.estudios}</td></tr>
             <tr><th>Origen</th><td><span class="${paciente.origen === 'Validado' ? 'badge src-valid' : 'badge src-novalid'}">${paciente.origen}</span></td></tr>
           </tbody>
         </table>
@@ -81,13 +101,23 @@ function openModal(idx) {
         <h4 style="margin:0 0 8px">Síntomas</h4>
         <div style="white-space:pre-wrap;color:var(--muted)">${paciente.sintomas}</div>
         
+        <h4 style="margin:16px 0 8px">Necesidades y Desafíos</h4>
+        <div style="white-space:pre-wrap;color:var(--muted)">${paciente.necesidades}</div>
+        
         ${Object.entries(r)
-          .filter(([key]) => !['Nombre','Edad','Sexo','Localización','Síntomas','Gravedad','__origen',
-                              'Nombre del paciente','Edad actual','Género','síntomas principales','Nivel de afectación']
-          .includes(key))
-          .map(([key, value]) => value ? `
+          .filter(([k]) => ![
+            'Nombre', 'Nombre del paciente', 'Edad', 'Edad ', 'Sexo', 'Género', 
+            'Localización', 'Ciudad', 'Ubicación', 'Síntomas', 'síntomas principales', 
+            'Sintomas', 'Gravedad', 'Nivel de afectación', '__origen',
+            'Pruebas realizadas  (ej: array genético, EEG, resonancia)  ',
+            'Medicamentos actuales/pasados\n (ej: risperidona, magnesio):  ',
+            'Terapias recibidas\n(logopedia, psicoterapia, etc.):  ',
+            'Â¿Ha participado en estudios clÃ­nicos o genÃ©ticos?',
+            ' Necesidades y Desafíos'
+          ].includes(k))
+          .map(([k, v]) => v ? `
             <div style="margin-top:12px">
-              <strong>${key}:</strong> ${value}
+              <strong>${k}:</strong> ${v}
             </div>` : '')
           .join('')}
       </div>
@@ -116,37 +146,4 @@ async function initPacientes() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', initPacientes);
-      <div>
-        <table class="table">
-          <tbody>
-            <tr><th>Edad</th><td>${paciente.edad}</td></tr>
-            <tr><th>Sexo</th><td>${paciente.sexo} (${humanAgeSex(r)})</td></tr>
-            <tr><th>Localización</th><td>${paciente.ubicacion}</td></tr>
-            <tr><th>Gravedad</th><td><span class="${gravBadge(paciente.gravedad)}">${paciente.gravedad}</span></td></tr>
-            <tr><th>Origen</th><td><span class="${paciente.origen === 'Validado' ? 'badge src-valid' : 'badge src-novalid'}">${paciente.origen}</span></td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div>
-        <h4 style="margin:0 0 8px">Síntomas</h4>
-        <div style="white-space:pre-wrap;color:var(--muted)">${paciente.sintomas}</div>
-        
-        <!-- Sección adicional para mostrar campos únicos -->
-        ${Object.entries(r)
-          .filter(([key]) => !['Nombre','Edad','Sexo','Localización','Síntomas','Gravedad','__origen',
-                              'Nombre del paciente','Edad actual','Género','síntomas principales','Nivel de afectación']
-          .includes(key))
-          .map(([key, value]) => value ? `
-            <div style="margin-top:12px">
-              <strong>${key}:</strong> ${value}
-            </div>` : '')
-          .join('')}
-      </div>
-    </div>
-  `;
-  $('#mb').style.display = 'flex';
-}
-
-// Inicia cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', initPacientes);
