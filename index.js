@@ -1,12 +1,11 @@
-
 async function init(){
   const data = await loadDataset();
   const total = data.length;
-  const val = data.filter(r => r.__origen==='Validado').length;
+  const val = data.filter(r => r.__origen === 'validado').length;
   const nov = total - val;
-  const epi = data.filter(r => (r['Síntomas']||'').toLowerCase().includes('epileps')).length;
+  const epi = data.filter(r => (r.sintomas || '').toLowerCase().includes('epileps')).length;
 
-  $('#kpis').innerHTML = `
+  document.getElementById('kpis').innerHTML = `
     <div class="card"><div class="k">Casos totales</div><div class="v">${total}</div></div>
     <div class="card"><div class="k">Validados</div><div class="v">${val} <span class="badge src-valid">${pct(val,total)}%</span></div></div>
     <div class="card"><div class="k">Sin validar</div><div class="v">${nov} <span class="badge src-novalid">${pct(nov,total)}%</span></div></div>
@@ -15,7 +14,7 @@ async function init(){
 
   const buckets = { '0-5':0, '6-10':0, '11-15':0, '16+':0 };
   data.forEach(r => {
-    const e = Number(r['Edad'])||0;
+    const e = Number(r.edad)||0;
     if(e<=5) buckets['0-5']++; else if(e<=10) buckets['6-10']++; else if(e<=15) buckets['11-15']++; else buckets['16+']++;
   });
   new Chart(document.getElementById('chartAges').getContext('2d'), {
