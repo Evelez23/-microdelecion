@@ -190,4 +190,17 @@
     "Â¿Ha participado en estudios clÃ­nicos o genÃ©ticos?": "SI",
     " Necesidades y Desafíos": "Educación inclusiva;Falta deinformación médica"
   }
+  {
+  "Nombre": "Carlos Mateos Álvaro",
+  "Localizacion": "Madrid, España",
+  "Edad": 6,
+  "Género": "Masculino",
+  "Pruebas realizadas": "Array genético",
+  "síntomas principales": "Leve dificultad del habla, posibles trastornos del espectro autista, TDAH, hipotonía muscular",
+  "Nivel de afectación": "Leve",
+  "Medicamentos actuales/pasados": "No especificado",
+  "Terapias recibidas": "No especificado",
+  "¿Ha participado en estudios clinicos o geneticos?": "Sí, estudio de portador en familia (materna)",
+  "Necesidades y Desafíos": "Evaluación del hermano (César) por dificultad del habla, seguimiento del desarrollo"
+}
 ]
