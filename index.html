@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Microdeleción 15q11.2 – Análisis de Casos</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <script defer src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.20.0/xlsx.full.min.js"></script>
+  <script defer src="scripts.js"></script>
+  <script defer src="index.js"></script>
+</head>
+<body>
+  <nav class="nav">
+    <div class="inner">
+      <div class="brand"><div class="logo"></div><div>Microdeleción 15q11.2</div></div>
+      <div class="nav-links">
+        <a href="index.html">Inicio</a>
+        <a href="resumen.html">Resumen</a>
+        <a href="pacientes.html">Pacientes</a>
+        <a href="genetica.html">Genética</a>
+        <a href="estadisticas.html">Estadísticas</a>
+        <a class="btn-agregar" href="formulario.html">Agregar caso</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="container">
+      <div class="wrap">
+        <div>
+          <h1>Estudio clínico y demográfico (en vivo desde Excel)</h1>
+          <p>La información se carga desde <strong>casos_validados.xlsx</strong> y <strong>casos_no_validados.xlsx</strong> ubicados en la carpeta del sitio.</p>
+          <div class="cta">
+            <a class="button" href="pacientes.html">Ver pacientes</a>
+            <a class="button secondary" href="resumen.html">Explorar resumen</a>
+          </div>
+        </div>
+        <div class="image"></div>
+      </div>
+
+      <div class="cards" id="kpis"></div>
+
+      <div class="grid-2">
+        <div class="panel">
+          <h3 style="margin-top:0">Distribución por edades</h3>
+          <canvas id="chartAges" height="140"></canvas>
+        </div>
+        <div class="panel">
+          <h3 style="margin-top:0">Origen de los datos</h3>
+          <canvas id="chartOrigen" height="140"></canvas>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">© 2025 | Datos cargados directamente desde Excel.</footer>
+</body>
+</html>
