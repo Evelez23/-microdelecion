@@ -86,8 +86,33 @@ body{
 .modal .body{padding:16px}
 .close{background:transparent;border:none;color:var(--muted);font-size:22px;cursor:pointer}
 @media (max-width: 900px){
-  .hero .wrap{grid-template-columns:1fr}
-  .cards{grid-template-columns:repeat(2,1fr)}
+  /* === HERO === */
+.hero {
+  padding: 40px 20px;
+}
+.hero .wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  gap: 40px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.hero .wrap .text {
+  flex: 1;
+  min-width: 280px;
+}
+.hero .wrap .image {
+  flex: 1;
+  min-width: 280px;
+  text-align: center;
+}
+.hero .wrap .image img {
+  width: 90%; /* 10% más pequeña */
+  height: auto;
+  border-radius: 12px;
+}
+
   .grid-2{grid-template-columns:1fr}
   .list{grid-template-columns:1fr}
 }
