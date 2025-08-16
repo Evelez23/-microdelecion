@@ -1,162 +1,93 @@
 [
   {
-    "Nombre": "Aníbal",
-    "Edad": 6,
-    "Sexo": "M",
-    "Localización": "Sevilla",
-    "Síntomas": "Cardiopatía congénita; Talla baja",
-    "Gravedad": "Leve"
-  },
-  {
-    "Nombre": "Ángel",
-    "Edad": 15,
-    "Sexo": "M",
-    "Localización": "Segovia",
-    "Síntomas": "TEA; Dificultades aprendizaje",
-    "Gravedad": "Leve"
-  },
-  {
-    "Nombre": "Álex",
-    "Edad": 12,
-    "Sexo": "M",
-    "Localización": "Segovia",
-    "Síntomas": "TEA; Dificultades aprendizaje",
-    "Gravedad": "Leve"
-  },
-  {
-    "Nombre": "Carlos (Cristina)",
-    "Edad": 11,
-    "Sexo": "M",
-    "Localización": "Madrid",
-    "Síntomas": "TEA grado 3; Epilepsia",
-    "Gravedad": "Muy grave"
-  },
-  {
-    "Nombre": "Carlos (Ana)",
-    "Edad": 21,
-    "Sexo": "M",
-    "Localización": "Igualada, BCN",
-    "Síntomas": "TEA grado 1",
-    "Gravedad": "Leve"
+    "Nombre": "Dani",
+    "Localizacion": "Madrid, España",
+    "Edad": 13,
+    "Género": "Masculino",
+    "Pruebas realizadas": "Array genético",
+    "síntomas principales": "TDAH, autismo moderado, retraso mental, agresividad, TOC, tics nerviosos",
+    "Nivel de afectación": "Moderado a severo",
+    "Medicamentos actuales/pasados": "Risperidona 1.75ml, afibility, intuniv 3mg",
+    "Terapias recibidas": "Logopedia, psicoterapia",
+    "¿Ha participado en estudios clinicos o geneticos?": "No especificado",
+    "Necesidades y Desafíos": "Control de impulsos, comportamiento agresivo, adaptación escolar"
   },
   {
     "Nombre": "Carmen",
+    "Localizacion": "Murcia, España",
     "Edad": 3.5,
-    "Sexo": "F",
-    "Localización": "Murcia",
-    "Síntomas": "Displasia cleidocraneal; Dolor óseo; Disfagia",
-    "Gravedad": "Grave"
-  },
-  {
-    "Nombre": "Christian",
-    "Edad": 7,
-    "Sexo": "M",
-    "Localización": "Valencia",
-    "Síntomas": "TEA",
-    "Gravedad": "Leve"
-  },
-  {
-    "Nombre": "Claudia",
-    "Edad": 12,
-    "Sexo": "F",
-    "Localización": "Sevilla",
-    "Síntomas": "TDAH",
-    "Gravedad": "Leve"
+    "Género": "Femenino",
+    "Pruebas realizadas": "Array genético",
+    "síntomas principales": "Microdeleción + displasia cleidocraneal, dolor óseo, disfagia, hiperacusia, problemas respiratorios",
+    "Nivel de afectación": "Moderado a severo",
+    "Medicamentos actuales/pasados": "Suplementos de magnesio",
+    "Terapias recibidas": "Logopedia, fisioterapia",
+    "¿Ha participado en estudios clinicos o geneticos?": "Sí, Hospital Virgen de la Arrixaca",
+    "Necesidades y Desafíos": "Seguimiento ortopédico, apoyo sensorial"
   },
   {
     "Nombre": "Dana",
+    "Localizacion": "Madrid, España",
     "Edad": 8,
-    "Sexo": "F",
-    "Localización": "Madrid",
-    "Síntomas": "Retraso global; Disfagia; Escoliosis",
-    "Gravedad": "Grave"
-  },
-  {
-    "Nombre": "Diego (Noelia)",
-    "Edad": 6,
-    "Sexo": "M",
-    "Localización": "Cartagena",
-    "Síntomas": "Hipotonía; Dispraxia; Disfagia",
-    "Gravedad": "Moderado"
-  },
-  {
-    "Nombre": "Diego (Virginia)",
-    "Edad": 11,
-    "Sexo": "M",
-    "Localización": "Madrid",
-    "Síntomas": "TEA; Hipotonía; Tics",
-    "Gravedad": "Grave"
-  },
-  {
-    "Nombre": "Eider",
-    "Edad": 8,
-    "Sexo": "M",
-    "Localización": "Zaragoza",
-    "Síntomas": "Retraso lenguaje; Hipotonía; Cerebelo pequeño",
-    "Gravedad": "Moderado"
-  },
-  {
-    "Nombre": "Elena (Virginia)",
-    "Edad": 13,
-    "Sexo": "F",
-    "Localización": "Madrid",
-    "Síntomas": "Dislexia; Discalculia",
-    "Gravedad": "Leve"
-  },
-  {
-    "Nombre": "Elena (Mari Ángeles)",
-    "Edad": 8,
-    "Sexo": "F",
-    "Localización": "Utrera, Sevilla",
-    "Síntomas": "TEA",
-    "Gravedad": "Moderado"
-  },
-  {
-    "Nombre": "Guille",
-    "Edad": 7,
-    "Sexo": "M",
-    "Localización": "Segovia",
-    "Síntomas": "TEA; Retraso global; Atresia de esófago",
-    "Gravedad": "Grave"
+    "Género": "Femenino",
+    "Pruebas realizadas": "Array genético, resonancia",
+    "síntomas principales": "Retraso global del desarrollo, no habla, no camina sin apoyo, escoliosis",
+    "Nivel de afectación": "Severo",
+    "Medicamentos actuales/pasados": "No especificado",
+    "Terapias recibidas": "Fisioterapia, logopedia, estimulación temprana",
+    "¿Ha participado en estudios clinicos o geneticos?": "No especificado",
+    "Necesidades y Desafíos": "Atención sanitaria integral, adaptaciones domésticas"
   },
   {
     "Nombre": "Marco",
+    "Localizacion": "Gijón, Asturias",
     "Edad": 6,
-    "Sexo": "M",
-    "Localización": "Gijón, Asturias",
-    "Síntomas": "Problemas conducta; Dificultades aprendizaje",
-    "Gravedad": "Leve"
+    "Género": "Masculino",
+    "Pruebas realizadas": "Array genético",
+    "síntomas principales": "Retraso del lenguaje, problemas de conducta, TDAH",
+    "Nivel de afectación": "Leve a moderado",
+    "Medicamentos actuales/pasados": "No especificado",
+    "Terapias recibidas": "Logopedia, apoyo escolar",
+    "¿Ha participado en estudios clinicos o geneticos?": "No especificado",
+    "Necesidades y Desafíos": "Estimulación cognitiva, integración escolar"
   },
   {
-    "Nombre": "Maya",
+    "Nombre": "Guille",
+    "Localizacion": "Segovia, España",
     "Edad": 7,
-    "Sexo": "F",
-    "Localización": "Madrid",
-    "Síntomas": "TEA",
-    "Gravedad": "Leve"
+    "Género": "Masculino",
+    "Pruebas realizadas": "Array genético",
+    "síntomas principales": "Atresia de esófago, migrañas, retraso cognitivo",
+    "Nivel de afectación": "Moderado a severo",
+    "Medicamentos actuales/pasados": "Paracetamol, Ibuprofeno para migrañas",
+    "Terapias recibidas": "Logopedia, estimulación motora",
+    "¿Ha participado en estudios clinicos o geneticos?": "No especificado",
+    "Necesidades y Desafíos": "Seguimiento digestivo, manejo del dolor"
+  },
+  {
+    "Nombre": "Eider",
+    "Localizacion": "Zaragoza, España",
+    "Edad": 8,
+    "Género": "Femenino",
+    "Pruebas realizadas": "Array genético, EEG",
+    "síntomas principales": "Retraso del lenguaje, hipotonía, migrañas",
+    "Nivel de afectación": "Leve",
+    "Medicamentos actuales/pasados": "Magnesio, probióticos",
+    "Terapias recibidas": "Logopedia, terapia ocupacional",
+    "¿Ha participado en estudios clinicos o geneticos?": "No especificado",
+    "Necesidades y Desafíos": "Apoyo escolar, estimulación cognitiva"
   },
   {
     "Nombre": "Nerea",
+    "Localizacion": "Madrid, España",
     "Edad": 6,
-    "Sexo": "F",
-    "Localización": "Madrid",
-    "Síntomas": "TEA; Hipotonía; Retraso lenguaje",
-    "Gravedad": "Moderado"
-  },
-  {
-    "Nombre": "Sara",
-    "Edad": 7,
-    "Sexo": "F",
-    "Localización": "Oviedo, Asturias",
-    "Síntomas": "Dificultades aprendizaje leves",
-    "Gravedad": "Muy leve"
-  },
-  {
-    "Nombre": "Eva",
-    "Edad": 7,
-    "Sexo": "F",
-    "Localización": "Oviedo, Asturias",
-    "Síntomas": "Dificultades aprendizaje leves",
-    "Gravedad": "Muy leve"
+    "Género": "Femenino",
+    "Pruebas realizadas": "Array genético",
+    "síntomas principales": "Autismo, retraso del lenguaje",
+    "Nivel de afectación": "Leve",
+    "Medicamentos actuales/pasados": "No especificado",
+    "Terapias recibidas": "Logopedia, apoyo escolar",
+    "¿Ha participado en estudios clinicos o geneticos?": "No especificado",
+    "Necesidades y Desafíos": "Integración escolar, comunicación"
   }
 ]
