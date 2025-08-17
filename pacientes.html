@@ -25,28 +25,10 @@
   </nav>
 
   <section class="container">
-    <h2 style="margin:10px 0">Pacientes</h2>
-    <div class="controls">
-      <input class="input" id="q" placeholder="Buscar por nombre…"/>
-      <select id="src">
-        <option value="">Origen (todos)</option>
-        <option value="Validado">Validados</option>
-        <option value="Sin validar">Sin validar</option>
-      </select>
-    </div>
-    <div class="list" id="listaPacientes"></div>
+    <h2 style="margin:10px 0">Casos de pacientes</h2>
+    <div id="patient-list" class="grid-2" style="gap:20px; margin-top: 15px;">
+      </div>
   </section>
 
-  <div class="modal-backdrop" id="mb">
-    <div class="modal">
-      <div class="head">
-        <div id="mTitle">Detalle</div>
-        <button class="close" onclick="closeModal()">×</button>
-      </div>
-      <div class="body" id="mBody"></div>
-    </div>
-  </div>
-
-  <footer class="footer">© 2025 | Lista simplificada y detalles al click.</footer>
 </body>
 </html>
