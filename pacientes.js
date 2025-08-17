@@ -12,9 +12,9 @@ async function initPatients() {
           <h3>${patient.nombre}</h3>
           <span class="${gravBadge(patient.gravedad)}">${patient.gravedad}</span>
         </div>
-        <p><strong>Edad:</strong> ${patient.edad} años</p>
-        <p><strong>Género:</strong> ${patient.genero}</p>
-        <p><strong>Localización:</strong> ${patient.localizacion}</p>
+        <p><strong>Edad:</strong> ${patient.edad || 0} años</p>
+        <p><strong>Género:</strong> ${patient.genero || 'No especificado'}</p>
+        <p><strong>Localización:</strong> ${patient.localizacion || 'No especificado'}</p>
         <p><strong>Síntomas:</strong> ${patient.sintomas || 'No especificado'}</p>
       </div>
     `;
