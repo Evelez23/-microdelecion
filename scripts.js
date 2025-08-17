@@ -7,25 +7,39 @@ function $all(q, ctx = document) { return Array.from(ctx.querySelectorAll(q)) }
 // ======================
 // NORMALIZACIÓN DE DATOS
 // ======================
-function normalizeValidado(record) {
+function normalizeData(record) {
   return {
-    "Nombre": record["Nombre"] || record["Nombre del paciente"] || "",
-    "Edad": Number(record["Edad"] || record["Edad actual"] || 0),
-    "Sexo": (record["Sexo"] || record["Género"] || "").toString().charAt(0).toUpperCase(),
-    "Localización": record["Localización"] || record["Ciudad"] || record["Ubicación"] || "",
-    "Síntomas": record["Síntomas"] || record["síntomas principales"] || record["Sintomas"] || "",
-    "Gravedad": record["Gravedad"] || record["Nivel de afectación"] || record["Severidad"] || ""
+    "nombre": record["Nombre"] || "",
+    "edad": Number(record["Edad"] || 0),
+    "genero": record["Sexo"] === 'M' ? 'Masculino' : 'Femenino',
+    "localizacion": record["Localización"] || "",
+    "sintomas": record["Síntomas"] || "",
+    "gravedad": record["Gravedad"] || "",
+    "__origen": "data"
   };
 }
 
 function normalizeNoValidado(record) {
   return {
-    "Nombre": record["Nombre"] || "",
-    "Edad": Number(record["Edad"] || 0),
-    "Sexo": (record["Sexo"] || "").toString().charAt(0).toUpperCase(),
-    "Localización": record["Localización"] || "",
-    "Síntomas": record["Síntomas"] || "",
-    "Gravedad": record["Gravedad"] || ""
+    "nombre": record["Nombre"] || "",
+    "edad": Number(record["Edad"] || 0),
+    "genero": record["Género"] || "",
+    "localizacion": record["Localizacion"] || "",
+    "sintomas": record["síntomas principales"] || "",
+    "gravedad": record["Nivel de afectación"] || "",
+    "__origen": "no-validado"
+  };
+}
+
+function normalizeValidado(record) {
+  return {
+    "nombre": record["Nombre"] || "",
+    "edad": Number(record["Edad "] || 0),
+    "genero": record["Género"] === 'M' ? 'Masculino' : record["Género"] === 'F' ? 'Femenino' : record["Género"],
+    "localizacion": record["Localización"] || "",
+    "sintomas": record["síntomas principales  "] || "",
+    "gravedad": record["Nivel de afectación"] || "",
+    "__origen": "validado"
   };
 }
 
@@ -34,14 +48,16 @@ function normalizeNoValidado(record) {
 // ======================
 async function loadDataset() {
   try {
-    const [validados, noValidados] = await Promise.all([
-      loadData('casos_validados.json').then(data => data.map(normalizeValidado)),
-      loadData('casos_no_validados.json').then(data => data.map(normalizeNoValidado))
+    const [data, noValidados, validados] = await Promise.all([
+      loadData('data.json').then(res => res.map(normalizeData)),
+      loadData('casos_no_validados.json').then(res => res.map(normalizeNoValidado)),
+      loadData('casos_validados.json').then(res => res.map(normalizeValidado))
     ]);
-    
+
     return [
-      ...validados.map(r => ({ ...r, __origen: 'Validado' })),
-      ...noValidados.map(r => ({ ...r, __origen: 'Sin validar' }))
+      ...data,
+      ...noValidados,
+      ...validados
     ];
   } catch (error) {
     console.error('Error cargando dataset:', error);
