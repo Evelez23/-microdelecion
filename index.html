@@ -3,11 +3,10 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Microdeleción 15q11.2 – Análisis de Casos</title>
+  <title>Microdeleción 15q11.2 – Portal Comunitario</title>
   <link rel="stylesheet" href="styles.css"/>
   <script defer src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.20.0/xlsx.full.min.js"></script>
   <script defer src="scripts.js"></script>
   <script defer src="index.js"></script>
 </head>
@@ -18,10 +17,10 @@
       <div class="nav-links">
         <a href="index.html">Inicio</a>
         <a href="resumen.html">Resumen</a>
-        <a href="pacientes.html">Pacientes</a>
+        <a href="casos.html">Casos</a>
         <a href="genetica.html">Genética</a>
         <a href="estadisticas.html">Estadísticas</a>
-        <a class="btn-agregar" href="formulario.html">Agregar caso</a>
+        <a class="btn-agregar" href="formulario.html">Reportar caso</a>
       </div>
     </div>
   </nav>
@@ -30,11 +29,11 @@
     <div class="container">
       <div class="wrap">
         <div>
-          <h1>Microdeleción 15q11.2 – Portal Colaborativo</h1>
-          <p>La microdeleción 15q11.2 BP1-BP2 afecta a menos del 1% de la población,<strong>pero cada caso aporta piezas clave para entender autismo, hipotonía y más.</strong>.</p>
+          <h1>Microdeleción 15q11.2 – Comunidad de Familias</h1>
+          <p>Plataforma colaborativa para documentar y comprender la microdeleción 15q11.2 <strong>desde la perspectiva de las familias afectadas</strong>.</p>
           <div class="cta">
-            <a class="button" href="pacientes.html">Ver pacientes</a>
-            <a class="button secondary" href="resumen.html">Explorar resumen</a>
+            <a class="button" href="casos.html">Ver casos</a>
+            <a class="button secondary" href="resumen.html">Ver resumen</a>
           </div>
         </div>
         <div class="image"></div>
@@ -48,17 +47,17 @@
           <canvas id="chartAges" height="140"></canvas>
         </div>
         <div class="panel">
-          <h3 style="margin-top:0">Origen de los datos</h3>
+          <h3 style="margin-top:0">Estado de los casos</h3>
           <canvas id="chartOrigen" height="140"></canvas>
         </div>
       </div>
     </div>
   </section>
-<div class="alert-banner">
-  🔬 <strong>¿Tienes la microdeleción 15q11.2?</strong>  
-  Participa en el estudio de la Universidad de Granada.  
-  <a href="https://cimcyc.ugr.es/" target="_blank" class="button">Más info</a>
-</div>
-  <footer class="footer">© 2025 | Datos cargados directamente desde Excel.</footer>
+
+  <div class="disclaimer">
+    <p>💡 <strong>Importante:</strong> Esta plataforma es mantenida por familias afectadas. La información aquí compartida tiene fines educativos y de apoyo mutuo, no sustituye el consejo médico profesional.</p>
+  </div>
+
+  <footer class="footer">© 2025 | Comunidad de Familias 15q11.2</footer>
 </body>
 </html>
