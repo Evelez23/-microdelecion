@@ -2,16 +2,20 @@ async function initCasos() {
   const data = await loadDataset();
   const container = document.getElementById('casos-list');
   
-  // Filtro para casos severos (usado en index.js)
-  window.countSevereCases = () => {
-    return data.filter(c => {
-      const g = (c.gravedad || '').toLowerCase();
-      return g.includes('grave') || g.includes('sever');
-    }).length;
-  };
+  // Contador de casos severos para el index
+  window.countSevereCases = () => data.filter(c => isSevereCase(c.gravedad)).length;
 
   function renderCasos(casos) {
     container.innerHTML = '';
+    
+    if (casos.length === 0) {
+      container.innerHTML = `
+        <div class="panel" style="grid-column:1/-1">
+          <p>No se encontraron casos que coincidan con la búsqueda</p>
+        </div>
+      `;
+      return;
+    }
     
     casos.forEach(caso => {
       const cardHtml = `
@@ -37,18 +41,26 @@ async function initCasos() {
     }
   }
 
-  // Buscador
+  // Buscador mejorado
   document.getElementById('search')?.addEventListener('input', (e) => {
-    const term = e.target.value.toLowerCase();
+    const term = e.target.value.toLowerCase().trim();
+    if (!term) {
+      renderCasos(data);
+      return;
+    }
+    
     const filtered = data.filter(c => 
       (c.nombre?.toLowerCase().includes(term)) ||
       (c.localizacion?.toLowerCase().includes(term)) ||
-      (c.sintomas?.toLowerCase().includes(term))
+      (c.sintomas?.toLowerCase().includes(term)) ||
+      (c.gravedad?.toLowerCase().includes(term))
     );
     renderCasos(filtered);
   });
 
+  // Mostrar todos los casos inicialmente
   renderCasos(data);
+  
+  // Mostrar estadística de casos únicos en consola (para depuración)
+  console.log(`Total de casos únicos cargados: ${data.length}`);
 }
-
-document.addEventListener('DOMContentLoaded', initCasos);
