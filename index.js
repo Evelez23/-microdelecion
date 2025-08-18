@@ -1,6 +1,21 @@
 async function init(){
   const data = await loadDataset();
   const total = data.length;
+  const val = data.filter(r => r.__origen === "validado").length;
+  const nov = total - val;
+  const severos = data.filter(r => isSevereCase(r.gravedad)).length;
+
+  document.getElementById('kpis').innerHTML = `
+    <div class="card"><div class="k">Casos únicos</div><div class="v">${total}</div></div>
+    <div class="card"><div class="k">Validados</div><div class="v">${val} <span class="badge src-valid">${pct(val,total)}%</span></div></div>
+    <div class="card"><div class="k">Por validar</div><div class="v">${nov} <span class="badge src-novalid">${pct(nov,total)}%</span></div></div>
+    <div class="card"><div class="k">Casos severos</div><div class="v">${severos} <span class="badge high">${pct(severos,total)}%</span></div></div>
+  `;
+
+  // Resto del código permanece igual...
+}async function init(){
+  const data = await loadDataset();
+  const total = data.length;
   const val = data.filter(r => r.__origen === 'validado').length;
   const nov = total - val;
   const epi = data.filter(r => (r.sintomas || '').toLowerCase().includes('epileps')).length;
