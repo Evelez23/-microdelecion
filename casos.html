@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Casos Registrados | Microdeleción 15q11.2</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <script defer src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+  <script defer src="scripts.js"></script>
+  <script defer src="casos.js"></script>
+</head>
+<body>
+  <nav class="nav">
+    <!-- Mismo nav que en index.html -->
+  </nav>
+
+  <section class="container">
+    <h2 style="margin:10px 0">Casos Registrados</h2>
+    <p style="color:var(--muted);margin-bottom:20px">
+      Base de datos comunitaria de personas con microdeleción 15q11.2 reportados por familias
+    </p>
+    
+    <div class="controls">
+      <input type="text" id="search" class="input" placeholder="Buscar casos..." style="max-width:300px">
+    </div>
+    
+    <div id="casos-list" class="grid-2" style="gap:20px; margin-top: 15px;"></div>
+  </section>
+
+  <div class="disclaimer">
+    <p>🔒 <strong>Privacidad:</strong> La información mostrada es de carácter general. Para proteger la privacidad, hemos omitido datos sensibles.</p>
+  </div>
+
+  <footer class="footer">© 2025 | Comunidad de Familias 15q11.2</footer>
+</body>
+</html>
