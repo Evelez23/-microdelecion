@@ -114,3 +114,45 @@ function setActiveNav() {
 // INICIALIZACIÓN
 // ======================
 document.addEventListener('DOMContentLoaded', setActiveNav);
+// ======================
+// CARGA DE DATOS SIN DUPLICADOS
+// ======================
+async function loadDataset() {
+  try {
+    const [data, noValidados, validados] = await Promise.all([
+      loadData('data.json'),
+      loadData('casos_no_validados.json'),
+      loadData('casos_validados.json')
+    ]);
+
+    // Normalizar todos los registros
+    const allRecords = [
+      ...data.map(r => normalizeRecord({ ...r, __origen: "data" })),
+      ...noValidados.map(r => normalizeRecord({ ...r, __origen: "no-validado" })),
+      ...validados.map(r => normalizeRecord({ ...r, __origen: "validado" }))
+    ];
+
+    // Eliminar duplicados usando un Map
+    const uniqueRecordsMap = new Map();
+    
+    allRecords.forEach(record => {
+      if (!uniqueRecordsMap.has(record.id)) {
+        uniqueRecordsMap.set(record.id, record);
+      } else {
+        // Priorizar registros validados sobre no validados
+        const existing = uniqueRecordsMap.get(record.id);
+        if (record.__origen === "validado" && existing.__origen !== "validado") {
+          uniqueRecordsMap.set(record.id, record);
+        }
+      }
+    });
+
+    // Convertir Map a array y ordenar por nombre
+    return Array.from(uniqueRecordsMap.values()).sort((a, b) => 
+      a.nombre.localeCompare(b.nombre)
+    );
+  } catch (error) {
+    console.error('Error cargando dataset:', error);
+    return [];
+  }
+}
