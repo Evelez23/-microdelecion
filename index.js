@@ -10,6 +10,7 @@ async function init(){
     <div class="card"><div class="k">Validados</div><div class="v">${val} <span class="badge src-valid">${pct(val,total)}%</span></div></div>
     <div class="card"><div class="k">Por validar</div><div class="v">${nov} <span class="badge src-novalid">${pct(nov,total)}%</span></div></div>
     <div class="card"><div class="k">Casos severos</div><div class="v">${severos} <span class="badge high">${pct(severos,total)}%</span></div></div>
+    
   `;
 
   // Resto del código permanece igual...
@@ -25,6 +26,10 @@ async function init(){
     <div class="card"><div class="k">Validados</div><div class="v">${val} <span class="badge src-valid">${pct(val,total)}%</span></div></div>
     <div class="card"><div class="k">Sin validar</div><div class="v">${nov} <span class="badge src-novalid">${pct(nov,total)}%</span></div></div>
     <div class="card"><div class="k">Epilepsia</div><div class="v">${epi}</div></div>
+    <div class="panel kpi">
+  <h2>${paises.length}</h2>
+  <p>Países con casos</p>
+</div>
   `;
 
   const buckets = { '0-5':0, '6-10':0, '11-15':0, '16+':0 };
