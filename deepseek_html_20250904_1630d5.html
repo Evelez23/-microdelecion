@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Oso Abrazos - Aventura Completa</title>
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(to bottom, #87CEEB, #E0F7FA);
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    
+    #gameContainer {
+      position: relative;
+      width: 800px;
+    }
+    
+    #gameCanvas {
+      background: linear-gradient(to bottom, #a3e0a0, #8bc34a);
+      border: 5px solid #5a3921;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    #ui {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      color: #fff;
+      font-size: 18px;
+      text-shadow: 2px 2px 0 #000;
+      z-index: 10;
+    }
+    
+    #startScreen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      z-index: 20;
+    }
+    
+    #startScreen h1 {
+      font-size: 48px;
+      color: #FFD700;
+      margin-bottom: 20px;
+      text-shadow: 3px 3px 0 #000;
+    }
+    
+    #startScreen p {
+      font-size: 20px;
+      margin-bottom: 30px;
+      text-align: center;
+      max-width: 80%;
+    }
+    
+    #startButton {
+      padding: 15px 30px;
+      font-size: 20px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: 'Comic Sans MS', cursive;
+      box-shadow: 0 5px #2E7D32;
+      transition: all 0.1s;
+    }
+    
+    #startButton:hover {
+      background: #66BB6A;
+    }
+    
+    #startButton:active {
+      box-shadow: 0 2px #2E7D32;
+      transform: translateY(3px);
+    }
+    
+    #controls {
+      margin-top: 20px;
+      font-size: 16px;
+      text-align: center;
+    }
+    
+    .heart {
+      display: inline-block;
+      color: #FF5252;
+      margin: 0 2px;
+      font-size: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="gameContainer">
+    <canvas id="gameCanvas" width="800" height="500"></canvas>
+    <div id="ui">
+      <div>Puntos: <span id="score">0</span></div>
+      <div>Vidas: <span id="lives">❤️❤️❤️</span></div>
+      <div>Nivel: <span id="level">1</span></div>
+    </div>
+    <div id="startScreen">
+      <h1>Oso Abrazos Adventure</h1>
+      <p>¡Ayuda al Oso Abrazos a recolectar miel y abrazar a todos sus amigos!<br>Pero cuidado con las abejas enfadadas...</p>
+      <button id="startButton">¡Comenzar Aventura!</button>
+      <div id="controls">
+        <p>Controles:<br>Flechas o WASD para moverte<br>ESPACIO para abrazar</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+    const scoreElement = document.getElementById("score");
+    const livesElement = document.getElementById("lives");
+    const levelElement = document.getElementById("level");
+    const startScreen = document.getElementById("startScreen");
+    const startButton = document.getElementById("startButton");
+
+    // Sprites en SVG desde GitHub RAW
+    const sprites = {
+      idle: new Image(),
+      walk: new Image(),
+      hug: new Image(),
+      hang: new Image(),
+      sit: new Image()
+    };
+
+    sprites.idle.src = "https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/oso_idle.svg";
+    sprites.walk.src = "https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/oso_walk.svg";
+    sprites.hug.src  = "https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/oso_hug.svg";
+    sprites.hang.src = "https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/oso_hang.svg";
+    sprites.sit.src  = "https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/oso_sit.svg";
+
+    // Estado del juego
+    let gameState = {
+      score: 0,
+      lives: 3,
+      level: 1,
+      gameStarted: false
+    };
+
+    // Estado del oso
+    let oso = {
+      x: 100,
+      y: 380,
+      width: 80,
+      height: 80,
+      vx: 0,
+      vy: 0,
+      speed: 5,
+      grounded: true,
+      action: "idle",
+      direction: 1, // 1: derecha, -1: izquierda
+      hugging: false,
+      hugCooldown: 0
+    };
+
+    // Elementos del juego
+    let platforms = [
+      {x: 0, y: 450, width: 800, height: 50},
+      {x: 200, y: 350, width: 100, height: 20},
+      {x: 400, y: 300, width: 100, height: 20},
+      {x: 600, y: 250, width: 100, height: 20}
+    ];
+
+    let friends = [];
+    let enemies = [];
+    let items = [];
+    let particles = [];
+
+    // Teclas
+    let keys = {};
+    window.addEventListener("keydown", e => {
+      keys[e.key] = true;
+      // Prevenir scroll con las flechas
+      if(["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "].includes(e.key)) {
+        e.preventDefault();
+      }
+    });
+    window.addEventListener("keyup", e => keys[e.key] = false);
+
+    // Iniciar juego
+    startButton.addEventListener("click", startGame);
+
+    function startGame() {
+      gameState.gameStarted = true;
+      startScreen.style.display = "none";
+      resetLevel();
+      gameLoop();
+    }
+
+    function resetLevel() {
+      // Reiniciar posición del oso
+      oso.x = 100;
+      oso.y = 380;
+      oso.vx = 0;
+      oso.vy = 0;
+      oso.action = "idle";
+      oso.hugging = false;
+      
+      // Generar amigos
+      friends = [];
+      for (let i = 0; i < 5 + gameState.level; i++) {
+        friends.push({
+          x: Math.random() * 700 + 50,
+          y: 380,
+          width: 60,
+          height: 60,
+          hugged: false,
+          type: Math.floor(Math.random() * 3) // Diferentes tipos de amigos
+        });
+      }
+      
+      // Generar enemigos en niveles más altos
+      enemies = [];
+      if (gameState.level > 1) {
+        for (let i = 0; i < gameState.level - 1; i++) {
+          enemies.push({
+            x: Math.random() * 700 + 50,
+            y: 380,
+            width: 50,
+            height: 50,
+            vx: Math.random() > 0.5 ? 2 : -2
+          });
+        }
+      }
+      
+      // Generar items (miel)
+      items = [];
+      for (let i = 0; i < 3 + gameState.level; i++) {
+        items.push({
+          x: Math.random() * 700 + 50,
+          y: Math.random() * 300 + 100,
+          width: 30,
+          height: 30,
+          collected: false
+        });
+      }
+    }
+
+    function update() {
+      if (!gameState.gameStarted) return;
+      
+      // Movimiento lateral
+      oso.vx = 0;
+      if (keys["ArrowRight"] || keys["d"]) {
+        oso.vx = oso.speed;
+        oso.action = "walk";
+        oso.direction = 1;
+      } else if (keys["ArrowLeft"] || keys["a"]) {
+        oso.vx = -oso.speed;
+        oso.action = "walk";
+        oso.direction = -1;
+      } else if (!oso.hugging) {
+        oso.action = "idle";
+      }
+      
+      // Salto
+      if ((keys["ArrowUp"] || keys["w"]) && oso.grounded) {
+        oso.vy = -15;
+        oso.grounded = false;
+        createParticles(oso.x + oso.width/2, oso.y + oso.height, 5, "#8BC34A");
+      }
+      
+      // Abrazo (espacio)
+      if (keys[" "] && oso.hugCooldown <= 0) {
+        oso.action = "hug";
+        oso.hugging = true;
+        oso.hugCooldown = 30;
+        
+        // Verificar si abraza a un amigo
+        for (let friend of friends) {
+          if (!friend.hugged && checkCollision(oso, friend)) {
+            friend.hugged = true;
+            gameState.score += 100;
+            createParticles(friend.x + friend.width/2, friend.y + friend.height/2, 10, "#FFD700");
+          }
+        }
+      }
+      
+      // Enfriamiento del abrazo
+      if (oso.hugCooldown > 0) {
+        oso.hugCooldown--;
+        if (oso.hugCooldown === 0) {
+          oso.hugging = false;
+        }
+      }
+      
+      // Aplicar gravedad
+      oso.vy += 0.7;
+      
+      // Actualizar posición X
+      oso.x += oso.vx;
+      
+      // Limitar movimiento horizontal
+      if (oso.x < 0) oso.x = 0;
+      if (oso.x + oso.width > canvas.width) oso.x = canvas.width - oso.width;
+      
+      // Actualizar posición Y
+      oso.y += oso.vy;
+      
+      // Colisión con plataformas
+      oso.grounded = false;
+      for (let platform of platforms) {
+        if (
+          oso.x + oso.width > platform.x &&
+          oso.x < platform.x + platform.width &&
+          oso.y + oso.height > platform.y &&
+          oso.y + oso.height <= platform.y + platform.height + oso.vy &&
+          oso.vy > 0
+        ) {
+          oso.y = platform.y - oso.height;
+          oso.vy = 0;
+          oso.grounded = true;
+        }
+      }
+      
+      // Limitar movimiento vertical
+      if (oso.y + oso.height > canvas.height) {
+        oso.y = canvas.height - oso.height;
+        oso.vy = 0;
+        oso.grounded = true;
+      }
+      
+      // Actualizar enemigos
+      for (let enemy of enemies) {
+        enemy.x += enemy.vx;
+        
+        // Rebotar en los bordes
+        if (enemy.x <= 0 || enemy.x + enemy.width >= canvas.width) {
+          enemy.vx *= -1;
+        }
+        
+        // Colisión con enemigos
+        if (checkCollision(oso, enemy) && !oso.hugging) {
+          hurtOso();
+        }
+        
+        // Los enemigos pueden ser "curados" con abrazos
+        if (checkCollision(oso, enemy) && oso.hugging) {
+          enemy.vx = 0;
+          createParticles(enemy.x + enemy.width/2, enemy.y + enemy.height/2, 15, "#E91E63");
+          enemies.splice(enemies.indexOf(enemy), 1);
+          gameState.score += 200;
+        }
+      }
+      
+      // Recolectar items
+      for (let item of items) {
+        if (!item.collected && checkCollision(oso, item)) {
+          item.collected = true;
+          gameState.score += 50;
+          createParticles(item.x + item.width/2, item.y + item.height/2, 8, "#FF9800");
+        }
+      }
+      
+      // Actualizar partículas
+      for (let i = particles.length - 1; i >= 0; i--) {
+        particles[i].x += particles[i].vx;
+        particles[i].y += particles[i].vy;
+        particles[i].life--;
+        
+        if (particles[i].life <= 0) {
+          particles.splice(i, 1);
+        }
+      }
+      
+      // Comprobar si todos los amigos han sido abrazados
+      let allHugged = true;
+      for (let friend of friends) {
+        if (!friend.hugged) {
+          allHugged = false;
+          break;
+        }
+      }
+      
+      if (allHugged && friends.length > 0) {
+        gameState.level++;
+        levelElement.textContent = gameState.level;
+        resetLevel();
+      }
+      
+      // Actualizar UI
+      scoreElement.textContent = gameState.score;
+      livesElement.textContent = "❤️".repeat(gameState.lives);
+    }
+
+    function draw() {
+      if (!gameState.gameStarted) return;
+      
+      // Limpiar canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Dibujar fondo
+      drawBackground();
+      
+      // Dibujar plataformas
+      for (let platform of platforms) {
+        ctx.fillStyle = "#8D6E63";
+        ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
+        ctx.fillStyle = "#5D4037";
+        ctx.fillRect(platform.x, platform.y, platform.width, 5);
+      }
+      
+      // Dibujar items
+      for (let item of items) {
+        if (!item.collected) {
+          ctx.fillStyle = "#FFB300";
+          ctx.beginPath();
+          ctx.arc(item.x + item.width/2, item.y + item.height/2, item.width/2, 0, Math.PI * 2);
+          ctx.fill();
+          
+          // Detalles de la miel
+          ctx.strokeStyle = "#E65100";
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(item.x + item.width/2, item.y + item.height/2, item.width/3, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+      }
+      
+      // Dibujar amigos
+      for (let friend of friends) {
+        if (!friend.hugged) {
+          ctx.fillStyle = ["#4FC3F7", "#BA68C8", "#4DB6AC"][friend.type];
+          ctx.beginPath();
+          ctx.arc(friend.x + friend.width/2, friend.y + friend.height/2, friend.width/2, 0, Math.PI * 2);
+          ctx.fill();
+          
+          // Cara del amigo
+          ctx.fillStyle = "#000";
+          ctx.beginPath();
+          ctx.arc(friend.x + friend.width/3, friend.y + friend.height/3, 5, 0, Math.PI * 2);
+          ctx.arc(friend.x + 2*friend.width/3, friend.y + friend.height/3, 5, 0, Math.PI * 2);
+          ctx.fill();
+          
+          ctx.beginPath();
+          ctx.arc(friend.x + friend.width/2, friend.y + 2*friend.height/3, 8, 0, Math.PI);
+          ctx.stroke();
+        }
+      }
+      
+      // Dibujar enemigos
+      for (let enemy of enemies) {
+        ctx.fillStyle = "#F44336";
+        ctx.beginPath();
+        ctx.arc(enemy.x + enemy.width/2, enemy.y + enemy.height/2, enemy.width/2, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Cara de enemigo
+        ctx.fillStyle = "#000";
+        ctx.beginPath();
+        ctx.arc(enemy.x + enemy.width/3, enemy.y + enemy.height/3, 5, 0, Math.PI * 2);
+        ctx.arc(enemy.x + 2*enemy.width/3, enemy.y + enemy.height/3, 5, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Ceño fruncido
+        ctx.beginPath();
+        ctx.moveTo(enemy.x + enemy.width/3, enemy.y + 2*enemy.height/3);
+        ctx.lineTo(enemy.x + 2*enemy.width/3, enemy.y + 2*enemy.height/3);
+        ctx.stroke();
+      }
+      
+      // Dibujar oso
+      let sprite = sprites[oso.action] || sprites.idle;
+      if (sprite.complete) {
+        // Voltear sprite según la dirección
+        ctx.save();
+        if (oso.direction === -1) {
+          ctx.scale(-1, 1);
+          ctx.drawImage(sprite, -oso.x - oso.width, oso.y, oso.width, oso.height);
+        } else {
+          ctx.drawImage(sprite, oso.x, oso.y, oso.width, oso.height);
+        }
+        ctx.restore();
+      } else {
+        // Dibujar placeholder si el sprite no está cargado
+        ctx.fillStyle = "#3E2723";
+        ctx.fillRect(oso.x, oso.y, oso.width, oso.height);
+      }
+      
+      // Dibujar partículas
+      for (let particle of particles) {
+        ctx.globalAlpha = particle.life / 30;
+        ctx.fillStyle = particle.color;
+        ctx.beginPath();
+        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      
+      // Dibujar efecto de abrazo
+      if (oso.hugging) {
+        ctx.strokeStyle = "#FFD700";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(oso.x + oso.width/2, oso.y + oso.height/2, 60, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+    }
+
+    function drawBackground() {
+      // Cielo
+      const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      gradient.addColorStop(0, "#87CEEB");
+      gradient.addColorStop(1, "#E0F7FA");
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Nubes
+      ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+      for (let i = 0; i < 5; i++) {
+        const x = (Date.now() / 30000 + i * 0.2) % 1 * canvas.width * 2 - canvas.width;
+        const y = 50 + i * 40;
+        drawCloud(x, y);
+      }
+      
+      // Montañas
+      ctx.fillStyle = "#78909C";
+      ctx.beginPath();
+      ctx.moveTo(0, 400);
+      ctx.lineTo(200, 400);
+      ctx.lineTo(100, 300);
+      ctx.fill();
+      
+      ctx.beginPath();
+      ctx.moveTo(150, 400);
+      ctx.lineTo(350, 400);
+      ctx.lineTo(250, 280);
+      ctx.fill();
+      
+      ctx.beginPath();
+      ctx.moveTo(600, 400);
+      ctx.lineTo(800, 400);
+      ctx.lineTo(700, 320);
+      ctx.fill();
+    }
+
+    function drawCloud(x, y) {
+      ctx.beginPath();
+      ctx.arc(x, y, 20, 0, Math.PI * 2);
+      ctx.arc(x + 15, y - 10, 15, 0, Math.PI * 2);
+      ctx.arc(x + 35, y, 25, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    function checkCollision(obj1, obj2) {
+      return obj1.x < obj2.x + obj2.width &&
+             obj1.x + obj1.width > obj2.x &&
+             obj1.y < obj2.y + obj2.height &&
+             obj1.y + obj1.height > obj2.y;
+    }
+
+    function createParticles(x, y, count, color) {
+      for (let i = 0; i < count; i++) {
+        particles.push({
+          x: x,
+          y: y,
+          vx: (Math.random() - 0.5) * 5,
+          vy: (Math.random() - 0.5) * 5,
+          size: Math.random() * 5 + 2,
+          color: color,
+          life: 30
+        });
+      }
+    }
+
+    function hurtOso() {
+      gameState.lives--;
+      createParticles(oso.x + oso.width/2, oso.y + oso.height/2, 20, "#FF5252");
+      
+      if (gameState.lives <= 0) {
+        gameOver();
+      } else {
+        // Efecto de invencibilidad temporal
+        oso.x = 100;
+        oso.y = 380;
+      }
+    }
+
+    function gameOver() {
+      gameState.gameStarted = false;
+      startScreen.style.display = "flex";
+      startButton.textContent = "Jugar de nuevo";
+      
+      // Mostrar mensaje de game over
+      const gameOverText = document.createElement("div");
+      gameOverText.innerHTML = `<h2>¡Game Over!</h2><p>Puntuación final: ${gameState.score}</p>`;
+      gameOverText.style.textAlign = "center";
+      gameOverText.style.marginTop = "20px";
+      gameOverText.style.color = "#FFD700";
+      
+      if (!document.getElementById("gameOverText")) {
+        gameOverText.id = "gameOverText";
+        startScreen.appendChild(gameOverText);
+      } else {
+        document.getElementById("gameOverText").innerHTML = gameOverText.innerHTML;
+      }
+      
+      // Reiniciar estado del juego
+      gameState.score = 0;
+      gameState.lives = 3;
+      gameState.level = 1;
+      scoreElement.textContent = "0";
+      levelElement.textContent = "1";
+    }
+
+    function gameLoop() {
+      update();
+      draw();
+      requestAnimationFrame(gameLoop);
+    }
+
+    // Precargar sprites
+    let loadedImages = 0;
+    for (let key in sprites) {
+      sprites[key].onload = () => {
+        loadedImages++;
+        if (loadedImages === Object.keys(sprites).length) {
+          console.log("Todos los sprites cargados");
+        }
+      };
+    }
+
+    // Iniciar loop aunque el juego no haya empezado (para dibujar la pantalla de inicio)
+    gameLoop();
+  </script>
+</body>
+</html>
