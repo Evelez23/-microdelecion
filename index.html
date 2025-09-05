@@ -1,4 +1,172 @@
-<script>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Oso Abrazos - Aventura Completa</title>
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(to bottom, #87CEEB, #E0F7FA);
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    
+    #gameContainer {
+      position: relative;
+      width: 800px;
+    }
+    
+    #gameCanvas {
+      background: linear-gradient(to bottom, #a3e0a0, #8bc34a);
+      border: 5px solid #5a3921;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    #ui {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      color: #fff;
+      font-size: 18px;
+      text-shadow: 2px 2px 0 #000;
+      z-index: 10;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 10px;
+      border-radius: 10px;
+    }
+    
+    #startScreen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      z-index: 20;
+    }
+    
+    #startScreen h1 {
+      font-size: 48px;
+      color: #FFD700;
+      margin-bottom: 20px;
+      text-shadow: 3px 3px 0 #000;
+    }
+    
+    #startScreen p {
+      font-size: 20px;
+      margin-bottom: 30px;
+      text-align: center;
+      max-width: 80%;
+    }
+    
+    #startButton {
+      padding: 15px 30px;
+      font-size: 20px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: 'Comic Sans MS', cursive;
+      box-shadow: 0 5px #2E7D32;
+      transition: all 0.1s;
+      margin-bottom: 20px;
+    }
+    
+    #startButton:hover {
+      background: #66BB6A;
+    }
+    
+    #startButton:active {
+      box-shadow: 0 2px #2E7D32;
+      transform: translateY(3px);
+    }
+    
+    #controls {
+      margin-top: 20px;
+      font-size: 16px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 10px;
+      border-radius: 10px;
+    }
+    
+    .heart {
+      display: inline-block;
+      color: #FF5252;
+      margin: 0 2px;
+      font-size: 20px;
+    }
+    
+    #loadingScreen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      z-index: 30;
+    }
+    
+    .progress-bar {
+      width: 300px;
+      height: 20px;
+      background: #555;
+      border-radius: 10px;
+      margin: 20px 0;
+      overflow: hidden;
+    }
+    
+    .progress {
+      height: 100%;
+      background: #4CAF50;
+      width: 0%;
+      transition: width 0.3s;
+    }
+  </style>
+</head>
+<body>
+  <div id="gameContainer">
+    <canvas id="gameCanvas" width="800" height="500"></canvas>
+    <div id="ui">
+      <div>Puntos: <span id="score">0</span></div>
+      <div>Vidas: <span id="lives">❤️❤️❤️</span></div>
+      <div>Nivel: <span id="level">1</span></div>
+    </div>
+    <div id="startScreen">
+      <h1>Oso Abrazos Adventure</h1>
+      <img id="coverImage" src="" alt="Oso Abrazos Game Cover" style="width: 80%; max-width: 400px; border-radius: 10px; margin-bottom: 20px; display: none;">
+      <p>¡Ayuda al Oso Abrazos a recolectar miel y abrazar a todos sus amigos!<br>Pero cuidado con las abejas enfadadas...</p>
+      <button id="startButton">¡Comenzar Aventura!</button>
+      <div id="controls">
+        <p>Controles:<br>Flechas o WASD para moverte<br>ESPACIO para abrazar</p>
+      </div>
+    </div>
+    <div id="loadingScreen">
+      <h2>Cargando...</h2>
+      <div class="progress-bar">
+        <div class="progress" id="loadingProgress"></div>
+      </div>
+      <p id="loadingText">0%</p>
+    </div>
+  </div>
+
+  <script>
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
     const scoreElement = document.getElementById("score");
@@ -6,27 +174,31 @@
     const levelElement = document.getElementById("level");
     const startScreen = document.getElementById("startScreen");
     const startButton = document.getElementById("startButton");
+    const loadingScreen = document.getElementById("loadingScreen");
+    const loadingProgress = document.getElementById("loadingProgress");
+    const loadingText = document.getElementById("loadingText");
+    const coverImage = document.getElementById("coverImage");
 
-    // Sprites en SVG desde GitHub RAW
+    // Sprites
     const sprites = {
       spriteSheet: new Image()
     };
     
-    // URL de la hoja de sprites que contiene todas las poses.
-    // RECUERDA: Debes reemplazar esta URL con la tuya.
-    sprites.spriteSheet.src = "http://googleusercontent.com/generated_image_content/0";
-
-    // Coordenadas y dimensiones de cada pose en la hoja de sprites
-    // Los valores son aproximados y pueden necesitar ajustes al usar tu propia imagen
-    const frames = {
-      idle: {x: 350, y: 350, width: 300, height: 350},
-      walk: {x: 650, y: 650, width: 300, height: 350},
-      jump: {x: 650, y: 25, width: 300, height: 300},
-      run: {x: 650, y: 650, width: 300, height: 350},
-      crouch: {x: 350, y: 650, width: 300, height: 300},
-      back: {x: 650, y: 350, width: 300, height: 350}
+    // URLs de las imágenes (debes reemplazarlas con tus propias URLs)
+    const imageUrls = {
+      spriteSheet: "https://example.com/path/to/your/spritesheet.png",
+      coverImage: "https://example.com/path/to/your/cover-image.png"
     };
 
+    // Coordenadas y dimensiones de cada pose en la hoja de sprites
+    const frames = {
+      idle: {x: 0, y: 0, width: 80, height: 80},
+      walk: {x: 80, y: 0, width: 80, height: 80},
+      jump: {x: 160, y: 0, width: 80, height: 80},
+      run: {x: 240, y: 0, width: 80, height: 80},
+      crouch: {x: 320, y: 0, width: 80, height: 80},
+      hug: {x: 400, y: 0, width: 80, height: 80}
+    };
 
     // Estado del juego
     let gameState = {
@@ -45,11 +217,14 @@
       vx: 0,
       vy: 0,
       speed: 5,
+      jumpForce: 15,
+      gravity: 0.7,
       grounded: true,
       action: "idle",
       direction: 1, // 1: derecha, -1: izquierda
       hugging: false,
-      hugCooldown: 0
+      hugCooldown: 0,
+      invincible: 0
     };
 
     // Elementos del juego
@@ -79,6 +254,41 @@
     // Iniciar juego
     startButton.addEventListener("click", startGame);
 
+    // Precargar recursos
+    let totalResources = Object.keys(imageUrls).length;
+    let loadedResources = 0;
+
+    function loadResources() {
+      for (let key in imageUrls) {
+        const img = new Image();
+        img.onload = () => {
+          loadedResources++;
+          const progress = Math.floor((loadedResources / totalResources) * 100);
+          loadingProgress.style.width = `${progress}%`;
+          loadingText.textContent = `${progress}%`;
+          
+          if (loadedResources === totalResources) {
+            loadingScreen.style.display = "none";
+            startScreen.style.display = "flex";
+            
+            // Asignar imágenes cargadas
+            sprites.spriteSheet = img;
+            coverImage.src = imageUrls.coverImage;
+            coverImage.style.display = "block";
+          }
+        };
+        img.onerror = () => {
+          console.error(`Error loading image: ${imageUrls[key]}`);
+          loadedResources++;
+          if (loadedResources === totalResources) {
+            loadingScreen.style.display = "none";
+            startScreen.style.display = "flex";
+          }
+        };
+        img.src = imageUrls[key];
+      }
+    }
+
     function startGame() {
       gameState.gameStarted = true;
       startScreen.style.display = "none";
@@ -94,6 +304,7 @@
       oso.vy = 0;
       oso.action = "idle";
       oso.hugging = false;
+      oso.invincible = 0;
       
       // Generar amigos
       friends = [];
@@ -138,33 +349,37 @@
     function update() {
       if (!gameState.gameStarted) return;
       
+      // Reducir tiempo de invencibilidad
+      if (oso.invincible > 0) oso.invincible--;
+      
       // Movimiento lateral
       oso.vx = 0;
-      if (keys["ArrowRight"] || keys["d"]) {
+      if ((keys["ArrowRight"] || keys["d"]) && !oso.hugging) {
         oso.vx = oso.speed;
-        oso.action = "run"; // Cambié a 'run' ya que teníamos esa pose
+        oso.action = oso.grounded ? "run" : "jump";
         oso.direction = 1;
-      } else if (keys["ArrowLeft"] || keys["a"]) {
+      } else if ((keys["ArrowLeft"] || keys["a"]) && !oso.hugging) {
         oso.vx = -oso.speed;
-        oso.action = "run"; // Cambié a 'run'
+        oso.action = oso.grounded ? "run" : "jump";
         oso.direction = -1;
       } else if (!oso.hugging) {
-        oso.action = "idle";
+        oso.action = oso.grounded ? "idle" : "jump";
       }
       
       // Salto
-      if ((keys["ArrowUp"] || keys["w"]) && oso.grounded) {
-        oso.vy = -15;
+      if ((keys["ArrowUp"] || keys["w"]) && oso.grounded && !oso.hugging) {
+        oso.vy = -oso.jumpForce;
         oso.grounded = false;
         oso.action = "jump";
         createParticles(oso.x + oso.width/2, oso.y + oso.height, 5, "#8BC34A");
       }
       
       // Abrazo (espacio)
-      if (keys[" "] && oso.hugCooldown <= 0) {
-        oso.action = "idle"; // Como no tenemos un sprite de abrazo individual, volvemos a idle después del abrazo
+      if (keys[" "] && oso.hugCooldown <= 0 && oso.grounded) {
+        oso.action = "hug";
         oso.hugging = true;
         oso.hugCooldown = 30;
+        oso.vx = 0;
         
         // Verificar si abraza a un amigo
         for (let friend of friends) {
@@ -185,7 +400,7 @@
       }
       
       // Aplicar gravedad
-      oso.vy += 0.7;
+      oso.vy += oso.gravity;
       
       // Actualizar posición X
       oso.x += oso.vx;
@@ -210,6 +425,7 @@
           oso.y = platform.y - oso.height;
           oso.vy = 0;
           oso.grounded = true;
+          if (oso.action === "jump") oso.action = "idle";
         }
       }
       
@@ -218,6 +434,7 @@
         oso.y = canvas.height - oso.height;
         oso.vy = 0;
         oso.grounded = true;
+        if (oso.action === "jump") oso.action = "idle";
       }
       
       // Actualizar enemigos
@@ -230,7 +447,7 @@
         }
         
         // Colisión con enemigos
-        if (checkCollision(oso, enemy) && !oso.hugging) {
+        if (checkCollision(oso, enemy) && !oso.hugging && oso.invincible <= 0) {
           hurtOso();
         }
         
@@ -283,12 +500,22 @@
       livesElement.textContent = "❤️".repeat(gameState.lives);
     }
 
-    // Nueva función para dibujar el sprite desde la hoja de sprites
+    // Función para dibujar el sprite desde la hoja de sprites
     function drawOsoSprite() {
       const frame = frames[oso.action] || frames.idle;
       const spriteSheet = sprites.spriteSheet;
 
-      if (!spriteSheet.complete) return;
+      if (!spriteSheet.complete) {
+        // Dibujar placeholder si el sprite no está cargado
+        ctx.fillStyle = "#3E2723";
+        ctx.fillRect(oso.x, oso.y, oso.width, oso.height);
+        return;
+      }
+
+      // Efecto de parpadeo cuando es invencible
+      if (oso.invincible > 0 && oso.invincible % 6 < 3) {
+        ctx.globalAlpha = 0.5;
+      }
 
       ctx.save();
       if (oso.direction === -1) {
@@ -306,8 +533,8 @@
         );
       }
       ctx.restore();
+      ctx.globalAlpha = 1;
     }
-
 
     function draw() {
       if (!gameState.gameStarted) return;
@@ -477,11 +704,12 @@
     function hurtOso() {
       gameState.lives--;
       createParticles(oso.x + oso.width/2, oso.y + oso.height/2, 20, "#FF5252");
+      oso.invincible = 120; // 2 segundos de invencibilidad (60fps)
       
       if (gameState.lives <= 0) {
         gameOver();
       } else {
-        // Efecto de invencibilidad temporal
+        // Respawn seguro
         oso.x = 100;
         oso.y = 380;
       }
@@ -520,17 +748,11 @@
       requestAnimationFrame(gameLoop);
     }
 
-    // Precargar sprites
-    let loadedImages = 0;
-    for (let key in sprites) {
-      sprites[key].onload = () => {
-        loadedImages++;
-        if (loadedImages === Object.keys(sprites).length) {
-          console.log("Todos los sprites cargados");
-        }
-      };
-    }
-
+    // Iniciar carga de recursos
+    loadResources();
+    
     // Iniciar loop aunque el juego no haya empezado (para dibujar la pantalla de inicio)
     gameLoop();
   </script>
+</body>
+</html>
