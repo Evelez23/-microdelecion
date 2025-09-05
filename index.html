@@ -1,126 +1,4 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Oso Abrazos - Aventura Completa</title>
-  <style>
-    body {
-      margin: 0;
-      background: linear-gradient(to bottom, #87CEEB, #E0F7FA);
-      font-family: 'Comic Sans MS', cursive, sans-serif;
-      overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    
-    #gameContainer {
-      position: relative;
-      width: 800px;
-    }
-    
-    #gameCanvas {
-      background: linear-gradient(to bottom, #a3e0a0, #8bc34a);
-      border: 5px solid #5a3921;
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-    }
-    
-    #ui {
-      position: absolute;
-      top: 15px;
-      left: 15px;
-      color: #fff;
-      font-size: 18px;
-      text-shadow: 2px 2px 0 #000;
-      z-index: 10;
-    }
-    
-    #startScreen {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      color: white;
-      z-index: 20;
-    }
-    
-    #startScreen h1 {
-      font-size: 48px;
-      color: #FFD700;
-      margin-bottom: 20px;
-      text-shadow: 3px 3px 0 #000;
-    }
-    
-    #startScreen p {
-      font-size: 20px;
-      margin-bottom: 30px;
-      text-align: center;
-      max-width: 80%;
-    }
-    
-    #startButton {
-      padding: 15px 30px;
-      font-size: 20px;
-      background: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      font-family: 'Comic Sans MS', cursive;
-      box-shadow: 0 5px #2E7D32;
-      transition: all 0.1s;
-    }
-    
-    #startButton:hover {
-      background: #66BB6A;
-    }
-    
-    #startButton:active {
-      box-shadow: 0 2px #2E7D32;
-      transform: translateY(3px);
-    }
-    
-    #controls {
-      margin-top: 20px;
-      font-size: 16px;
-      text-align: center;
-    }
-    
-    .heart {
-      display: inline-block;
-      color: #FF5252;
-      margin: 0 2px;
-      font-size: 20px;
-    }
-  </style>
-</head>
-<body>
-  <div id="gameContainer">
-    <canvas id="gameCanvas" width="800" height="500"></canvas>
-    <div id="ui">
-      <div>Puntos: <span id="score">0</span></div>
-      <div>Vidas: <span id="lives">❤️❤️❤️</span></div>
-      <div>Nivel: <span id="level">1</span></div>
-    </div>
-    <div id="startScreen">
-      <h1>Oso Abrazos Adventure</h1>
-      <p>¡Ayuda al Oso Abrazos a recolectar miel y abrazar a todos sus amigos!<br>Pero cuidado con las abejas enfadadas...</p>
-      <button id="startButton">¡Comenzar Aventura!</button>
-      <div id="controls">
-        <p>Controles:<br>Flechas o WASD para moverte<br>ESPACIO para abrazar</p>
-      </div>
-    </div>
-  </div>
-
-  <script>
+<script>
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
     const scoreElement = document.getElementById("score");
@@ -131,18 +9,24 @@
 
     // Sprites en SVG desde GitHub RAW
     const sprites = {
-      idle: new Image(),
-      walk: new Image(),
-      hug: new Image(),
-      hang: new Image(),
-      sit: new Image()
+      spriteSheet: new Image()
+    };
+    
+    // URL de la hoja de sprites que contiene todas las poses.
+    // RECUERDA: Debes reemplazar esta URL con la tuya.
+    sprites.spriteSheet.src = "http://googleusercontent.com/generated_image_content/0";
+
+    // Coordenadas y dimensiones de cada pose en la hoja de sprites
+    // Los valores son aproximados y pueden necesitar ajustes al usar tu propia imagen
+    const frames = {
+      idle: {x: 350, y: 350, width: 300, height: 350},
+      walk: {x: 650, y: 650, width: 300, height: 350},
+      jump: {x: 650, y: 25, width: 300, height: 300},
+      run: {x: 650, y: 650, width: 300, height: 350},
+      crouch: {x: 350, y: 650, width: 300, height: 300},
+      back: {x: 650, y: 350, width: 300, height: 350}
     };
 
-    sprites.idle.src = "https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/oso_idle.svg";
-    sprites.walk.src = "https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/oso_walk.svg";
-    sprites.hug.src  = "https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/oso_hug.svg";
-    sprites.hang.src = "https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/oso_hang.svg";
-    sprites.sit.src  = "https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/oso_sit.svg";
 
     // Estado del juego
     let gameState = {
@@ -258,11 +142,11 @@
       oso.vx = 0;
       if (keys["ArrowRight"] || keys["d"]) {
         oso.vx = oso.speed;
-        oso.action = "walk";
+        oso.action = "run"; // Cambié a 'run' ya que teníamos esa pose
         oso.direction = 1;
       } else if (keys["ArrowLeft"] || keys["a"]) {
         oso.vx = -oso.speed;
-        oso.action = "walk";
+        oso.action = "run"; // Cambié a 'run'
         oso.direction = -1;
       } else if (!oso.hugging) {
         oso.action = "idle";
@@ -272,12 +156,13 @@
       if ((keys["ArrowUp"] || keys["w"]) && oso.grounded) {
         oso.vy = -15;
         oso.grounded = false;
+        oso.action = "jump";
         createParticles(oso.x + oso.width/2, oso.y + oso.height, 5, "#8BC34A");
       }
       
       // Abrazo (espacio)
       if (keys[" "] && oso.hugCooldown <= 0) {
-        oso.action = "hug";
+        oso.action = "idle"; // Como no tenemos un sprite de abrazo individual, volvemos a idle después del abrazo
         oso.hugging = true;
         oso.hugCooldown = 30;
         
@@ -398,6 +283,32 @@
       livesElement.textContent = "❤️".repeat(gameState.lives);
     }
 
+    // Nueva función para dibujar el sprite desde la hoja de sprites
+    function drawOsoSprite() {
+      const frame = frames[oso.action] || frames.idle;
+      const spriteSheet = sprites.spriteSheet;
+
+      if (!spriteSheet.complete) return;
+
+      ctx.save();
+      if (oso.direction === -1) {
+        ctx.scale(-1, 1);
+        ctx.drawImage(
+          spriteSheet,
+          frame.x, frame.y, frame.width, frame.height,
+          -oso.x - oso.width, oso.y, oso.width, oso.height
+        );
+      } else {
+        ctx.drawImage(
+          spriteSheet,
+          frame.x, frame.y, frame.width, frame.height,
+          oso.x, oso.y, oso.width, oso.height
+        );
+      }
+      ctx.restore();
+    }
+
+
     function draw() {
       if (!gameState.gameStarted) return;
       
@@ -475,22 +386,7 @@
       }
       
       // Dibujar oso
-      let sprite = sprites[oso.action] || sprites.idle;
-      if (sprite.complete) {
-        // Voltear sprite según la dirección
-        ctx.save();
-        if (oso.direction === -1) {
-          ctx.scale(-1, 1);
-          ctx.drawImage(sprite, -oso.x - oso.width, oso.y, oso.width, oso.height);
-        } else {
-          ctx.drawImage(sprite, oso.x, oso.y, oso.width, oso.height);
-        }
-        ctx.restore();
-      } else {
-        // Dibujar placeholder si el sprite no está cargado
-        ctx.fillStyle = "#3E2723";
-        ctx.fillRect(oso.x, oso.y, oso.width, oso.height);
-      }
+      drawOsoSprite();
       
       // Dibujar partículas
       for (let particle of particles) {
@@ -638,5 +534,3 @@
     // Iniciar loop aunque el juego no haya empezado (para dibujar la pantalla de inicio)
     gameLoop();
   </script>
-</body>
-</html>
