@@ -251,7 +251,7 @@
       oso_hugging: new Image(),
       oso_portada: new Image(),
       ardilla: new Image(),
-      conejo: new Image(),
+      coneja: new Image(),
       pajarito: new Image(),
       Enemigos_01: new Image(),
       Enemigos_02: new Image(),
@@ -263,26 +263,27 @@
       uni_corazon: new Image()
     };
     
-    // URLs de las imágenes
+    // URLs CORREGIDAS con tu estructura real de GitHub
+    const baseUrl = "https://raw.githubusercontent.com/Evelez23/-microdelecion/main/img/";
     const imageUrls = {
-      oso_idle: "http://googleusercontent.com/generated_image_content/0",
-      oso_walk: "http://googleusercontent.com/generated_image_content/0",
-      oso_jump: "http://googleusercontent.com/generated_image_content/0",
-      oso_run: "http://googleusercontent.com/generated_image_content/0",
-      oso_sit: "http://googleusercontent.com/generated_image_content/0",
-      oso_hugging: "http://googleusercontent.com/generated_image_content/0",
-      oso_portada: "http://googleusercontent.com/image_generation_content/75",
-      ardilla: "http://googleusercontent.com/generated_image_content/0",
-      conejo: "http://googleusercontent.com/generated_image_content/0",
-      pajarito: "http://googleusercontent.com/generated_image_content/0",
-      Enemigos_01: "http://googleusercontent.com/generated_image_content/0",
-      Enemigos_02: "http://googleusercontent.com/generated_image_content/0",
-      Enemigos_03: "http://googleusercontent.com/generated_image_content/0",
-      miel: "http://googleusercontent.com/generated_image_content/1",
-      osoyuni: "http://googleusercontent.com/generated_image_content/0",
-      uni_run: "http://googleusercontent.com/generated_image_content/0",
-      uni_shup: "http://googleusercontent.com/generated_image_content/0",
-      uni_corazon: "http://googleusercontent.com/generated_image_content/2"
+      oso_idle: `${baseUrl}oso/oso_idle.svg`,
+      oso_walk: `${baseUrl}oso/oso_valk.svg`,
+      oso_jump: `${baseUrl}oso/oso_jump.svg`,
+      oso_run: `${baseUrl}oso/oso_run.svg`,
+      oso_sit: `${baseUrl}oso/oso_sit.svg`,
+      oso_hugging: `${baseUrl}oso/oso_hugging.svg`,
+      oso_portada: `${baseUrl}oso/oso_portada.jpg`,
+      ardilla: `${baseUrl}Amigos/ardilla.png`,
+      coneja: `${baseUrl}Amigos/conejo.png`,
+      pajarito: `${baseUrl}Amigos/pajarito.png`,
+      Enemigos_01: `${baseUrl}enemigos/Enemigos-01.svg`,
+      Enemigos_02: `${baseUrl}enemigos/Enemigos-02.svg`,
+      Enemigos_03: `${baseUrl}enemigos/Enemigos-03.svg`,
+      miel: `${baseUrl}miel.png`,
+      osoyuni: `${baseUrl}osoyuni.png`,
+      uni_run: `${baseUrl}Amigos/unirun.png`,
+      uni_shup: `${baseUrl}Amigos/unirshup.png`,
+      uni_corazon: `${baseUrl}Amigos/lovepower.png`
     };
 
     // Sonidos
@@ -399,7 +400,6 @@
         }
     }
 
-
     // Iniciar juego
     startButton.addEventListener("click", startGame);
 
@@ -478,7 +478,7 @@
       unicornPowerElement.style.display = 'none';
 
       friends = [];
-      const friendTypes = ['ardilla', 'conejo', 'pajarito'];
+      const friendTypes = ['ardilla', 'coneja', 'pajarito'];
       for (let i = 0; i < 5 + gameState.level; i++) {
         const typeIndex = Math.floor(Math.random() * friendTypes.length);
         friends.push({
@@ -583,7 +583,7 @@
       }
       
       if (keys[" "] && oso.hugCooldown <= 0 && oso.grounded && !oso.hasUnicorn) {
-        oso.action = "hug";
+        oso.action = "hugging";
         oso.hugging = true;
         oso.hugCooldown = 30;
         oso.vx = 0;
@@ -769,7 +769,8 @@
 
     // Función para dibujar el sprite
     function drawOsoSprite() {
-      const sprite = sprites[oso.action] || sprites.oso_idle;
+      const spriteName = `oso_${oso.action}`;
+      const sprite = sprites[spriteName] || sprites.oso_idle;
 
       if (oso.invincible > 0 && oso.invincible % 6 < 3) {
         ctx.globalAlpha = 0.5;
@@ -785,8 +786,14 @@
         }
         ctx.restore();
       } else {
+        // Placeholder temporal
         ctx.fillStyle = "#3E2723";
         ctx.fillRect(oso.x, oso.y, oso.width, oso.height);
+        
+        // Texto de debug
+        ctx.fillStyle = "white";
+        ctx.font = "12px Arial";
+        ctx.fillText(oso.action, oso.x, oso.y - 5);
       }
       
       ctx.globalAlpha = 1;
@@ -796,11 +803,12 @@
     function drawFriend(friend) {
       const sprite = sprites[friend.type];
       
-      if (sprite.complete) {
+      if (sprite && sprite.complete) {
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = 'high';
         ctx.drawImage(sprite, friend.x, friend.y, friend.width, friend.height);
       } else {
+        // Placeholder temporal
         ctx.fillStyle = "#4FC3F7";
         ctx.beginPath();
         ctx.arc(friend.x + friend.width/2, friend.y + friend.height/2, friend.width/2, 0, Math.PI * 2);
@@ -808,6 +816,7 @@
       }
       
       if (!friend.hugged) {
+        // Indicador de que se puede abrazar
         ctx.fillStyle = "#FF5252";
         ctx.beginPath();
         ctx.moveTo(friend.x + friend.width/2, friend.y - 15 + Math.sin(Date.now()/300) * 5);
@@ -839,7 +848,7 @@
     function drawEnemy(enemy) {
       const sprite = sprites[enemy.type];
       
-      if (sprite.complete) {
+      if (sprite && sprite.complete) {
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = 'high';
         
@@ -852,6 +861,7 @@
         }
         ctx.restore();
       } else {
+        // Placeholder temporal
         ctx.fillStyle = "#F44336";
         ctx.beginPath();
         ctx.arc(enemy.x + enemy.width/2, enemy.y + enemy.height/2, enemy.width/2, 0, Math.PI * 2);
@@ -868,10 +878,19 @@
                 ctx.imageSmoothingQuality = 'high';
                 ctx.drawImage(sprite, item.x, item.y, item.width, item.height);
             } else {
+                // Placeholder temporal para la miel
                 ctx.fillStyle = "#FFB300";
                 ctx.beginPath();
                 ctx.arc(item.x + item.width/2, item.y + item.height/2, item.width/2, 0, Math.PI * 2);
                 ctx.fill();
+                
+                // Placeholder temporal para el unicornio
+                if (item.type === 'unicorn') {
+                  ctx.fillStyle = "#FF69B4";
+                  ctx.beginPath();
+                  ctx.arc(item.x + item.width/2, item.y + item.height/2, item.width/2, 0, Math.PI * 2);
+                  ctx.fill();
+                }
             }
         }
     }
@@ -879,9 +898,10 @@
     // Función para dibujar proyectiles (corazones)
     function drawProjectile(p) {
         const sprite = sprites.uni_corazon;
-        if (sprite.complete) {
+        if (sprite && sprite.complete) {
             ctx.drawImage(sprite, p.x, p.y, p.width, p.height);
         } else {
+            // Placeholder temporal
             ctx.fillStyle = "#FF69B4";
             ctx.beginPath();
             ctx.arc(p.x + p.width/2, p.y + p.height/2, p.width/2, 0, Math.PI * 2);
