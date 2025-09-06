@@ -179,25 +179,29 @@
     const loadingText = document.getElementById("loadingText");
     const coverImage = document.getElementById("coverImage");
 
+    // URLs base para las imágenes
+    const baseUrl = "https://raw.githubusercontent.com/Evelez23/-microdelecion/main/img";
+    
     // Sprites
     const sprites = {
-      spriteSheet: new Image()
+      idle: new Image(),
+      walk: new Image(),
+      jump: new Image(),
+      run: new Image(),
+      crouch: new Image(),
+      hug: new Image(),
+      cover: new Image()
     };
     
-    // URLs de las imágenes (debes reemplazarlas con tus propias URLs)
+    // URLs de las imágenes
     const imageUrls = {
-      spriteSheet: "https://example.com/path/to/your/spritesheet.png",
-      coverImage: "https://example.com/path/to/your/cover-image.png"
-    };
-
-    // Coordenadas y dimensiones de cada pose en la hoja de sprites
-    const frames = {
-      idle: {x: 0, y: 0, width: 80, height: 80},
-      walk: {x: 80, y: 0, width: 80, height: 80},
-      jump: {x: 160, y: 0, width: 80, height: 80},
-      run: {x: 240, y: 0, width: 80, height: 80},
-      crouch: {x: 320, y: 0, width: 80, height: 80},
-      hug: {x: 400, y: 0, width: 80, height: 80}
+      idle: `${baseUrl}/oso/oso_idle.svg`,
+      walk: `${baseUrl}/oso/oso_walk.svg`,
+      jump: `${baseUrl}/oso/oso_jump.svg`,
+      run: `${baseUrl}/oso/oso_run.svg`,
+      crouch: `${baseUrl}/oso/oso_sit.svg`,
+      hug: `${baseUrl}/oso/oso_hugging.svg`,
+      cover: `${baseUrl}/oso/oso_portada.jpg`
     };
 
     // Estado del juego
@@ -260,8 +264,7 @@
 
     function loadResources() {
       for (let key in imageUrls) {
-        const img = new Image();
-        img.onload = () => {
+        sprites[key].onload = () => {
           loadedResources++;
           const progress = Math.floor((loadedResources / totalResources) * 100);
           loadingProgress.style.width = `${progress}%`;
@@ -271,13 +274,12 @@
             loadingScreen.style.display = "none";
             startScreen.style.display = "flex";
             
-            // Asignar imágenes cargadas
-            sprites.spriteSheet = img;
-            coverImage.src = imageUrls.coverImage;
+            // Mostrar imagen de portada
+            coverImage.src = imageUrls.cover;
             coverImage.style.display = "block";
           }
         };
-        img.onerror = () => {
+        sprites[key].onerror = () => {
           console.error(`Error loading image: ${imageUrls[key]}`);
           loadedResources++;
           if (loadedResources === totalResources) {
@@ -285,7 +287,7 @@
             startScreen.style.display = "flex";
           }
         };
-        img.src = imageUrls[key];
+        sprites[key].src = imageUrls[key];
       }
     }
 
@@ -500,39 +502,30 @@
       livesElement.textContent = "❤️".repeat(gameState.lives);
     }
 
-    // Función para dibujar el sprite desde la hoja de sprites
+    // Función para dibujar el sprite
     function drawOsoSprite() {
-      const frame = frames[oso.action] || frames.idle;
-      const spriteSheet = sprites.spriteSheet;
-
-      if (!spriteSheet.complete) {
-        // Dibujar placeholder si el sprite no está cargado
-        ctx.fillStyle = "#3E2723";
-        ctx.fillRect(oso.x, oso.y, oso.width, oso.height);
-        return;
-      }
+      const sprite = sprites[oso.action] || sprites.idle;
 
       // Efecto de parpadeo cuando es invencible
       if (oso.invincible > 0 && oso.invincible % 6 < 3) {
         ctx.globalAlpha = 0.5;
       }
 
-      ctx.save();
-      if (oso.direction === -1) {
-        ctx.scale(-1, 1);
-        ctx.drawImage(
-          spriteSheet,
-          frame.x, frame.y, frame.width, frame.height,
-          -oso.x - oso.width, oso.y, oso.width, oso.height
-        );
+      if (sprite.complete) {
+        ctx.save();
+        if (oso.direction === -1) {
+          ctx.scale(-1, 1);
+          ctx.drawImage(sprite, -oso.x - oso.width, oso.y, oso.width, oso.height);
+        } else {
+          ctx.drawImage(sprite, oso.x, oso.y, oso.width, oso.height);
+        }
+        ctx.restore();
       } else {
-        ctx.drawImage(
-          spriteSheet,
-          frame.x, frame.y, frame.width, frame.height,
-          oso.x, oso.y, oso.width, oso.height
-        );
+        // Dibujar placeholder si el sprite no está cargado
+        ctx.fillStyle = "#3E2723";
+        ctx.fillRect(oso.x, oso.y, oso.width, oso.height);
       }
-      ctx.restore();
+      
       ctx.globalAlpha = 1;
     }
 
@@ -755,4 +748,4 @@
     gameLoop();
   </script>
 </body>
-</html>
+  </html>
