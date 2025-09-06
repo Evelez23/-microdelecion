@@ -138,6 +138,59 @@
       width: 0%;
       transition: width 0.3s;
     }
+    
+    .friend-info {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 20px;
+      text-align: center;
+      color: #333;
+      max-width: 80%;
+    }
+    
+    .friend-example {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin: 15px 0;
+    }
+    
+    .friend-demo {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    
+    .friend-demo::after {
+      content: "¡Abrazame!";
+      position: absolute;
+      bottom: -25px;
+      font-size: 10px;
+      white-space: nowrap;
+      color: #FFF;
+      text-shadow: 1px 1px 1px #000;
+    }
+    
+    #hint {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.8);
+      padding: 10px 15px;
+      border-radius: 20px;
+      font-size: 14px;
+      color: #333;
+      display: none;
+      z-index: 25;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    }
   </style>
 </head>
 <body>
@@ -156,6 +209,15 @@
       <div id="controls">
         <p>Controles:<br>Flechas o WASD para moverte<br>ESPACIO para abrazar</p>
       </div>
+      <div class="friend-info">
+        <p>Encuentra a estos amigos y abrázalos con la tecla ESPACIO:</p>
+        <div class="friend-example">
+          <div class="friend-demo" style="background: #4FC3F7;"></div>
+          <div class="friend-demo" style="background: #BA68C8;"></div>
+          <div class="friend-demo" style="background: #4DB6AC;"></div>
+        </div>
+        <p>¡Cada amigo abrazado te da 100 puntos!</p>
+      </div>
     </div>
     <div id="loadingScreen">
       <h2>Cargando...</h2>
@@ -164,6 +226,7 @@
       </div>
       <p id="loadingText">0%</p>
     </div>
+    <div id="hint">Acércate a los amigos (círculos de colores) y presiona ESPACIO para abrazarlos</div>
   </div>
 
   <script>
@@ -178,6 +241,7 @@
     const loadingProgress = document.getElementById("loadingProgress");
     const loadingText = document.getElementById("loadingText");
     const coverImage = document.getElementById("coverImage");
+    const hintElement = document.getElementById("hint");
 
     // URLs base para las imágenes
     const baseUrl = "https://raw.githubusercontent.com/Evelez23/-microdelecion/main/img";
@@ -243,6 +307,7 @@
     let enemies = [];
     let items = [];
     let particles = [];
+    let hintTimer = 0;
 
     // Teclas
     let keys = {};
@@ -295,6 +360,10 @@
       gameState.gameStarted = true;
       startScreen.style.display = "none";
       resetLevel();
+      
+      // Mostrar pista al inicio del juego
+      showHint("Acércate a los amigos (círculos de colores) y presiona ESPACIO para abrazarlos", 5000);
+      
       gameLoop();
     }
 
@@ -308,7 +377,7 @@
       oso.hugging = false;
       oso.invincible = 0;
       
-      // Generar amigos
+      // Generar amigos (círculos azules, morados y verdes)
       friends = [];
       for (let i = 0; i < 5 + gameState.level; i++) {
         friends.push({
@@ -317,7 +386,9 @@
           width: 60,
           height: 60,
           hugged: false,
-          type: Math.floor(Math.random() * 3) // Diferentes tipos de amigos
+          type: Math.floor(Math.random() * 3), // Diferentes tipos de amigos
+          floating: 0,
+          floatDir: Math.random() > 0.5 ? 1 : -1
         });
       }
       
@@ -348,8 +419,22 @@
       }
     }
 
+    function showHint(text, duration) {
+      hintElement.textContent = text;
+      hintElement.style.display = "block";
+      hintTimer = duration / 16.67; // Convertir ms a frames (approx 60fps)
+    }
+
     function update() {
       if (!gameState.gameStarted) return;
+      
+      // Actualizar temporizador de pista
+      if (hintTimer > 0) {
+        hintTimer--;
+        if (hintTimer <= 0) {
+          hintElement.style.display = "none";
+        }
+      }
       
       // Reducir tiempo de invencibilidad
       if (oso.invincible > 0) oso.invincible--;
@@ -384,12 +469,22 @@
         oso.vx = 0;
         
         // Verificar si abraza a un amigo
+        let huggedFriend = false;
         for (let friend of friends) {
           if (!friend.hugged && checkCollision(oso, friend)) {
             friend.hugged = true;
             gameState.score += 100;
+            huggedFriend = true;
             createParticles(friend.x + friend.width/2, friend.y + friend.height/2, 10, "#FFD700");
+            
+            // Mostrar mensaje de puntos
+            createTextParticle(friend.x + friend.width/2, friend.y, "+100", "#FFD700");
           }
+        }
+        
+        if (!huggedFriend) {
+          // Mostrar pista si no hay amigos cerca
+          showHint("¡No hay amigos cerca! Busca los círculos de colores para abrazarlos", 3000);
         }
       }
       
@@ -439,6 +534,12 @@
         if (oso.action === "jump") oso.action = "idle";
       }
       
+      // Actualizar amigos (animación flotante)
+      for (let friend of friends) {
+        friend.floating += 0.05;
+        friend.y += Math.sin(friend.floating) * 0.5 * friend.floatDir;
+      }
+      
       // Actualizar enemigos
       for (let enemy of enemies) {
         enemy.x += enemy.vx;
@@ -459,6 +560,7 @@
           createParticles(enemy.x + enemy.width/2, enemy.y + enemy.height/2, 15, "#E91E63");
           enemies.splice(enemies.indexOf(enemy), 1);
           gameState.score += 200;
+          createTextParticle(enemy.x + enemy.width/2, enemy.y, "+200", "#E91E63");
         }
       }
       
@@ -468,14 +570,20 @@
           item.collected = true;
           gameState.score += 50;
           createParticles(item.x + item.width/2, item.y + item.height/2, 8, "#FF9800");
+          createTextParticle(item.x + item.width/2, item.y, "+50", "#FF9800");
         }
       }
       
       // Actualizar partículas
       for (let i = particles.length - 1; i >= 0; i--) {
-        particles[i].x += particles[i].vx;
-        particles[i].y += particles[i].vy;
-        particles[i].life--;
+        if (particles[i].type === 'text') {
+          particles[i].y -= 1;
+          particles[i].life--;
+        } else {
+          particles[i].x += particles[i].vx;
+          particles[i].y += particles[i].vy;
+          particles[i].life--;
+        }
         
         if (particles[i].life <= 0) {
           particles.splice(i, 1);
@@ -494,6 +602,7 @@
       if (allHugged && friends.length > 0) {
         gameState.level++;
         levelElement.textContent = gameState.level;
+        showHint(`¡Nivel ${gameState.level}! Encuentra y abraza a más amigos`, 3000);
         resetLevel();
       }
       
@@ -563,9 +672,10 @@
         }
       }
       
-      // Dibujar amigos
+      // Dibujar amigos (círculos azules, morados y verdes)
       for (let friend of friends) {
         if (!friend.hugged) {
+          // Círculo de amigo
           ctx.fillStyle = ["#4FC3F7", "#BA68C8", "#4DB6AC"][friend.type];
           ctx.beginPath();
           ctx.arc(friend.x + friend.width/2, friend.y + friend.height/2, friend.width/2, 0, Math.PI * 2);
@@ -578,9 +688,36 @@
           ctx.arc(friend.x + 2*friend.width/3, friend.y + friend.height/3, 5, 0, Math.PI * 2);
           ctx.fill();
           
+          // Sonrisa
           ctx.beginPath();
           ctx.arc(friend.x + friend.width/2, friend.y + 2*friend.height/3, 8, 0, Math.PI);
           ctx.stroke();
+          
+          // Dibujar corazón flotante sobre amigos no abrazados
+          ctx.fillStyle = "#FF5252";
+          ctx.beginPath();
+          ctx.moveTo(friend.x + friend.width/2, friend.y - 15 + Math.sin(Date.now()/300) * 5);
+          ctx.bezierCurveTo(
+            friend.x + friend.width/2, friend.y - 25 + Math.sin(Date.now()/300) * 5,
+            friend.x + friend.width/2 + 10, friend.y - 30 + Math.sin(Date.now()/300) * 5,
+            friend.x + friend.width/2 + 10, friend.y - 20 + Math.sin(Date.now()/300) * 5
+          );
+          ctx.bezierCurveTo(
+            friend.x + friend.width/2 + 10, friend.y - 15 + Math.sin(Date.now()/300) * 5,
+            friend.x + friend.width/2, friend.y - 10 + Math.sin(Date.now()/300) * 5,
+            friend.x + friend.width/2, friend.y - 15 + Math.sin(Date.now()/300) * 5
+          );
+          ctx.bezierCurveTo(
+            friend.x + friend.width/2, friend.y - 10 + Math.sin(Date.now()/300) * 5,
+            friend.x + friend.width/2 - 10, friend.y - 15 + Math.sin(Date.now()/300) * 5,
+            friend.x + friend.width/2 - 10, friend.y - 20 + Math.sin(Date.now()/300) * 5
+          );
+          ctx.bezierCurveTo(
+            friend.x + friend.width/2 - 10, friend.y - 30 + Math.sin(Date.now()/300) * 5,
+            friend.x + friend.width/2, friend.y - 25 + Math.sin(Date.now()/300) * 5,
+            friend.x + friend.width/2, friend.y - 15 + Math.sin(Date.now()/300) * 5
+          );
+          ctx.fill();
         }
       }
       
@@ -612,9 +749,15 @@
       for (let particle of particles) {
         ctx.globalAlpha = particle.life / 30;
         ctx.fillStyle = particle.color;
-        ctx.beginPath();
-        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-        ctx.fill();
+        
+        if (particle.type === 'text') {
+          ctx.font = '16px Comic Sans MS';
+          ctx.fillText(particle.text, particle.x, particle.y);
+        } else {
+          ctx.beginPath();
+          ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+          ctx.fill();
+        }
       }
       ctx.globalAlpha = 1;
       
@@ -694,9 +837,21 @@
       }
     }
 
+    function createTextParticle(x, y, text, color) {
+      particles.push({
+        x: x,
+        y: y,
+        text: text,
+        color: color,
+        life: 60,
+        type: 'text'
+      });
+    }
+
     function hurtOso() {
       gameState.lives--;
       createParticles(oso.x + oso.width/2, oso.y + oso.height/2, 20, "#FF5252");
+      createTextParticle(oso.x + oso.width/2, oso.y, "-1 Vida", "#FF5252");
       oso.invincible = 120; // 2 segundos de invencibilidad (60fps)
       
       if (gameState.lives <= 0) {
