@@ -157,14 +157,19 @@
     }
     
     .friend-demo {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
+      width: 60px;
+      height: 60px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       position: relative;
+    }
+    
+    .friend-demo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
     }
     
     .friend-demo::after {
@@ -212,9 +217,15 @@
       <div class="friend-info">
         <p>Encuentra a estos amigos y abrázalos con la tecla ESPACIO:</p>
         <div class="friend-example">
-          <div class="friend-demo" style="background: #4FC3F7;"></div>
-          <div class="friend-demo" style="background: #BA68C8;"></div>
-          <div class="friend-demo" style="background: #4DB6AC;"></div>
+          <div class="friend-demo">
+            <img id="demo-squirrel" src="" alt="Ardilla">
+          </div>
+          <div class="friend-demo">
+            <img id="demo-rabbit" src="" alt="Conejo">
+          </div>
+          <div class="friend-demo">
+            <img id="demo-bird" src="" alt="Pajarito">
+          </div>
         </div>
         <p>¡Cada amigo abrazado te da 100 puntos!</p>
       </div>
@@ -226,7 +237,7 @@
       </div>
       <p id="loadingText">0%</p>
     </div>
-    <div id="hint">Acércate a los amigos (círculos de colores) y presiona ESPACIO para abrazarlos</div>
+    <div id="hint">Acércate a los amigos y presiona ESPACIO para abrazarlos</div>
   </div>
 
   <script>
@@ -242,6 +253,9 @@
     const loadingText = document.getElementById("loadingText");
     const coverImage = document.getElementById("coverImage");
     const hintElement = document.getElementById("hint");
+    const demoSquirrel = document.getElementById("demo-squirrel");
+    const demoRabbit = document.getElementById("demo-rabbit");
+    const demoBird = document.getElementById("demo-bird");
 
     // URLs base para las imágenes
     const baseUrl = "https://raw.githubusercontent.com/Evelez23/-microdelecion/main/img";
@@ -254,7 +268,10 @@
       run: new Image(),
       crouch: new Image(),
       hug: new Image(),
-      cover: new Image()
+      cover: new Image(),
+      squirrel: new Image(),
+      rabbit: new Image(),
+      bird: new Image()
     };
     
     // URLs de las imágenes
@@ -265,7 +282,10 @@
       run: `${baseUrl}/oso/oso_run.svg`,
       crouch: `${baseUrl}/oso/oso_sit.svg`,
       hug: `${baseUrl}/oso/oso_hugging.svg`,
-      cover: `${baseUrl}/oso/oso_portada.jpg`
+      cover: `${baseUrl}/oso/oso_portada.jpg`,
+      squirrel: `${baseUrl}/Amigos/ardilla.png`,
+      rabbit: `${baseUrl}/Amigos/conejo.png`,
+      bird: `${baseUrl}/Amigos/pajarito.png`
     };
 
     // Estado del juego
@@ -342,6 +362,11 @@
             // Mostrar imagen de portada
             coverImage.src = imageUrls.cover;
             coverImage.style.display = "block";
+            
+            // Mostrar imágenes de demo
+            demoSquirrel.src = imageUrls.squirrel;
+            demoRabbit.src = imageUrls.rabbit;
+            demoBird.src = imageUrls.bird;
           }
         };
         sprites[key].onerror = () => {
@@ -362,7 +387,7 @@
       resetLevel();
       
       // Mostrar pista al inicio del juego
-      showHint("Acércate a los amigos (círculos de colores) y presiona ESPACIO para abrazarlos", 5000);
+      showHint("Acércate a los amigos y presiona ESPACIO para abrazarlos", 5000);
       
       gameLoop();
     }
@@ -377,16 +402,18 @@
       oso.hugging = false;
       oso.invincible = 0;
       
-      // Generar amigos (círculos azules, morados y verdes)
+      // Generar amigos (ardillas, conejos y pajaritos)
       friends = [];
+      const friendTypes = ['squirrel', 'rabbit', 'bird'];
       for (let i = 0; i < 5 + gameState.level; i++) {
+        const typeIndex = Math.floor(Math.random() * 3);
         friends.push({
           x: Math.random() * 700 + 50,
           y: 380,
           width: 60,
           height: 60,
           hugged: false,
-          type: Math.floor(Math.random() * 3), // Diferentes tipos de amigos
+          type: friendTypes[typeIndex],
           floating: 0,
           floatDir: Math.random() > 0.5 ? 1 : -1
         });
@@ -484,7 +511,7 @@
         
         if (!huggedFriend) {
           // Mostrar pista si no hay amigos cerca
-          showHint("¡No hay amigos cerca! Busca los círculos de colores para abrazarlos", 3000);
+          showHint("¡No hay amigos cerca! Busca ardillas, conejos y pajaritos para abrazarlos", 3000);
         }
       }
       
@@ -638,6 +665,49 @@
       ctx.globalAlpha = 1;
     }
 
+    // Función para dibujar amigos
+    function drawFriend(friend) {
+      const sprite = sprites[friend.type];
+      
+      if (sprite.complete) {
+        ctx.drawImage(sprite, friend.x, friend.y, friend.width, friend.height);
+      } else {
+        // Placeholder si la imagen no está cargada
+        ctx.fillStyle = "#4FC3F7";
+        ctx.beginPath();
+        ctx.arc(friend.x + friend.width/2, friend.y + friend.height/2, friend.width/2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      
+      // Dibujar corazón flotante sobre amigos no abrazados
+      if (!friend.hugged) {
+        ctx.fillStyle = "#FF5252";
+        ctx.beginPath();
+        ctx.moveTo(friend.x + friend.width/2, friend.y - 15 + Math.sin(Date.now()/300) * 5);
+        ctx.bezierCurveTo(
+          friend.x + friend.width/2, friend.y - 25 + Math.sin(Date.now()/300) * 5,
+          friend.x + friend.width/2 + 10, friend.y - 30 + Math.sin(Date.now()/300) * 5,
+          friend.x + friend.width/2 + 10, friend.y - 20 + Math.sin(Date.now()/300) * 5
+        );
+        ctx.bezierCurveTo(
+          friend.x + friend.width/2 + 10, friend.y - 15 + Math.sin(Date.now()/300) * 5,
+          friend.x + friend.width/2, friend.y - 10 + Math.sin(Date.now()/300) * 5,
+          friend.x + friend.width/2, friend.y - 15 + Math.sin(Date.now()/300) * 5
+        );
+        ctx.bezierCurveTo(
+          friend.x + friend.width/2, friend.y - 10 + Math.sin(Date.now()/300) * 5,
+          friend.x + friend.width/2 - 10, friend.y - 15 + Math.sin(Date.now()/300) * 5,
+          friend.x + friend.width/2 - 10, friend.y - 20 + Math.sin(Date.now()/300) * 5
+        );
+        ctx.bezierCurveTo(
+          friend.x + friend.width/2 - 10, friend.y - 30 + Math.sin(Date.now()/300) * 5,
+          friend.x + friend.width/2, friend.y - 25 + Math.sin(Date.now()/300) * 5,
+          friend.x + friend.width/2, friend.y - 15 + Math.sin(Date.now()/300) * 5
+        );
+        ctx.fill();
+      }
+    }
+
     function draw() {
       if (!gameState.gameStarted) return;
       
@@ -672,52 +742,10 @@
         }
       }
       
-      // Dibujar amigos (círculos azules, morados y verdes)
+      // Dibujar amigos
       for (let friend of friends) {
         if (!friend.hugged) {
-          // Círculo de amigo
-          ctx.fillStyle = ["#4FC3F7", "#BA68C8", "#4DB6AC"][friend.type];
-          ctx.beginPath();
-          ctx.arc(friend.x + friend.width/2, friend.y + friend.height/2, friend.width/2, 0, Math.PI * 2);
-          ctx.fill();
-          
-          // Cara del amigo
-          ctx.fillStyle = "#000";
-          ctx.beginPath();
-          ctx.arc(friend.x + friend.width/3, friend.y + friend.height/3, 5, 0, Math.PI * 2);
-          ctx.arc(friend.x + 2*friend.width/3, friend.y + friend.height/3, 5, 0, Math.PI * 2);
-          ctx.fill();
-          
-          // Sonrisa
-          ctx.beginPath();
-          ctx.arc(friend.x + friend.width/2, friend.y + 2*friend.height/3, 8, 0, Math.PI);
-          ctx.stroke();
-          
-          // Dibujar corazón flotante sobre amigos no abrazados
-          ctx.fillStyle = "#FF5252";
-          ctx.beginPath();
-          ctx.moveTo(friend.x + friend.width/2, friend.y - 15 + Math.sin(Date.now()/300) * 5);
-          ctx.bezierCurveTo(
-            friend.x + friend.width/2, friend.y - 25 + Math.sin(Date.now()/300) * 5,
-            friend.x + friend.width/2 + 10, friend.y - 30 + Math.sin(Date.now()/300) * 5,
-            friend.x + friend.width/2 + 10, friend.y - 20 + Math.sin(Date.now()/300) * 5
-          );
-          ctx.bezierCurveTo(
-            friend.x + friend.width/2 + 10, friend.y - 15 + Math.sin(Date.now()/300) * 5,
-            friend.x + friend.width/2, friend.y - 10 + Math.sin(Date.now()/300) * 5,
-            friend.x + friend.width/2, friend.y - 15 + Math.sin(Date.now()/300) * 5
-          );
-          ctx.bezierCurveTo(
-            friend.x + friend.width/2, friend.y - 10 + Math.sin(Date.now()/300) * 5,
-            friend.x + friend.width/2 - 10, friend.y - 15 + Math.sin(Date.now()/300) * 5,
-            friend.x + friend.width/2 - 10, friend.y - 20 + Math.sin(Date.now()/300) * 5
-          );
-          ctx.bezierCurveTo(
-            friend.x + friend.width/2 - 10, friend.y - 30 + Math.sin(Date.now()/300) * 5,
-            friend.x + friend.width/2, friend.y - 25 + Math.sin(Date.now()/300) * 5,
-            friend.x + friend.width/2, friend.y - 15 + Math.sin(Date.now()/300) * 5
-          );
-          ctx.fill();
+          drawFriend(friend);
         }
       }
       
@@ -903,4 +931,4 @@
     gameLoop();
   </script>
 </body>
-  </html>
+</html>
