@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -38,6 +37,29 @@
       background: rgba(0, 0, 0, 0.5);
       padding: 10px;
       border-radius: 10px;
+      display: flex;
+      gap: 20px;
+    }
+
+    #unicornPower {
+        display: none;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .power-bar {
+        width: 100px;
+        height: 15px;
+        background-color: #555;
+        border: 2px solid #fff;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .power-level {
+        height: 100%;
+        background: linear-gradient(to right, #EE82EE, #8A2BE2);
+        transition: width 0.3s ease-in-out;
     }
     
     #startScreen {
@@ -177,6 +199,12 @@
       <div>Puntos: <span id="score">0</span></div>
       <div>Vidas: <span id="lives">❤️❤️❤️</span></div>
       <div>Nivel: <span id="level">1</span></div>
+      <div id="unicornPower">
+        <span>Poder del Unicornio:</span>
+        <div class="power-bar">
+            <div class="power-level" id="unicornPowerLevel"></div>
+        </div>
+      </div>
     </div>
     <div id="startScreen">
       <h1>Oso Abrazos Adventure</h1>
@@ -209,42 +237,54 @@
     const coverImage = document.getElementById("coverImage");
     const hintElement = document.getElementById("hint");
     const soundToggle = document.getElementById("soundToggle");
+    const unicornPowerElement = document.getElementById("unicornPower");
+    const unicornPowerLevelElement = document.getElementById("unicornPowerLevel");
 
     // URLs base para las imágenes
     const baseUrl = "https://raw.githubusercontent.com/Evelez23/-microdelecion/main/img";
     
-    // Sprites
+    // Sprites y sus URLs
     const sprites = {
-      idle: new Image(),
-      walk: new Image(),
-      jump: new Image(),
-      run: new Image(),
-      crouch: new Image(),
-      hug: new Image(),
-      cover: new Image(),
-      squirrel: new Image(),
-      rabbit: new Image(),
-      bird: new Image(),
-      enemy1: new Image(),
-      enemy2: new Image(),
-      enemy3: new Image()
+      oso_idle: new Image(),
+      oso_walk: new Image(),
+      oso_jump: new Image(),
+      oso_run: new Image(),
+      oso_sit: new Image(),
+      oso_hugging: new Image(),
+      oso_portada: new Image(),
+      ardilla: new Image(),
+      conejo: new Image(),
+      pajarito: new Image(),
+      Enemigos_01: new Image(),
+      Enemigos_02: new Image(),
+      Enemigos_03: new Image(),
+      miel: new Image(),
+      osoyuni: new Image(),
+      uni_run: new Image(),
+      uni_shup: new Image(),
+      uni_corazon: new Image()
     };
     
     // URLs de las imágenes
     const imageUrls = {
-      idle: `${baseUrl}/oso/oso_idle.svg`,
-      walk: `${baseUrl}/oso/oso_walk.svg`,
-      jump: `${baseUrl}/oso/oso_jump.svg`,
-      run: `${baseUrl}/oso/oso_run.svg`,
-      crouch: `${baseUrl}/oso/oso_sit.svg`,
-      hug: `${baseUrl}/oso/oso_hugging.svg`,
-      cover: `${baseUrl}/oso/oso_portada.jpg`,
-      squirrel: `${baseUrl}/Amigos/ardilla.png`,
-      rabbit: `${baseUrl}/Amigos/conejo.png`,
-      bird: `${baseUrl}/Amigos/pajarito.png`,
-      enemy1: `${baseUrl}/enemigos/Enemigos-01.svg`,
-      enemy2: `${baseUrl}/enemigos/Enemigos-02.svg`,
-      enemy3: `${baseUrl}/enemigos/Enemigos-03.svg`
+      oso_idle: `${baseUrl}/oso_idle.svg`,
+      oso_walk: `${baseUrl}/oso_walk.svg`,
+      oso_jump: `${baseUrl}/oso_jump.svg`,
+      oso_run: `${baseUrl}/oso_run.svg`,
+      oso_sit: `${baseUrl}/oso_sit.svg`,
+      oso_hugging: `${baseUrl}/oso_hugging.svg`,
+      oso_portada: `${baseUrl}/oso_portada.jpg`,
+      ardilla: `${baseUrl}/Amigos/ardilla.png`,
+      conejo: `${baseUrl}/Amigos/conejo.png`,
+      pajarito: `${baseUrl}/Amigos/pajarito.png`,
+      Enemigos_01: `${baseUrl}/enemigos/Enemigos-01.svg`,
+      Enemigos_02: `${baseUrl}/enemigos/Enemigos-02.svg`,
+      Enemigos_03: `${baseUrl}/enemigos/Enemigos-03.svg`,
+      miel: `${baseUrl}/miel.png`,
+      osoyuni: `${baseUrl}/osoyuni.png`,
+      uni_run: `${baseUrl}/uni_run.png`,
+      uni_shup: `${baseUrl}/uni_shup.png`,
+      uni_corazon: `${baseUrl}/uni_corazon.png`
     };
 
     // Sonidos
@@ -254,7 +294,9 @@
       collect: new Audio('https://cdn.pixabay.com/download/audio/2022/03/19/audio_5c452fd8e9.mp3?filename=power-up-6768.mp3'),
       hug: new Audio('https://cdn.pixabay.com/download/audio/2022/10/25/audio_1d41c6f9c9.mp3?filename=magical-harp-6215.mp3'),
       hurt: new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_5c4dc48e9c.mp3?filename=negative_beeps-6008.mp3'),
-      enemy: new Audio('https://cdn.pixabay.com/download/audio/2022/10/13/audio_1b8a411fb8.mp3?filename=zap-88593.mp3')
+      enemy: new Audio('https://cdn.pixabay.com/download/audio/2022/10/13/audio_1b8a411fb8.mp3?filename=zap-88593.mp3'),
+      shot: new Audio('https://cdn.pixabay.com/download/audio/2022/03/19/audio_5c2199f123.mp3?filename=laser-gun-87363.mp3'),
+      powerUp: new Audio('https://cdn.pixabay.com/download/audio/2022/03/19/audio_5c452fd8e9.mp3?filename=power-up-6768.mp3')
     };
 
     // Configurar sonidos
@@ -281,15 +323,27 @@
       height: 80,
       vx: 0,
       vy: 0,
-      speed: 4, // Reducida la velocidad
-      jumpForce: 13, // Reducida la fuerza de salto
-      gravity: 0.6, // Gravedad reducida
+      speed: 4,
+      jumpForce: 13,
+      gravity: 0.6,
       grounded: true,
       action: "idle",
-      direction: 1, // 1: derecha, -1: izquierda
+      direction: 1,
       hugging: false,
       hugCooldown: 0,
-      invincible: 0
+      invincible: 0,
+      hasUnicorn: false
+    };
+
+    // Estado del unicornio
+    let unicorn = {
+        x: 0,
+        y: 0,
+        width: 100,
+        height: 100,
+        active: false,
+        power: 100,
+        cooldown: 0
     };
 
     // Elementos del juego
@@ -303,6 +357,7 @@
     let friends = [];
     let enemies = [];
     let items = [];
+    let projectiles = [];
     let particles = [];
     let hintTimer = 0;
 
@@ -310,12 +365,42 @@
     let keys = {};
     window.addEventListener("keydown", e => {
       keys[e.key] = true;
-      // Prevenir scroll con las flechas
-      if(["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "].includes(e.key)) {
+      if(["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " ", "z"].includes(e.key)) {
         e.preventDefault();
       }
     });
     window.addEventListener("keyup", e => keys[e.key] = false);
+    
+    // Disparar corazones con el mouse
+    canvas.addEventListener("mousedown", e => {
+      if (oso.hasUnicorn) {
+        shootHeart();
+      }
+    });
+
+    function shootHeart() {
+        if (unicorn.cooldown <= 0 && unicorn.power > 0) {
+            let heartSpeed = 10;
+            let heartSize = 25;
+            let heartVx = oso.direction * heartSpeed;
+
+            // Ajustar posición de salida del corazón
+            let startX = oso.direction === 1 ? oso.x + oso.width : oso.x - heartSize;
+
+            projectiles.push({
+                x: startX,
+                y: oso.y + oso.height / 3,
+                vx: heartVx,
+                width: heartSize,
+                height: heartSize
+            });
+
+            unicorn.power -= 10;
+            unicorn.cooldown = 15; // Enfriamiento del disparo (frames)
+            playSound('shot');
+        }
+    }
+
 
     // Iniciar juego
     startButton.addEventListener("click", startGame);
@@ -351,9 +436,7 @@
             setTimeout(() => {
               loadingScreen.style.display = "none";
               startScreen.style.display = "flex";
-              
-              // Mostrar imagen de portada
-              coverImage.src = imageUrls.cover;
+              coverImage.src = imageUrls.oso_portada;
             }, 500);
           }
         };
@@ -374,19 +457,16 @@
       startScreen.style.display = "none";
       resetLevel();
       
-      // Iniciar música de fondo si está habilitada
       if (gameState.soundEnabled) {
         sounds.background.play().catch(e => console.log("Audio autoplay prevented: ", e));
       }
       
-      // Mostrar pista al inicio del juego
       showHint("Acércate a los amigos y presiona ESPACIO para abrazarlos", 5000);
       
       gameLoop();
     }
 
     function resetLevel() {
-      // Reiniciar posición del oso
       oso.x = 100;
       oso.y = 380;
       oso.vx = 0;
@@ -395,11 +475,14 @@
       oso.hugging = false;
       oso.invincible = 0;
       
-      // Generar amigos (ardillas, conejos y pajaritos)
+      // Reiniciar estado del unicornio al inicio de cada nivel
+      oso.hasUnicorn = false;
+      unicornPowerElement.style.display = 'none';
+
       friends = [];
-      const friendTypes = ['squirrel', 'rabbit', 'bird'];
+      const friendTypes = ['ardilla', 'conejo', 'pajarito'];
       for (let i = 0; i < 5 + gameState.level; i++) {
-        const typeIndex = Math.floor(Math.random() * 3);
+        const typeIndex = Math.floor(Math.random() * friendTypes.length);
         friends.push({
           x: Math.random() * 700 + 50,
           y: 380,
@@ -412,24 +495,22 @@
         });
       }
       
-      // Generar enemigos en niveles más altos
       enemies = [];
       if (gameState.level > 1) {
-        const enemyTypes = ['enemy1', 'enemy2', 'enemy3'];
+        const enemyTypes = ['Enemigos_01', 'Enemigos_02', 'Enemigos_03'];
         for (let i = 0; i < gameState.level - 1; i++) {
-          const typeIndex = Math.floor(Math.random() * 3);
+          const typeIndex = Math.floor(Math.random() * enemyTypes.length);
           enemies.push({
             x: Math.random() * 700 + 50,
             y: 380,
             width: 50,
             height: 50,
-            vx: (Math.random() > 0.5 ? 1 : -1) * (1 + Math.random()), // Movimiento más lento
+            vx: (Math.random() > 0.5 ? 1 : -1) * (1 + Math.random()),
             type: enemyTypes[typeIndex]
           });
         }
       }
       
-      // Generar items (miel)
       items = [];
       for (let i = 0; i < 3 + gameState.level; i++) {
         items.push({
@@ -437,21 +518,34 @@
           y: Math.random() * 300 + 100,
           width: 30,
           height: 30,
-          collected: false
+          collected: false,
+          type: 'miel'
         });
+      }
+
+      // Generar el unicornio como un item en el nivel 2 y siguientes
+      if (gameState.level >= 2) {
+          items.push({
+              x: Math.random() * 700 + 50,
+              y: 380,
+              width: 80,
+              height: 80,
+              collected: false,
+              type: 'unicorn'
+          });
+          showHint("¡Mira! Un unicornio mágico ha aparecido. Acércate a él para montarlo", 5000);
       }
     }
 
     function showHint(text, duration) {
       hintElement.textContent = text;
       hintElement.style.display = "block";
-      hintTimer = duration / 16.67; // Convertir ms a frames (approx 60fps)
+      hintTimer = duration / 16.67;
     }
 
     function update() {
       if (!gameState.gameStarted) return;
       
-      // Actualizar temporizador de pista
       if (hintTimer > 0) {
         hintTimer--;
         if (hintTimer <= 0) {
@@ -459,10 +553,8 @@
         }
       }
       
-      // Reducir tiempo de invencibilidad
       if (oso.invincible > 0) oso.invincible--;
       
-      // Movimiento lateral
       oso.vx = 0;
       if ((keys["ArrowRight"] || keys["d"]) && !oso.hugging) {
         oso.vx = oso.speed;
@@ -475,8 +567,15 @@
       } else if (!oso.hugging) {
         oso.action = oso.grounded ? "idle" : "jump";
       }
+
+      // Cambiar sprite si tiene el unicornio
+      if (oso.hasUnicorn) {
+        oso.action = (oso.vx !== 0) ? 'uni_run' : 'osoyuni';
+        if (keys["z"] && unicorn.cooldown <= 0) {
+            shootHeart();
+        }
+      }
       
-      // Salto
       if ((keys["ArrowUp"] || keys["w"]) && oso.grounded && !oso.hugging) {
         oso.vy = -oso.jumpForce;
         oso.grounded = false;
@@ -485,14 +584,12 @@
         playSound('jump');
       }
       
-      // Abrazo (espacio)
-      if (keys[" "] && oso.hugCooldown <= 0 && oso.grounded) {
+      if (keys[" "] && oso.hugCooldown <= 0 && oso.grounded && !oso.hasUnicorn) {
         oso.action = "hug";
         oso.hugging = true;
         oso.hugCooldown = 30;
         oso.vx = 0;
         
-        // Verificar si abraza a un amigo
         let huggedFriend = false;
         for (let friend of friends) {
           if (!friend.hugged && checkCollision(oso, friend)) {
@@ -502,18 +599,11 @@
             createParticles(friend.x + friend.width/2, friend.y + friend.height/2, 10, "#FFD700");
             playSound('hug');
             
-            // Mostrar mensaje de puntos
             createTextParticle(friend.x + friend.width/2, friend.y, "+100", "#FFD700");
           }
         }
-        
-        if (!huggedFriend) {
-          // Mostrar pista si no hay amigos cerca
-          showHint("¡No hay amigos cerca! Busca ardillas, conejos y pajaritos para abrazarlos", 3000);
-        }
       }
       
-      // Enfriamiento del abrazo
       if (oso.hugCooldown > 0) {
         oso.hugCooldown--;
         if (oso.hugCooldown === 0) {
@@ -521,20 +611,14 @@
         }
       }
       
-      // Aplicar gravedad
       oso.vy += oso.gravity;
-      
-      // Actualizar posición X
       oso.x += oso.vx;
       
-      // Limitar movimiento horizontal
       if (oso.x < 0) oso.x = 0;
       if (oso.x + oso.width > canvas.width) oso.x = canvas.width - oso.width;
       
-      // Actualizar posición Y
       oso.y += oso.vy;
       
-      // Colisión con plataformas
       oso.grounded = false;
       for (let platform of platforms) {
         if (
@@ -551,7 +635,6 @@
         }
       }
       
-      // Limitar movimiento vertical
       if (oso.y + oso.height > canvas.height) {
         oso.y = canvas.height - oso.height;
         oso.vy = 0;
@@ -559,27 +642,22 @@
         if (oso.action === "jump") oso.action = "idle";
       }
       
-      // Actualizar amigos (animación flotante)
       for (let friend of friends) {
         friend.floating += 0.05;
         friend.y += Math.sin(friend.floating) * 0.5 * friend.floatDir;
       }
       
-      // Actualizar enemigos
       for (let enemy of enemies) {
         enemy.x += enemy.vx;
         
-        // Rebotar en los bordes
         if (enemy.x <= 0 || enemy.x + enemy.width >= canvas.width) {
           enemy.vx *= -1;
         }
         
-        // Colisión con enemigos
         if (checkCollision(oso, enemy) && !oso.hugging && oso.invincible <= 0) {
           hurtOso();
         }
         
-        // Los enemigos pueden ser "curados" con abrazos
         if (checkCollision(oso, enemy) && oso.hugging) {
           enemy.vx = 0;
           createParticles(enemy.x + enemy.width/2, enemy.y + enemy.height/2, 15, "#E91E63");
@@ -590,17 +668,64 @@
         }
       }
       
-      // Recolectar items
-      for (let item of items) {
+      for (let i = items.length - 1; i >= 0; i--) {
+        let item = items[i];
         if (!item.collected && checkCollision(oso, item)) {
           item.collected = true;
-          gameState.score += 50;
-          createParticles(item.x + item.width/2, item.y + item.height/2, 8, "#FF9800");
-          playSound('collect');
-          createTextParticle(item.x + item.width/2, item.y, "+50", "#FF9800");
+          if (item.type === 'miel') {
+            gameState.score += 50;
+            createParticles(item.x + item.width/2, item.y + item.height/2, 8, "#FF9800");
+            playSound('collect');
+            createTextParticle(item.x + item.width/2, item.y, "+50", "#FF9800");
+          } else if (item.type === 'unicorn') {
+            oso.hasUnicorn = true;
+            unicorn.active = true;
+            unicorn.power = 100;
+            unicornPowerElement.style.display = 'flex';
+            playSound('powerUp');
+            showHint("¡Has montado el unicornio! Usa Z o el mouse para disparar corazones", 5000);
+          }
+          items.splice(i, 1);
         }
       }
+
+      // Actualizar proyectiles
+      for (let i = projectiles.length - 1; i >= 0; i--) {
+        let p = projectiles[i];
+        p.x += p.vx;
+
+        // Eliminar proyectil si sale de la pantalla
+        if (p.x < -p.width || p.x > canvas.width + p.width) {
+            projectiles.splice(i, 1);
+            continue;
+        }
+
+        // Colisión del proyectil con enemigos
+        for (let j = enemies.length - 1; j >= 0; j--) {
+            let enemy = enemies[j];
+            if (checkCollision(p, enemy)) {
+                createParticles(enemy.x + enemy.width/2, enemy.y + enemy.height/2, 15, "#FF69B4");
+                enemies.splice(j, 1);
+                projectiles.splice(i, 1);
+                gameState.score += 300;
+                playSound('enemy');
+                createTextParticle(enemy.x + enemy.width/2, enemy.y, "+300", "#FF69B4");
+                break;
+            }
+        }
+      }
+
+      // Enfriamiento del disparo
+      if (unicorn.cooldown > 0) {
+          unicorn.cooldown--;
+      }
       
+      // Regenerar poder del unicornio lentamente
+      if (oso.hasUnicorn && unicorn.power < 100) {
+          unicorn.power += 0.2;
+      }
+      unicornPowerLevelElement.style.width = `${unicorn.power}%`;
+
       // Actualizar partículas
       for (let i = particles.length - 1; i >= 0; i--) {
         if (particles[i].type === 'text') {
@@ -617,7 +742,6 @@
         }
       }
       
-      // Comprobar si todos los amigos han sido abrazados
       let allHugged = true;
       for (let friend of friends) {
         if (!friend.hugged) {
@@ -633,14 +757,12 @@
         resetLevel();
       }
       
-      // Actualizar UI
       scoreElement.textContent = gameState.score;
       livesElement.textContent = "❤️".repeat(gameState.lives);
     }
 
     function playSound(soundName) {
       if (gameState.soundEnabled && sounds[soundName]) {
-        // Crear una nueva instancia para permitir sonidos superpuestos
         const sound = new Audio(sounds[soundName].src);
         sound.volume = sounds[soundName].volume;
         sound.play().catch(e => console.log("Sound error: ", e));
@@ -649,9 +771,8 @@
 
     // Función para dibujar el sprite
     function drawOsoSprite() {
-      const sprite = sprites[oso.action] || sprites.idle;
+      const sprite = sprites[oso.action] || sprites.oso_idle;
 
-      // Efecto de parpadeo cuando es invencible
       if (oso.invincible > 0 && oso.invincible % 6 < 3) {
         ctx.globalAlpha = 0.5;
       }
@@ -666,7 +787,6 @@
         }
         ctx.restore();
       } else {
-        // Dibujar placeholder si el sprite no está cargado
         ctx.fillStyle = "#3E2723";
         ctx.fillRect(oso.x, oso.y, oso.width, oso.height);
       }
@@ -679,19 +799,16 @@
       const sprite = sprites[friend.type];
       
       if (sprite.complete) {
-        // Suavizado de imágenes
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = 'high';
         ctx.drawImage(sprite, friend.x, friend.y, friend.width, friend.height);
       } else {
-        // Placeholder si la imagen no está cargada
         ctx.fillStyle = "#4FC3F7";
         ctx.beginPath();
         ctx.arc(friend.x + friend.width/2, friend.y + friend.height/2, friend.width/2, 0, Math.PI * 2);
         ctx.fill();
       }
       
-      // Dibujar corazón flotante sobre amigos no abrazados
       if (!friend.hugged) {
         ctx.fillStyle = "#FF5252";
         ctx.beginPath();
@@ -725,11 +842,9 @@
       const sprite = sprites[enemy.type];
       
       if (sprite.complete) {
-        // Suavizado de imágenes
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = 'high';
         
-        // Voltear enemigo según dirección
         ctx.save();
         if (enemy.vx < 0) {
           ctx.scale(-1, 1);
@@ -739,7 +854,6 @@
         }
         ctx.restore();
       } else {
-        // Placeholder si la imagen no está cargada
         ctx.fillStyle = "#F44336";
         ctx.beginPath();
         ctx.arc(enemy.x + enemy.width/2, enemy.y + enemy.height/2, enemy.width/2, 0, Math.PI * 2);
@@ -747,16 +861,43 @@
       }
     }
 
+    // Función para dibujar items
+    function drawItem(item) {
+        if (!item.collected) {
+            const sprite = sprites[item.type] || null;
+            if (sprite && sprite.complete) {
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+                ctx.drawImage(sprite, item.x, item.y, item.width, item.height);
+            } else {
+                ctx.fillStyle = "#FFB300";
+                ctx.beginPath();
+                ctx.arc(item.x + item.width/2, item.y + item.height/2, item.width/2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+    }
+
+    // Función para dibujar proyectiles (corazones)
+    function drawProjectile(p) {
+        const sprite = sprites.uni_corazon;
+        if (sprite.complete) {
+            ctx.drawImage(sprite, p.x, p.y, p.width, p.height);
+        } else {
+            ctx.fillStyle = "#FF69B4";
+            ctx.beginPath();
+            ctx.arc(p.x + p.width/2, p.y + p.height/2, p.width/2, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+
     function draw() {
       if (!gameState.gameStarted) return;
       
-      // Limpiar canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      // Dibujar fondo
       drawBackground();
       
-      // Dibujar plataformas
       for (let platform of platforms) {
         ctx.fillStyle = "#8D6E63";
         ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
@@ -764,39 +905,26 @@
         ctx.fillRect(platform.x, platform.y, platform.width, 5);
       }
       
-      // Dibujar items
       for (let item of items) {
-        if (!item.collected) {
-          ctx.fillStyle = "#FFB300";
-          ctx.beginPath();
-          ctx.arc(item.x + item.width/2, item.y + item.height/2, item.width/2, 0, Math.PI * 2);
-          ctx.fill();
-          
-          // Detalles de la miel
-          ctx.strokeStyle = "#E65100";
-          ctx.lineWidth = 2;
-          ctx.beginPath();
-          ctx.arc(item.x + item.width/2, item.y + item.height/2, item.width/3, 0, Math.PI * 2);
-          ctx.stroke();
-        }
+          drawItem(item);
       }
       
-      // Dibujar amigos
       for (let friend of friends) {
         if (!friend.hugged) {
           drawFriend(friend);
         }
       }
       
-      // Dibujar enemigos
       for (let enemy of enemies) {
         drawEnemy(enemy);
       }
+
+      for (let p of projectiles) {
+          drawProjectile(p);
+      }
       
-      // Dibujar oso
       drawOsoSprite();
       
-      // Dibujar partículas
       for (let particle of particles) {
         ctx.globalAlpha = particle.life / 30;
         ctx.fillStyle = particle.color;
@@ -812,7 +940,6 @@
       }
       ctx.globalAlpha = 1;
       
-      // Dibujar efecto de abrazo
       if (oso.hugging) {
         ctx.strokeStyle = "#FFD700";
         ctx.lineWidth = 3;
@@ -957,3 +1084,4 @@
   </script>
 </body>
 </html>
+
