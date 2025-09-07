@@ -10,7 +10,7 @@
       width: 800px;
       height: 500px;
       margin: 0 auto;
-      overflow: hidden; /* evita que algo se salga */
+      overflow: hidden;
       background: #000;
     }
 
@@ -29,26 +29,57 @@
     #coverImage {
       width: 100%;
       height: 100%;
-      object-fit: cover; /* ajusta la imagen al tamaño exacto sin deformarse */
-      border-radius: 0;
+      object-fit: cover;
       display: block;
     }
 
-   #startButton {
-  position: absolute;
-  top: 75%;   /* antes estaba 50% */
-  left: 50%;
-  transform: translate(-50%, -50%);
-  padding: 15px 40px;
-  font-size: 1.5rem;
-  border: none;
-  border-radius: 12px;
-  background: rgba(255, 127, 80, 0.9);
-  color: white;
-  cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-}
+    #startButton {
+      position: absolute;
+      top: 75%; 
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 15px 40px;
+      font-size: 1.5rem;
+      border: none;
+      border-radius: 12px;
+      background: rgba(255, 127, 80, 0.9);
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    }
 
+    /* Botones móviles */
+    .mobile-controls {
+      position: absolute;
+      bottom: 20px;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 20px;
+      pointer-events: none;
+    }
+
+    .left-controls {
+      display: flex;
+      gap: 15px;
+    }
+
+    .right-controls {
+      display: flex;
+      gap: 15px;
+    }
+
+    .mobile-btn {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      color: black;
+      font-size: 2rem;
+      border: none;
+      pointer-events: auto;
+      touch-action: manipulation;
+    }
   </style>
 </head>
 <body>
@@ -82,8 +113,41 @@
 
     <div id="hint">Acércate a los amigos y presiona ESPACIO para abrazarlos</div>
     <button id="soundToggle">🔊</button>
+
+    <!-- Controles móviles -->
+    <div class="mobile-controls">
+      <div class="left-controls">
+        <button class="mobile-btn" id="leftBtn">⬅</button>
+        <button class="mobile-btn" id="rightBtn">➡</button>
+      </div>
+      <div class="right-controls">
+        <button class="mobile-btn" id="fireBtn">🔫</button>
+      </div>
+    </div>
   </div>
 
   <script src="js/game-complete.js"></script>
+
+  <script>
+    // Función para simular teclas
+    function simulateKey(code, type="keydown") {
+      document.dispatchEvent(new KeyboardEvent(type, { keyCode: code, which: code }));
+    }
+
+    // Botón izquierda
+    const leftBtn = document.getElementById("leftBtn");
+    leftBtn.addEventListener("touchstart", () => simulateKey(37, "keydown"));
+    leftBtn.addEventListener("touchend", () => simulateKey(37, "keyup"));
+
+    // Botón derecha
+    const rightBtn = document.getElementById("rightBtn");
+    rightBtn.addEventListener("touchstart", () => simulateKey(39, "keydown"));
+    rightBtn.addEventListener("touchend", () => simulateKey(39, "keyup"));
+
+    // Botón disparo (Z = keyCode 90)
+    const fireBtn = document.getElementById("fireBtn");
+    fireBtn.addEventListener("touchstart", () => simulateKey(90, "keydown"));
+    fireBtn.addEventListener("touchend", () => simulateKey(90, "keyup"));
+  </script>
 </body>
 </html>
