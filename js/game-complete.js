@@ -80,7 +80,7 @@ window.addEventListener('load', function() {
       miel: `${baseUrl}Amigos/miel.png`,
       uni_solo: `${baseUrl}Amigos/unien4patas.png`,  // Unicornio solo
       osoyuni: `${baseUrl}Amigos/osoyuni.png`,       // Oso montando unicornio
-      uni_run: `${baseUrl}Amigos/unirrun.png`,
+      uni_run: `${baseUrl}Amigos/unirun.png`,
       uni_shup: `${baseUrl}Amigos/unirshup.png`,
       uni_corazon: `${baseUrl}Amigos/lovepower.png`,
       // Fondos
