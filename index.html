@@ -5,39 +5,70 @@
   <title>Oso Abrazos - Aventura Completa</title>
   <link rel="stylesheet" href="css/style.css">
   <style>
+    #startScreen {
+      position: relative;
+      text-align: center;
+    }
+
     #coverImage {
-      width: 90%;
-      max-width: 900px;
+      width: 100%;
+      max-width: 1000px; /* Puedes ajustar este valor si quieres */
       border-radius: 20px;
       display: block;
-      margin: 20px auto;
+      margin: 0 auto;
     }
+
     #startButton {
-      display: block;
-      margin: 20px auto;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       padding: 15px 40px;
       font-size: 1.5rem;
       border: none;
       border-radius: 12px;
-      background: #ff7f50;
+      background: rgba(255, 127, 80, 0.9);
       color: white;
       cursor: pointer;
-    }
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background: #000;
-      margin: 0;
-      flex-direction: column;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
     }
   </style>
 </head>
 <body>
   <div id="gameContainer">
-    <img id="coverImage" src="" alt="Oso Abrazos Game Cover">
-    <button id="startButton">¡Comenzar Aventura!</button>
+    <canvas id="gameCanvas" width="800" height="500"></canvas>
+
+    <div id="ui">
+      <div>Puntos: <span id="score">0</span></div>
+      <div>Vidas: <span id="lives">❤️❤️❤️</span></div>
+      <div>Nivel: <span id="level">1</span></div>
+      <div id="unicornPower">
+        <span>Poder del Unicornio:</span>
+        <div class="power-bar">
+            <div class="power-level" id="unicornPowerLevel"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="startScreen">
+      <!-- Quitamos el h1 y el <p>. -->
+      <img id="coverImage" src="" alt="Oso Abrazos Game Cover">
+      <button id="startButton">¡Comenzar Aventura!</button>
+    </div>
+
+    <div id="loadingScreen">
+      <h2>Cargando...</h2>
+      <div class="progress-bar">
+        <div class="progress" id="loadingProgress"></div>
+      </div>
+      <p id="loadingText">0%</p>
+    </div>
+
+    <div id="hint">Acércate a los amigos y presiona ESPACIO para abrazarlos</div>
+    <button id="soundToggle">🔊</button>
   </div>
+
+  <!-- Solo un archivo JavaScript -->
+  <script src="js/game-complete.js"></script>
 </body>
 </html>
