@@ -1,4 +1,4 @@
-// js/game-complete.js - TODO el código JavaScript en un archivo
+// js/game-complete.js - TODO el código JavaScript corregido
 
 // Esperar a que todo esté completamente cargado
 window.addEventListener('load', function() {
@@ -49,10 +49,16 @@ window.addEventListener('load', function() {
       Enemigos_02: new Image(),
       Enemigos_03: new Image(),
       miel: new Image(),
-      osoyuni: new Image(),
+      uni_solo: new Image(),    // Unicornio solo
+      osoyuni: new Image(),     // Oso montando unicornio
       uni_run: new Image(),
       uni_shup: new Image(),
-      uni_corazon: new Image()
+      uni_corazon: new Image(),
+      // Fondos
+      bosque1: new Image(),
+      bosque2: new Image(),
+      bosque3: new Image(),
+      bosque4: new Image()
     };
     
     // URLs CORREGIDAS
@@ -72,10 +78,16 @@ window.addEventListener('load', function() {
       Enemigos_02: `${baseUrl}enemigos/Enemigos-02.svg`,
       Enemigos_03: `${baseUrl}enemigos/Enemigos-03.svg`,
       miel: `${baseUrl}Amigos/miel.png`,
-      osoyuni: `${baseUrl}Amigos/osoyuni.png`,
+      uni_solo: `${baseUrl}Amigos/unien4patas.png`,  // Unicornio solo
+      osoyuni: `${baseUrl}Amigos/osoyuni.png`,       // Oso montando unicornio
       uni_run: `${baseUrl}Amigos/unirrun.png`,
       uni_shup: `${baseUrl}Amigos/unirshup.png`,
-      uni_corazon: `${baseUrl}Amigos/lovepower.png`
+      uni_corazon: `${baseUrl}Amigos/lovepower.png`,
+      // Fondos
+      bosque1: `${baseUrl}fondos/bosque1.jpg`,
+      bosque2: `${baseUrl}fondos/bosque2.jpg`,
+      bosque3: `${baseUrl}fondos/bosque3.jpg`,
+      bosque4: `${baseUrl}fondos/bosque4.jpg`
     };
 
     // Sonidos desactivados temporalmente
@@ -135,7 +147,8 @@ window.addEventListener('load', function() {
     let projectiles = [];
     let particles = [];
     let hintTimer = 0;
-    let keys = {}; // ¡Aquí está la variable keys!
+    let keys = {};
+    let fondoActual = 'bosque1';
 
     // Teclas
     window.addEventListener("keydown", e => {
@@ -254,15 +267,28 @@ window.addEventListener('load', function() {
       oso.hugging = false;
       oso.invincible = 0;
       
+      // Reiniciar estado del unicornio
       oso.hasUnicorn = false;
+      oso.width = 80;
+      oso.height = 80;
       unicornPowerElement.style.display = 'none';
 
+      // Generar amigos
       friends = [];
       const friendTypes = ['ardilla', 'conejo', 'pajarito'];
       for (let i = 0; i < 5 + gameState.level; i++) {
         const typeIndex = Math.floor(Math.random() * friendTypes.length);
+        let friendX;
+        let attempts = 0;
+        
+        // Evitar que los amigos aparezcan muy cerca del oso
+        do {
+            friendX = Math.random() * 700 + 50;
+            attempts++;
+        } while (Math.abs(friendX - oso.x) < 100 && attempts < 20);
+        
         friends.push({
-          x: Math.random() * 700 + 50,
+          x: friendX,
           y: 380,
           width: 60,
           height: 60,
@@ -273,26 +299,44 @@ window.addEventListener('load', function() {
         });
       }
       
+      // Generar enemigos
       enemies = [];
       if (gameState.level > 1) {
         const enemyTypes = ['Enemigos_01', 'Enemigos_02', 'Enemigos_03'];
         for (let i = 0; i < gameState.level - 1; i++) {
-          const typeIndex = Math.floor(Math.random() * enemyTypes.length);
+          let enemyX;
+          let attempts = 0;
+          
+          // Evitar que los enemigos aparezcan muy cerca del oso
+          do {
+              enemyX = Math.random() * 700 + 50;
+              attempts++;
+          } while (Math.abs(enemyX - oso.x) < 200 && attempts < 20);
+          
           enemies.push({
-            x: Math.random() * 700 + 50,
+            x: enemyX,
             y: 380,
             width: 50,
             height: 50,
             vx: (Math.random() > 0.5 ? 1 : -1) * (1 + Math.random()),
-            type: enemyTypes[typeIndex]
+            type: enemyTypes[Math.floor(Math.random() * enemyTypes.length)]
           });
         }
       }
       
+      // Generar items (miel)
       items = [];
       for (let i = 0; i < 3 + gameState.level; i++) {
+        let itemX;
+        let attempts = 0;
+        
+        do {
+            itemX = Math.random() * 700 + 50;
+            attempts++;
+        } while (Math.abs(itemX - oso.x) < 100 && attempts < 20);
+        
         items.push({
-          x: Math.random() * 700 + 50,
+          x: itemX,
           y: Math.random() * 300 + 100,
           width: 30,
           height: 30,
@@ -301,14 +345,23 @@ window.addEventListener('load', function() {
         });
       }
 
+      // Generar unicornio en nivel 2+
       if (gameState.level >= 2) {
+          let unicornX;
+          let attempts = 0;
+          
+          do {
+              unicornX = Math.random() * 700 + 50;
+              attempts++;
+          } while (Math.abs(unicornX - oso.x) < 150 && attempts < 20);
+          
           items.push({
-              x: Math.random() * 700 + 50,
+              x: unicornX,
               y: 380,
               width: 80,
               height: 80,
               collected: false,
-              type: 'osoyuni'
+              type: 'uni_solo'
           });
           showHint("¡Mira! Un unicornio mágico ha aparecido. Acércate a él para montarlo", 5000);
       }
@@ -367,15 +420,36 @@ window.addEventListener('load', function() {
         oso.vx = 0;
         
         let huggedFriend = false;
+        
+        // Aumentar el rango de detección del abrazo
+        const hugRange = 100;
+        
         for (let friend of friends) {
-          if (!friend.hugged && checkCollision(oso, friend)) {
-            friend.hugged = true;
-            gameState.score += 100;
-            huggedFriend = true;
-            createParticles(friend.x + friend.width/2, friend.y + friend.height/2, 10, "#FFD700");
-            playSound('hug');
+          if (!friend.hugged) {
+            // Crear un área de detección más grande para el abrazo
+            const hugArea = {
+              x: oso.x - (hugRange - oso.width) / 2,
+              y: oso.y - (hugRange - oso.height) / 2,
+              width: hugRange,
+              height: hugRange
+            };
             
-            createTextParticle(friend.x + friend.width/2, friend.y, "+100", "#FFD700");
+            const friendArea = {
+              x: friend.x,
+              y: friend.y,
+              width: friend.width,
+              height: friend.height
+            };
+            
+            if (checkCollision(hugArea, friendArea)) {
+              friend.hugged = true;
+              gameState.score += 100;
+              huggedFriend = true;
+              createParticles(friend.x + friend.width/2, friend.y + friend.height/2, 10, "#FFD700");
+              playSound('hug');
+              
+              createTextParticle(friend.x + friend.width/2, friend.y, "+100", "#FFD700");
+            }
           }
         }
       }
@@ -453,11 +527,14 @@ window.addEventListener('load', function() {
             createParticles(item.x + item.width/2, item.y + item.height/2, 8, "#FF9800");
             playSound('collect');
             createTextParticle(item.x + item.width/2, item.y, "+50", "#FF9800");
-          } else if (item.type === 'osoyuni') {
+          } else if (item.type === 'uni_solo') {
             oso.hasUnicorn = true;
             unicorn.active = true;
             unicorn.power = 100;
             unicornPowerElement.style.display = 'flex';
+            // Cambiar tamaño del oso cuando monta el unicornio
+            oso.width = 100;
+            oso.height = 100;
             playSound('powerUp');
             showHint("¡Has montado el unicornio! Usa Z o el mouse para disparar corazones", 5000);
           }
@@ -536,7 +613,14 @@ window.addEventListener('load', function() {
     }
 
     function drawOsoSprite() {
-      const spriteName = `oso_${oso.action}`;
+      let spriteName;
+      
+      if (oso.hasUnicorn) {
+        spriteName = (oso.vx !== 0) ? 'uni_run' : 'osoyuni';
+      } else {
+        spriteName = `oso_${oso.action}`;
+      }
+      
       const sprite = sprites[spriteName] || sprites.oso_idle;
 
       if (oso.invincible > 0 && oso.invincible % 6 < 3) {
@@ -601,7 +685,7 @@ window.addEventListener('load', function() {
           friend.x + friend.width/2 - 10, friend.y - 15 + Math.sin(Date.now()/300) * 5,
           friend.x + friend.width/2 - 10, friend.y - 20 + Math.sin(Date.now()/300) * 5
         );
-        ctx.bezierCurveTo(
+                ctx.bezierCurveTo(
           friend.x + friend.width/2 - 10, friend.y - 30 + Math.sin(Date.now()/300) * 5,
           friend.x + friend.width/2, friend.y - 25 + Math.sin(Date.now()/300) * 5,
           friend.x + friend.width/2, friend.y - 15 + Math.sin(Date.now()/300) * 5
@@ -646,7 +730,7 @@ window.addEventListener('load', function() {
                 ctx.arc(item.x + item.width/2, item.y + item.height/2, item.width/2, 0, Math.PI * 2);
                 ctx.fill();
                 
-                if (item.type === 'osoyuni') {
+                if (item.type === 'uni_solo') {
                   ctx.fillStyle = "#FF69B4";
                   ctx.beginPath();
                   ctx.arc(item.x + item.width/2, item.y + item.height/2, item.width/2, 0, Math.PI * 2);
@@ -727,37 +811,52 @@ window.addEventListener('load', function() {
     }
 
     function drawBackground() {
-      const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-      gradient.addColorStop(0, "#87CEEB");
-      gradient.addColorStop(1, "#E0F7FA");
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      // Usar fondo diferente según el nivel
+      const fondosPorNivel = ['bosque1', 'bosque2', 'bosque3', 'bosque4'];
+      const fondoIndex = Math.min(gameState.level - 1, fondosPorNivel.length - 1);
+      fondoActual = fondosPorNivel[fondoIndex];
       
+      const fondo = sprites[fondoActual];
+      
+      if (fondo && fondo.complete && fondo.naturalWidth > 0) {
+        // Dibujar el fondo de bosque
+        ctx.drawImage(fondo, 0, 0, canvas.width, canvas.height);
+      } else {
+        // Fallback al gradient antiguo si el fondo no está cargado
+        const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        gradient.addColorStop(0, "#87CEEB");
+        gradient.addColorStop(1, "#E0F7FA");
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Montañas (solo si no hay fondo)
+        ctx.fillStyle = "#78909C";
+        ctx.beginPath();
+        ctx.moveTo(0, 400);
+        ctx.lineTo(200, 400);
+        ctx.lineTo(100, 300);
+        ctx.fill();
+        
+        ctx.beginPath();
+        ctx.moveTo(150, 400);
+        ctx.lineTo(350, 400);
+        ctx.lineTo(250, 280);
+        ctx.fill();
+        
+        ctx.beginPath();
+        ctx.moveTo(600, 400);
+        ctx.lineTo(800, 400);
+        ctx.lineTo(700, 320);
+        ctx.fill();
+      }
+      
+      // Nubes (siempre visibles)
       ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
       for (let i = 0; i < 5; i++) {
         const x = (Date.now() / 30000 + i * 0.2) % 1 * canvas.width * 2 - canvas.width;
         const y = 50 + i * 40;
         drawCloud(x, y);
       }
-      
-      ctx.fillStyle = "#78909C";
-      ctx.beginPath();
-      ctx.moveTo(0, 400);
-      ctx.lineTo(200, 400);
-      ctx.lineTo(100, 300);
-      ctx.fill();
-      
-      ctx.beginPath();
-      ctx.moveTo(150, 400);
-      ctx.lineTo(350, 400);
-      ctx.lineTo(250, 280);
-      ctx.fill();
-      
-      ctx.beginPath();
-      ctx.moveTo(600, 400);
-      ctx.lineTo(800, 400);
-      ctx.lineTo(700, 320);
-      ctx.fill();
     }
 
     function drawCloud(x, y) {
