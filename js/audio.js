@@ -4,11 +4,11 @@ const sounds = {
     // Sonidos desactivados temporalmente
 };
 
-function playSound(soundName) {
+window.playSound = function(soundName) {
     console.log(`🔊 Sonido: ${soundName} (sonidos desactivados temporalmente)`);
-}
+};
 
-function toggleSound() {
+window.toggleSound = function() {
     gameState.soundEnabled = !gameState.soundEnabled;
     
     if (gameState.soundEnabled) {
@@ -16,4 +16,4 @@ function toggleSound() {
     } else {
         soundToggle.textContent = "🔇";
     }
-}
+};
