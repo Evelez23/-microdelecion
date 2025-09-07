@@ -6,54 +6,115 @@ let scoreElement, livesElement, levelElement, startScreen, startButton;
 let loadingScreen, loadingProgress, loadingText, coverImage, hintElement;
 let soundToggle, unicornPowerElement, unicornPowerLevelElement;
 
-let gameState = {
-    score: 0,
-    lives: 3,
-    level: 1,
-    gameStarted: false,
-    soundEnabled: false
+// Hacer funciones globales asignándolas a window
+window.startGame = function() {
+  gameState.gameStarted = true;
+  startScreen.style.display = "none";
+  resetLevel();
+  
+  showHint("Acércate a los amigos y presiona ESPACIO para abrazarlos", 5000);
+  
+  gameLoop();
 };
 
-let oso = {
-    x: 100,
-    y: 380,
-    width: 80,
-    height: 80,
-    vx: 0,
-    vy: 0,
-    speed: 4,
-    jumpForce: 13,
-    gravity: 0.6,
-    grounded: true,
-    action: "idle",
-    direction: 1,
-    hugging: false,
-    hugCooldown: 0,
-    invincible: 0,
-    hasUnicorn: false
+window.resetLevel = function() {
+  oso.x = 100;
+  oso.y = 380;
+  oso.vx = 0;
+  oso.vy = 0;
+  oso.action = "idle";
+  oso.hugging = false;
+  oso.invincible = 0;
+  
+  oso.hasUnicorn = false;
+  unicornPowerElement.style.display = 'none';
+
+  friends = [];
+  const friendTypes = ['ardilla', 'conejo', 'pajarito'];
+  for (let i = 0; i < 5 + gameState.level; i++) {
+    const typeIndex = Math.floor(Math.random() * friendTypes.length);
+    friends.push({
+      x: Math.random() * 700 + 50,
+      y: 380,
+      width: 60,
+      height: 60,
+      hugged: false,
+      type: friendTypes[typeIndex],
+      floating: 0,
+      floatDir: Math.random() > 0.5 ? 1 : -1
+    });
+  }
+  
+  enemies = [];
+  if (gameState.level > 1) {
+    const enemyTypes = ['Enemigos_01', 'Enemigos_02', 'Enemigos_03'];
+    for (let i = 0; i < gameState.level - 1; i++) {
+      const typeIndex = Math.floor(Math.random() * enemyTypes.length);
+      enemies.push({
+        x: Math.random() * 700 + 50,
+        y: 380,
+        width: 50,
+        height: 50,
+        vx: (Math.random() > 0.5 ? 1 : -1) * (1 + Math.random()),
+        type: enemyTypes[typeIndex]
+      });
+    }
+  }
+  
+  items = [];
+  for (let i = 0; i < 3 + gameState.level; i++) {
+    items.push({
+      x: Math.random() * 700 + 50,
+      y: Math.random() * 300 + 100,
+      width: 30,
+      height: 30,
+      collected: false,
+      type: 'miel'
+    });
+  }
+
+  if (gameState.level >= 2) {
+      items.push({
+          x: Math.random() * 700 + 50,
+          y: 380,
+          width: 80,
+          height: 80,
+          collected: false,
+          type: 'osoyuni'
+      });
+      showHint("¡Mira! Un unicornio mágico ha aparecido. Acércate a él para montarlo", 5000);
+  }
 };
 
-let unicorn = {
-    x: 0,
-    y: 0,
-    width: 100,
-    height: 100,
-    active: false,
-    power: 100,
-    cooldown: 0
+window.showHint = function(text, duration) {
+  hintElement.textContent = text;
+  hintElement.style.display = "block";
+  hintTimer = duration / 16.67;
 };
 
-let platforms = [
-    {x: 0, y: 450, width: 800, height: 50},
-    {x: 200, y: 350, width: 100, height: 20},
-    {x: 400, y: 300, width: 100, height: 20},
-    {x: 600, y: 250, width: 100, height: 20}
-];
+window.shootHeart = function() {
+  if (unicorn.cooldown <= 0 && unicorn.power > 0) {
+      let heartSpeed = 10;
+      let heartSize = 25;
+      let heartVx = oso.direction * heartSpeed;
 
-let friends = [], enemies = [], items = [];
-let projectiles = [], particles = [];
-let hintTimer = 0;
-let keys = {};
+      let startX = oso.direction === 1 ? oso.x + oso.width : oso.x - heartSize;
+
+      projectiles.push({
+          x: startX,
+          y: oso.y + oso.height / 3,
+          vx: heartVx,
+          width: heartSize,
+          height: heartSize
+      });
+
+      unicorn.power -= 10;
+      unicorn.cooldown = 15;
+      playSound('shot');
+  }
+};
+
+// ... (el resto de las funciones también necesitan window.) ...
 
 // Inicialización del juego
 function initGame() {
@@ -113,18 +174,16 @@ function setupEventListeners() {
     // Disparar corazones con el mouse
     canvas.addEventListener("mousedown", e => {
         if (oso.hasUnicorn) {
-            shootHeart();
+            window.shootHeart();
         }
     });
     
     // Iniciar juego
-    startButton.addEventListener("click", startGame);
+    startButton.addEventListener("click", window.startGame);
     
     // Control de sonido
     soundToggle.addEventListener("click", toggleSound);
 }
-
-// ... (el resto de las funciones del juego: shootHeart, startGame, resetLevel, etc.) ...
 
 // Iniciar cuando la página esté cargada
 window.addEventListener('load', initGame);
