@@ -948,3 +948,96 @@ window.addEventListener('load', function() {
     // Iniciar carga de recursos
     loadResources();
 });
+// URLs de sonidos - CON TUS ARCHIVOS REALES
+const soundUrls = {
+    background: 'https://raw.githubusercontent.com/Evelez23/-microdelecion/main/sounds/background.mp3.mp3',
+    jump: 'https://raw.githubusercontent.com/Evelez23/-microdelecion/main/sounds/jump.mp3.mp3',
+    collect: 'https://raw.githubusercontent.com/Evelez23/-microdelecion/main/sounds/collect.mp3.mp3',
+    hug: 'https://raw.githubusercontent.com/Evelez23/-microdelecion/main/sounds/hug.mp3.mp3',
+    hurt: 'https://raw.githubusercontent.com/Evelez23/-microdelecion/main/sounds/hurt.mp3.mp3',
+    enemy: 'https://raw.githubusercontent.com/Evelez23/-microdelecion/main/sounds/enemy.mp3.mp3',
+    shot: 'https://raw.githubusercontent.com/Evelez23/-microdelecion/main/sounds/shot.mp3.mp3',
+    powerUp: 'https://raw.githubusercontent.com/Evelez23/-microdelecion/main/sounds/powerup.mp3.mp3'
+};
+
+const sounds = {};
+
+// Función para cargar sonidos
+function loadSounds() {
+    console.log("🔊 Cargando sonidos...");
+    
+    let loadedSounds = 0;
+    const totalSounds = Object.keys(soundUrls).length;
+    
+    for (let key in soundUrls) {
+        sounds[key] = new Audio(soundUrls[key]);
+        sounds[key].volume = 0.6;
+        sounds[key].preload = 'auto';
+        
+        sounds[key].oncanplaythrough = () => {
+            loadedSounds++;
+            console.log(`✅ Sonido cargado: ${key} (${loadedSounds}/${totalSounds})`);
+        };
+        
+        sounds[key].onerror = (e) => {
+            loadedSounds++;
+            console.error(`❌ Error cargando sonido ${key}:`, soundUrls[key], e);
+        };
+    }
+    
+    sounds.background.loop = true;
+}
+
+// Modificar la función playSound para que funcione correctamente:
+function playSound(soundName) {
+    if (gameState.soundEnabled && sounds[soundName]) {
+        try {
+            // Crear una nueva instancia del sonido para permitir superposición
+            const soundClone = new Audio(sounds[soundName].src);
+            soundClone.volume = sounds[soundName].volume;
+            soundClone.play().catch(e => {
+                console.log("Error reproduciendo sonido: ", e);
+            });
+        } catch (error) {
+            console.error("Error con el sonido: ", error);
+        }
+    }
+}
+
+// Y en loadResources(), añadir al inicio:
+function loadResources() {
+    console.log("🔄 Iniciando carga de recursos...");
+    
+    // Primero cargar sonidos
+    loadSounds();
+    
+    // Luego cargar imágenes...
+    // ... (el resto del código de carga de imágenes)
+}
+// En el estado del juego, cambiar a soundEnabled: true
+let gameState = {
+    score: 0,
+    lives: 3,
+    level: 1,
+    gameStarted: false,
+    soundEnabled: true  // ← Cambiado a true
+};
+function toggleSound() {
+    gameState.soundEnabled = !gameState.soundEnabled;
+    
+    if (gameState.soundEnabled) {
+        soundToggle.textContent = "🔊";
+        // Intentar reproducir música de fondo si está cargada
+        if (sounds.background && sounds.background.play) {
+            sounds.background.play().catch(e => {
+                console.log("Error autoplay: ", e);
+            });
+        }
+    } else {
+        soundToggle.textContent = "🔇";
+        // Pausar música de fondo
+        if (sounds.background && sounds.background.pause) {
+            sounds.background.pause();
+        }
+    }
+}
