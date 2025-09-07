@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Oso Abrazos - Aventura Completa</title>
   <link rel="stylesheet" href="css/style.css">
   <style>
@@ -12,10 +13,13 @@
       margin: 0 auto;
       overflow: hidden;
       background: #000;
+      max-width: 100%;
     }
 
     #gameCanvas {
       display: block;
+      width: 100%;
+      height: 100%;
     }
 
     #startScreen {
@@ -24,6 +28,7 @@
       left: 0;
       width: 100%;
       height: 100%;
+      z-index: 10;
     }
 
     #coverImage {
@@ -46,6 +51,94 @@
       color: white;
       cursor: pointer;
       box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+      z-index: 11;
+    }
+
+    #ui {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      color: white;
+      font-family: Arial, sans-serif;
+      z-index: 5;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+    .power-bar {
+      width: 150px;
+      height: 15px;
+      background: #555;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 5px;
+    }
+
+    .power-level {
+      height: 100%;
+      background: linear-gradient(to right, #ff5e00, #ffbb00);
+      width: 0%;
+      transition: width 0.3s;
+    }
+
+    #loadingScreen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-family: Arial, sans-serif;
+      z-index: 20;
+    }
+
+    .progress-bar {
+      width: 300px;
+      height: 20px;
+      background: #555;
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 20px 0;
+    }
+
+    .progress {
+      height: 100%;
+      background: linear-gradient(to right, #4CAF50, #8BC34A);
+      width: 0%;
+      transition: width 0.3s;
+    }
+
+    #hint {
+      position: absolute;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 10px 15px;
+      border-radius: 5px;
+      font-family: Arial, sans-serif;
+      display: none;
+      z-index: 5;
+    }
+
+    #soundToggle {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.5);
+      border: none;
+      color: white;
+      padding: 10px;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 5;
     }
 
     /* Botones móviles */
@@ -57,14 +150,10 @@
       justify-content: space-between;
       padding: 0 20px;
       pointer-events: none;
+      z-index: 5;
     }
 
-    .left-controls {
-      display: flex;
-      gap: 15px;
-    }
-
-    .right-controls {
+    .left-controls, .right-controls {
       display: flex;
       gap: 15px;
     }
@@ -79,6 +168,24 @@
       border: none;
       pointer-events: auto;
       touch-action: manipulation;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Responsive */
+    @media (max-width: 800px) {
+      #gameContainer {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 16/10;
+      }
+      
+      .mobile-btn {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+      }
     }
   </style>
 </head>
@@ -101,6 +208,10 @@
     <div id="startScreen">
       <img id="coverImage" src="https://raw.githubusercontent.com/Evelez23/-microdelecion/main/img/oso/oso_portada.jpg" alt="Oso Abrazos Game Cover">
       <button id="startButton">¡Comenzar Aventura!</button>
+      <audio id="backgroundMusic" loop>
+        <source src="https://assets.mixkit.org/music/preview/mixkit-games-worldbeat-466.mp3" type="audio/mpeg">
+        Tu navegador no soporta el elemento de audio.
+      </audio>
     </div>
 
     <div id="loadingScreen">
@@ -119,8 +230,10 @@
       <div class="left-controls">
         <button class="mobile-btn" id="leftBtn">⬅</button>
         <button class="mobile-btn" id="rightBtn">➡</button>
+        <button class="mobile-btn" id="jumpBtn">⬆</button>
       </div>
       <div class="right-controls">
+        <button class="mobile-btn" id="hugBtn">🤗</button>
         <button class="mobile-btn" id="fireBtn">🔫</button>
       </div>
     </div>
@@ -129,25 +242,130 @@
   <script src="js/game-complete.js"></script>
 
   <script>
+    // Variables globales
+    let musicPlaying = false;
+    const backgroundMusic = document.getElementById('backgroundMusic');
+    const soundToggle = document.getElementById('soundToggle');
+    
+    // Inicializar música
+    window.addEventListener('load', function() {
+      // Precargar música pero no reproducirla aún
+      backgroundMusic.volume = 0.5;
+      backgroundMusic.load();
+    });
+    
+    // Controlar música de fondo
+    soundToggle.addEventListener('click', function() {
+      if (musicPlaying) {
+        backgroundMusic.pause();
+        soundToggle.textContent = '🔇';
+      } else {
+        backgroundMusic.play().catch(e => {
+          console.log("La reproducción automática fue prevenida: ", e);
+        });
+        soundToggle.textContent = '🔊';
+      }
+      musicPlaying = !musicPlaying;
+    });
+    
+    // Reproducir música cuando se inicia el juego
+    document.getElementById('startButton').addEventListener('click', function() {
+      if (!musicPlaying) {
+        backgroundMusic.play();
+        soundToggle.textContent = '🔊';
+        musicPlaying = true;
+      }
+    });
+
     // Función para simular teclas
-    function simulateKey(code, type="keydown") {
-      document.dispatchEvent(new KeyboardEvent(type, { keyCode: code, which: code }));
+    function simulateKey(key, type) {
+      let event;
+      switch(type) {
+        case "keydown":
+          event = new KeyboardEvent('keydown', { key: key, keyCode: getKeyCode(key), which: getKeyCode(key) });
+          break;
+        case "keyup":
+          event = new KeyboardEvent('keyup', { key: key, keyCode: getKeyCode(key), which: getKeyCode(key) });
+          break;
+      }
+      document.dispatchEvent(event);
     }
 
-    // Botón izquierda
+    // Obtener keyCode basado en la tecla
+    function getKeyCode(key) {
+      switch(key) {
+        case "ArrowLeft": return 37;
+        case "ArrowRight": return 39;
+        case "ArrowUp": return 38;
+        case " ": return 32;
+        case "z": return 90;
+        default: return 0;
+      }
+    }
+
+    // Configurar botones móviles
     const leftBtn = document.getElementById("leftBtn");
-    leftBtn.addEventListener("touchstart", () => simulateKey(37, "keydown"));
-    leftBtn.addEventListener("touchend", () => simulateKey(37, "keyup"));
+    const rightBtn = document.getElementById("rightBtn");
+    const jumpBtn = document.getElementById("jumpBtn");
+    const hugBtn = document.getElementById("hugBtn");
+    const fireBtn = document.getElementById("fireBtn");
+
+    // Botón izquierda
+    leftBtn.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      simulateKey("ArrowLeft", "keydown");
+    });
+    leftBtn.addEventListener("touchend", (e) => {
+      e.preventDefault();
+      simulateKey("ArrowLeft", "keyup");
+    });
 
     // Botón derecha
-    const rightBtn = document.getElementById("rightBtn");
-    rightBtn.addEventListener("touchstart", () => simulateKey(39, "keydown"));
-    rightBtn.addEventListener("touchend", () => simulateKey(39, "keyup"));
+    rightBtn.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      simulateKey("ArrowRight", "keydown");
+    });
+    rightBtn.addEventListener("touchend", (e) => {
+      e.preventDefault();
+      simulateKey("ArrowRight", "keyup");
+    });
 
-    // Botón disparo (Z = keyCode 90)
-    const fireBtn = document.getElementById("fireBtn");
-    fireBtn.addEventListener("touchstart", () => simulateKey(90, "keydown"));
-    fireBtn.addEventListener("touchend", () => simulateKey(90, "keyup"));
+    // Botón saltar
+    jumpBtn.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      simulateKey("ArrowUp", "keydown");
+    });
+    jumpBtn.addEventListener("touchend", (e) => {
+      e.preventDefault();
+      simulateKey("ArrowUp", "keyup");
+    });
+
+    // Botón abrazar (espacio)
+    hugBtn.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      simulateKey(" ", "keydown");
+    });
+    hugBtn.addEventListener("touchend", (e) => {
+      e.preventDefault();
+      simulateKey(" ", "keyup");
+    });
+
+    // Botón disparo (Z)
+    fireBtn.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      simulateKey("z", "keydown");
+    });
+    fireBtn.addEventListener("touchend", (e) => {
+      e.preventDefault();
+      simulateKey("z", "keyup");
+    });
+
+    // Prevenir scroll en dispositivos táctiles
+    document.addEventListener('touchmove', function(e) {
+      if (e.target.classList.contains('mobile-btn')) {
+        e.preventDefault();
+      }
+    }, { passive: false });
   </script>
 </body>
 </html>
