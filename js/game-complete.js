@@ -413,7 +413,7 @@ window.addEventListener('load', function() {
         playSound('jump');
       }
       
-      if (keys[" "] && oso.hugCooldown <= 0 && oso.grounded && !oso.hasUnicorn) {
+     if (keys[" "] && oso.hugCooldown <= 0 && oso.grounded) {
         oso.action = "hugging";
         oso.hugging = true;
         oso.hugCooldown = 30;
