@@ -270,7 +270,7 @@
       position: absolute;
       top: 10px;
       left: 50%;
-      transform: translateX(-50%);
+      transform: translateX(-50');
       width: 300px;
       height: 20px;
       background: #555;
@@ -535,22 +535,27 @@
     let fires = [];
     
     // Inicializar elementos del juego
-    for (let i = 0; i < 5; i++) {
-      hearts.push({
-        x: Math.random() * 700 + 50,
-        y: 350,
-        width: 30,
-        height: 30,
-        collected: false
-      });
+    function initGameElements() {
+      hearts = [];
+      friends = [];
       
-      friends.push({
-        x: Math.random() * 700 + 50,
-        y: 350,
-        width: 40,
-        height: 40,
-        hugged: false
-      });
+      for (let i = 0; i < 5; i++) {
+        hearts.push({
+          x: Math.random() * 700 + 50,
+          y: 350,
+          width: 30,
+          height: 30,
+          collected: false
+        });
+        
+        friends.push({
+          x: Math.random() * 700 + 50,
+          y: 350,
+          width: 40,
+          height: 40,
+          hugged: false
+        });
+      }
     }
     
     // =============================================
@@ -698,7 +703,8 @@
       e.preventDefault();
       simulateKey("z", "keydown");
     });
-    fireBtn.addEventListener("touchend', (e) => {
+    // CORRECCIÓN DEL ERROR: Esta línea tenía una comilla mal cerrada
+    fireBtn.addEventListener("touchend", (e) => {
       e.preventDefault();
       simulateKey("z", "keyup");
     });
@@ -718,6 +724,7 @@
     startButton.addEventListener('click', function() {
       startScreen.style.display = 'none';
       gameState = 'playing';
+      initGameElements();
       playMusic('intro');
       gameLoop();
     });
