@@ -29,7 +29,7 @@ window.addEventListener('load', function() {
     const loadingText = document.getElementById("loadingText");
     const coverImage = document.getElementById("coverImage");
     const hintElement = document.getElementById("hint");
-    const soundToggle = document.getElementById("soundToggle");
+    const soundToggle = document.getElementById('soundToggle');
     const unicornPowerElement = document.getElementById("unicornPower");
     const unicornPowerLevelElement = document.getElementById("unicornPowerLevel");
 
@@ -62,7 +62,7 @@ window.addEventListener('load', function() {
     };
     
     // URLs CORREGIDAS
-    const baseUrl = "https://raw.githubusercontent.com/Evelez23/-microdelecion/main/img/";
+    const baseUrl = "https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/refs/heads/main/img/";
     const imageUrls = {
       oso_idle: `${baseUrl}oso/oso_idle.svg`,
       oso_walk: `${baseUrl}oso/oso_walk.svg`,
@@ -92,14 +92,14 @@ window.addEventListener('load', function() {
 
     // URLs de sonidos - TUS ARCHIVOS REALES
     const soundUrls = {
-        background: 'https://raw.githubusercontent.com/Evelez23/-microdelecion/main/sounds/background.mp3.mp3',
-        jump: 'https://raw.githubusercontent.com/Evelez23/-microdelecion/main/sounds/jump.mp3.mp3',
-        collect: 'https://raw.githubusercontent.com/Evelez23/-microdelecion/main/sounds/collect.mp3.mp3',
-        hug: 'https://raw.githubusercontent.com/Evelez23/-microdelecion/main/sounds/hug.mp3.mp3',
-        hurt: 'https://raw.githubusercontent.com/Evelez23/-microdelecion/main/sounds/hurt.mp3.mp3',
-        enemy: 'https://raw.githubusercontent.com/Evelez23/-microdelecion/main/sounds/enemy.mp3.mp3',
-        shot: 'https://raw.githubusercontent.com/Evelez23/-microdelecion/main/sounds/shot.mp3.mp3',
-        powerUp: 'https://raw.githubusercontent.com/Evelez23/-microdelecion/main/sounds/powerup.mp3.mp3'
+        background: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/refs/heads/main/sounds/background.mp3.mp3',
+        jump: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/refs/heads/main/sounds/jump.mp3.mp3',
+        collect: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/refs/heads/main/sounds/collect.mp3.mp3',
+        hug: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/refs/heads/main/sounds/hug.mp3.mp3',
+        hurt: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/refs/heads/main/sounds/hurt.mp3.mp3',
+        enemy: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/refs/heads/main/sounds/enemy.mp3.mp3',
+        shot: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/refs/heads/main/sounds/shot.mp3.mp3',
+        powerUp: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/refs/heads/main/sounds/powerup.mp3.mp3'
     };
 
     const sounds = {};
