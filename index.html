@@ -205,6 +205,17 @@
       padding: 20px;
       box-sizing: border-box;
       text-align: center;
+      overflow-y: auto;
+    }
+    
+    .storybook-content {
+      max-width: 700px;
+      max-height: 90%;
+      overflow-y: auto;
+      padding: 20px;
+      background: rgba(255, 215, 0, 0.1);
+      border-radius: 15px;
+      border: 2px solid #FFD700;
     }
     
     .storybook-images {
@@ -225,6 +236,14 @@
       padding: 5px;
     }
     
+    .storybook-controls {
+      margin-top: 20px;
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
     /* 🔥 Estilos para el jefe */
     .boss-health {
       position: absolute;
@@ -397,23 +416,34 @@
 
       <!-- Storybook mejorado -->
       <div id="storybook" style="display: none;">
-        <h2>🐻 Oso Abrazos vs. 🐺 El Lobo Feroz</h2>
-        <p>¡El malvado Lobo Feroz ha invadido el bosque y quiere acabar con todos los abrazos!</p>
-        <p>Debes recolectar <strong>3 corazones mágicos</strong> para invocar al Unicornio de la Amistad.</p>
-        
-        <div class="storybook-images">
-          <img src="https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/refs/heads/main/img/enemigos/lobo.svg" alt="Lobo Normal">
-          <img src="https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/refs/heads/main/img/enemigos/loboferoz.png" alt="Lobo Enfurecido">
-          <img src="https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/refs/heads/main/img/oso/corazon.png" alt="Corazón">
-          <img src="https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/refs/heads/main/img/oso/uniyosocombat.png" alt="Oso y Unicornio">
+        <div class="storybook-content">
+          <h2>🐻 Oso Abrazos vs. 🐺 El Lobo Feroz</h2>
+          <p>¡El malvado Lobo Feroz ha invadido el bosque y quiere acabar con todos los abrazos!</p>
+          <p>Debes recolectar <strong>3 corazones mágicos</strong> para invocar al Unicornio de la Amistad.</p>
+          
+          <div class="storybook-images">
+            <img src="https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/refs/heads/main/img/enemigos/lobo.svg" alt="Lobo Normal">
+            <img src="https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/refs/heads/main/img/enemigos/loboferoz.png" alt="Lobo Enfurecido">
+            <img src="https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/refs/heads/main/img/oso/corazon.png" alt="Corazón">
+            <img src="https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/refs/heads/main/img/oso/uniyosocombat.png" alt="Oso y Unicornio">
+          </div>
+          
+          <p>🔥 <strong>El lobo tiene 5 puntos de vida</strong> y lanzará fuego desde su boca.</p>
+          <p>💕 <strong>¡Recolecta corazones para invocar al unicornio!</strong></p>
+          <p>🦄 <strong>Con el unicornio puedes disparar rayos de amistad</strong> para derrotar al lobo.</p>
+          <p>⚠️ <strong>¡Ten cuidado!</strong> 5 disparos del lobo te derrotarán.</p>
+          
+          <h3>Controles:</h3>
+          <p>⬅️ ➡️ : Moverse izquierda/derecha</p>
+          <p>⬆️ : Saltar</p>
+          <p>ESPACIO : Abrazar</p>
+          <p>Z : Disparar (con unicornio)</p>
+          
+          <div class="storybook-controls">
+            <button id="startGame" class="storybook-btn">💪 ¡Entendido! ¡A salvar el bosque!</button>
+            <button id="backToMenu" class="storybook-btn">📋 Volver al menú</button>
+          </div>
         </div>
-        
-        <p>🔥 <strong>El lobo tiene 5 puntos de vida</strong> y lanzará fuego desde su boca.</p>
-        <p>💕 <strong>¡Recolecta corazones para invocar al unicornio!</strong></p>
-        <p>🦄 <strong>Con el unicornio puedes disparar rayos de amistad</strong> para derrotar al lobo.</p>
-        <p>⚠️ <strong>¡Ten cuidado!</strong> 5 disparos del lobo te derrotarán.</p>
-        
-        <button id="startGame" class="storybook-btn">💪 ¡Entendido! ¡A salvar el bosque!</button>
       </div>
 
       <div id="hint">Acércate a los amigos y presiona ESPACIO para abrazarlos</div>
@@ -524,6 +554,7 @@
       const nextLevelBtn = document.getElementById('nextLevelBtn');
       const storybook = document.getElementById('storybook');
       const startGameBtn = document.getElementById('startGame');
+      const backToMenuBtn = document.getElementById('backToMenu');
       const soundToggle = document.getElementById('soundToggle');
       const hintElement = document.getElementById('hint');
       
@@ -539,6 +570,10 @@
       
       if (startGameBtn) {
         startGameBtn.addEventListener('click', startGame);
+      }
+      
+      if (backToMenuBtn) {
+        backToMenuBtn.addEventListener('click', backToMenu);
       }
       
       if (nextLevelBtn) {
@@ -604,6 +639,14 @@
       
       if (startScreen) startScreen.style.display = 'none';
       if (storybook) storybook.style.display = 'flex';
+    }
+    
+    function backToMenu() {
+      const storybook = document.getElementById('storybook');
+      const startScreen = document.getElementById('startScreen');
+      
+      if (storybook) storybook.style.display = 'none';
+      if (startScreen) startScreen.style.display = 'flex';
     }
     
     function startGame() {
