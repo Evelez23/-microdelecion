@@ -582,10 +582,10 @@
       <div id="startScreen">
         <img id="coverImage" src="https://raw.githubusercontent.com/Evelez23/-microdelecion/main/img/oso/oso_portada.jpg" alt="Oso Abrazos Game Cover">
         <button id="startButton">¡Comenzar Aventura!</button>
-        <audio id="introMusic" loop>
+        <audio id="introMusic">
           <source src="https://github.com/Evelez23/-microdelecion/raw/main/sounds/intro.mp3" type="audio/mpeg">
         </audio>
-        <audio id="battleMusic" loop>
+        <audio id="battleMusic">
           <source src="https://github.com/Evelez23/-microdelecion/raw/main/sounds/para%20la%20batalla.mp3" type="audio/mpeg">
         </audio>
       </div>
@@ -641,8 +641,6 @@
     </div>
   </div>
 
-  <script src="js/game-complete.js"></script>
-
   <script>
     // Variables para la música
     let musicPlaying = true;
@@ -652,6 +650,10 @@
     const hintElement = document.getElementById('hint');
     const wolfContainer = document.getElementById('wolfContainer');
     
+    // Estado del juego
+    let currentLevel = '1-1';
+    let currentMusic = null;
+    
     // Precargar música
     window.addEventListener('load', function() {
       introMusic.volume = 0.7;
@@ -659,8 +661,8 @@
       
       // Solución para la aut reproducción en móviles
       document.addEventListener('click', function() {
-        if (musicPlaying && introMusic.paused) {
-          introMusic.play().catch(e => console.log("Error al reproducir audio: ", e));
+        if (musicPlaying) {
+          playMusic('intro');
         }
       }, { once: true });
       
@@ -669,6 +671,24 @@
         hintElement.classList.add('hidden');
       }, 5000);
     });
+    
+    // Función para reproducir música
+    function playMusic(type) {
+      // Detener toda la música primero
+      introMusic.pause();
+      battleMusic.pause();
+      
+      // Reproducir la música solicitada
+      if (type === 'intro' && musicPlaying) {
+        introMusic.currentTime = 0;
+        introMusic.play().catch(e => console.log("Error al reproducir audio: ", e));
+        currentMusic = 'intro';
+      } else if (type === 'battle' && musicPlaying) {
+        battleMusic.currentTime = 0;
+        battleMusic.play().catch(e => console.log("Error al reproducir audio: ", e));
+        currentMusic = 'battle';
+      }
+    }
     
     // Mostrar hint al mover el personaje
     let hintHidden = false;
@@ -681,23 +701,22 @@
     
     // Controlar música de fondo
     soundToggle.addEventListener('click', function() {
+      musicPlaying = !musicPlaying;
+      
       if (musicPlaying) {
+        // Reanudar la música actual
+        if (currentMusic === 'intro') {
+          playMusic('intro');
+        } else if (currentMusic === 'battle') {
+          playMusic('battle');
+        }
+        soundToggle.textContent = '🔊';
+      } else {
+        // Pausar toda la música
         introMusic.pause();
         battleMusic.pause();
         soundToggle.textContent = '🔇';
-      } else {
-        // Solo reproducir si no está en la pantalla de inicio
-        if (document.getElementById('startScreen').style.display === 'none') {
-          const currentLevel = document.getElementById('level').textContent;
-          if (currentLevel === '1-6') {
-            battleMusic.play().catch(e => console.log("Error al reproducir audio: ", e));
-          } else {
-            introMusic.play().catch(e => console.log("Error al reproducir audio: ", e));
-          }
-        }
-        soundToggle.textContent = '🔊';
       }
-      musicPlaying = !musicPlaying;
     });
     
     // Función para simular teclas (para controles móviles)
@@ -793,9 +812,7 @@
 
     // Iniciar música cuando se comienza el juego
     document.getElementById('startButton').addEventListener('click', function() {
-      if (musicPlaying) {
-        introMusic.play().catch(e => console.log("Error al reproducir audio: ", e));
-      }
+      playMusic('intro');
     });
 
     // Iniciar storybook cuando se comienza el juego
@@ -807,11 +824,8 @@
     // Comenzar juego desde storybook
     document.getElementById('startGame').addEventListener('click', function() {
       document.getElementById('storybook').style.display = 'none';
-      // Detener música de intro y comenzar música de nivel normal
-      introMusic.pause();
-      if (musicPlaying) {
-        introMusic.play().catch(e => console.log("Error al reproducir audio: ", e));
-      }
+      // Iniciar música de nivel normal
+      playMusic('intro');
       
       // Simulación de cambio de nivel (solo para demostración)
       simulateLevelChange('1-1');
@@ -836,6 +850,7 @@
     function simulateLevelChange(level) {
       document.getElementById('level').textContent = level;
       document.getElementById('levelIndicator').textContent = `Nivel ${level}`;
+      currentLevel = level;
       
       // Mostrar barra de salud del jefe y lobo solo en nivel 1-6
       if (level === '1-6') {
@@ -844,25 +859,23 @@
         
         // Mostrar el lobo
         setTimeout(() => {
-          wolfContainer.classList.add('visible');
-          showTemporaryMessage("¡El Lobo Feroz ha aparecido!", 3000);
-          
-          // Cambiar a música de batalla
-          if (musicPlaying) {
-            introMusic.pause();
-            battleMusic.play().catch(e => console.log("Error al reproducir audio: ", e));
-          }
+          wolfContainer.style.display = 'block';
+          setTimeout(() => {
+            wolfContainer.classList.add('visible');
+            showTemporaryMessage("¡El Lobo Feroz ha aparecido!", 3000);
+            
+            // Cambiar a música de batalla
+            playMusic('battle');
+          }, 100);
         }, 1000);
       } else {
         document.getElementById('bossHealth').style.display = 'none';
         wolfContainer.classList.remove('visible');
+        wolfContainer.style.display = 'none';
         document.getElementById('hint').textContent = "Acércate a los amigos y presiona ESPACIO para abrazarlos";
         
         // Cambiar a música normal si no es nivel de jefe
-        if (musicPlaying && level !== '1-6') {
-          battleMusic.pause();
-          introMusic.play().catch(e => console.log("Error al reproducir audio: ", e));
-        }
+        playMusic('intro');
       }
     }
 
@@ -899,7 +912,7 @@
 
     // Simular daño al lobo cada 2 segundos (solo para demostración)
     setInterval(() => {
-      if (document.getElementById('level').textContent === '1-6' && wolfContainer.classList.contains('visible')) {
+      if (currentLevel === '1-6' && wolfContainer.classList.contains('visible')) {
         makeWolfAngry();
       }
     }, 2000);
