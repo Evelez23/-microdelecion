@@ -174,18 +174,18 @@
 
     #hint {
       position: absolute;
-      bottom: 10px;
+      bottom: 70px;
       left: 50%;
       transform: translateX(-50%);
       background: rgba(0, 0, 0, 0.7);
       color: white;
-      padding: 6px 10px;
+      padding: 8px 12px;
       border-radius: 5px;
       z-index: 5;
       text-align: center;
-      max-width: 90%;
-      font-size: 12px;
-      opacity: 0.8;
+      max-width: 80%;
+      font-size: 14px;
+      opacity: 0.9;
       transition: opacity 0.5s;
     }
 
@@ -376,8 +376,9 @@
 
     @media (max-width: 600px) {
       #hint {
-        font-size: 11px;
-        padding: 5px 8px;
+        font-size: 12px;
+        bottom: 80px;
+        padding: 6px 10px;
       }
       
       .mobile-controls, .mobile-controls-right {
@@ -397,52 +398,6 @@
       #wolfImage {
         width: 100px;
       }
-    }
-
-    /* Efectos de victoria */
-    .celebration {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(255, 215, 0, 0.3);
-      z-index: 30;
-      display: none;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      color: white;
-      text-align: center;
-    }
-
-    .celebration h2 {
-      font-size: 3rem;
-      margin-bottom: 20px;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-      color: #FF6B6B;
-    }
-
-    .celebration p {
-      font-size: 1.5rem;
-      margin-bottom: 30px;
-    }
-
-    .celebration-btn {
-      padding: 15px 40px;
-      font-size: 1.5rem;
-      background: #4ECDC4;
-      color: white;
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-      transition: all 0.3s;
-    }
-
-    .celebration-btn:hover {
-      transform: scale(1.05);
-      background: #3BBBB3;
     }
   </style>
 </head>
@@ -513,14 +468,6 @@
 
       <div id="hint">Acércate a los amigos y presiona ESPACIO para abrazarlos</div>
       <button id="soundToggle">🔊</button>
-
-      <!-- Celebración -->
-      <div id="celebration" class="celebration">
-        <h2>¡Victoria!</h2>
-        <p>Has derrotado al Lobo Feroz con el poder de la amistad</p>
-        <img src="https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/oso/celebracion.png" alt="Celebración" style="width: 200px; margin: 20px auto;">
-        <button id="nextLevelBtn" class="celebration-btn">¡Siguiente Nivel!</button>
-      </div>
     </div>
 
     <!-- Controles derechos -->
@@ -552,6 +499,24 @@
     const levelIndicator = document.getElementById('levelIndicator');
     const bossHealth = document.getElementById('bossHealth');
     const bossHealthBar = document.getElementById('bossHealthBar');
+    const scoreElement = document.getElementById('score');
+    const livesElement = document.getElementById('lives');
+    const unicornPowerElement = document.getElementById('unicornPowerLevel');
+    
+    // Cargar imágenes
+    const images = {
+      bear: new Image(),
+      heart: new Image(),
+      friend: new Image(),
+      unicorn: new Image(),
+      celebration: new Image()
+    };
+    
+    images.bear.src = 'https://raw.githubusercontent.com/Evelez23/-microdelecion/main/img/oso/oso_portada.jpg';
+    images.heart.src = 'https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/oso/corazon.png';
+    images.friend.src = 'https://raw.githubusercontent.com/Evelez23/-microdelecion/main/img/oso/celebracion.png';
+    images.unicorn.src = 'https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/oso/uniyosocombat.png';
+    images.celebration.src = 'https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/oso/celebracion.png';
     
     let gameState = 'start';
     let currentLevel = '1-1';
@@ -561,6 +526,32 @@
     let musicPlaying = true;
     let currentMusic = null;
     let hintHidden = false;
+    let bearX = 100;
+    let bearY = 350;
+    let bearVelocityY = 0;
+    let isJumping = false;
+    let hearts = [];
+    let friends = [];
+    let fires = [];
+    
+    // Inicializar elementos del juego
+    for (let i = 0; i < 5; i++) {
+      hearts.push({
+        x: Math.random() * 700 + 50,
+        y: 350,
+        width: 30,
+        height: 30,
+        collected: false
+      });
+      
+      friends.push({
+        x: Math.random() * 700 + 50,
+        y: 350,
+        width: 40,
+        height: 40,
+        hugged: false
+      });
+    }
     
     // =============================================
     // FUNCIONES DE MUSICA
@@ -707,7 +698,7 @@
       e.preventDefault();
       simulateKey("z", "keydown");
     });
-    fireBtn.addEventListener("touchend", (e) => {
+    fireBtn.addEventListener("touchend', (e) => {
       e.preventDefault();
       simulateKey("z", "keyup");
     });
@@ -804,21 +795,96 @@
       }
     }
     
-    // Botón de siguiente nivel
-    document.getElementById('nextLevelBtn').addEventListener('click', function() {
-      document.getElementById('celebration').style.display = 'none';
+    // Detectar colisiones
+    function checkCollisions() {
+      // Colisión con corazones
+      hearts.forEach(heart => {
+        if (!heart.collected && 
+            bearX < heart.x + heart.width &&
+            bearX + 60 > heart.x &&
+            bearY < heart.y + heart.height &&
+            bearY + 60 > heart.y) {
+          heart.collected = true;
+          score += 10;
+          unicornPower += 20;
+          scoreElement.textContent = score;
+          unicornPowerElement.style.width = `${unicornPower}%`;
+          
+          if (unicornPower >= 100) {
+            unicornPower = 100;
+            showTemporaryMessage("¡Poder de Unicornio completo!", 2000);
+          }
+        }
+      });
       
-      // Avanzar al siguiente nivel
-      if (currentLevel === '1-1') changeLevel('1-2');
-      else if (currentLevel === '1-2') changeLevel('1-3');
-      else if (currentLevel === '1-3') changeLevel('1-4');
-      else if (currentLevel === '1-4') changeLevel('1-5');
-      else if (currentLevel === '1-5') changeLevel('1-6');
-      else if (currentLevel === '1-6') changeLevel('2-1');
+      // Colisión con amigos
+      friends.forEach(friend => {
+        if (!friend.hugged && 
+            bearX < friend.x + friend.width &&
+            bearX + 60 > friend.x &&
+            bearY < friend.y + friend.height &&
+            bearY + 60 > friend.y) {
+          friend.hugged = true;
+          score += 20;
+          lives = Math.min(lives + 1, 3);
+          scoreElement.textContent = score;
+          livesElement.textContent = '❤️'.repeat(lives);
+          showTemporaryMessage("¡Abrazo recibido! +1 Vida", 1500);
+        }
+      });
+    }
+    
+    // Mover el oso
+    function moveBear() {
+      // Gravedad
+      if (isJumping) {
+        bearVelocityY += 0.5;
+        bearY += bearVelocityY;
+        
+        // Verificar si llegó al suelo
+        if (bearY >= 350) {
+          bearY = 350;
+          isJumping = false;
+          bearVelocityY = 0;
+        }
+      }
+    }
+    
+    // Controlar teclas
+    document.addEventListener('keydown', function(e) {
+      // Ocultar hint al usar teclado
+      if (!hintHidden) {
+        hintElement.classList.add('hidden');
+        hintHidden = true;
+      }
+      
+      if (e.key === 'ArrowLeft') {
+        bearX = Math.max(0, bearX - 5);
+      } else if (e.key === 'ArrowRight') {
+        bearX = Math.min(canvas.width - 60, bearX + 5);
+      } else if (e.key === 'ArrowUp' && !isJumping) {
+        isJumping = true;
+        bearVelocityY = -12;
+      } else if (e.key === ' ' || e.key === 'z') {
+        // Disparar o abrazar
+        if (currentLevel === '1-6' && unicornPower >= 20) {
+          // Disparar al lobo
+          fires.push({
+            x: bearX + 30,
+            y: bearY,
+            width: 10,
+            height: 10,
+            speed: 10
+          });
+          unicornPower -= 20;
+          unicornPowerElement.style.width = `${unicornPower}%`;
+          makeWolfAngry();
+        }
+      }
     });
     
     // =============================================
-    // BUCLE PRINCIPAL DEL JUEGO (SIMULACIÓN)
+    // BUCLE PRINCIPAL DEL JUEGO
     // =============================================
     
     function gameLoop() {
@@ -833,47 +899,42 @@
       ctx.fillStyle = '#2E8B57';
       ctx.fillRect(0, 400, canvas.width, 100);
       
-      // Dibujar personaje (oso)
-      ctx.fillStyle = '#8B4513';
+      // Dibujar nubes
+      ctx.fillStyle = 'white';
       ctx.beginPath();
-      ctx.arc(100, 350, 30, 0, Math.PI * 2);
+      ctx.arc(100, 80, 30, 0, Math.PI * 2);
+      ctx.arc(130, 70, 40, 0, Math.PI * 2);
+      ctx.arc(160, 80, 30, 0, Math.PI * 2);
       ctx.fill();
       
-      // Dibujar elementos según el nivel
-      if (currentLevel === '1-6') {
-        // Dibujar elementos del nivel del jefe
-        ctx.fillStyle = '#300';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        // Dibujar un volcán de fondo
-        ctx.fillStyle = '#333';
-        ctx.beginPath();
-        ctx.moveTo(200, 300);
-        ctx.lineTo(600, 300);
-        ctx.lineTo(400, 100);
-        ctx.closePath();
-        ctx.fill();
-        
-        // Dibujar lava
-        ctx.fillStyle = '#f00';
-        ctx.beginPath();
-        ctx.arc(400, 150, 40, 0, Math.PI * 2);
-        ctx.fill();
-      } else {
-        // Dibujar elementos de niveles normales
-        ctx.fillStyle = '#FF6B6B';
-        ctx.beginPath();
-        ctx.arc(200, 350, 20, 0, Math.PI * 2);
-        ctx.fill();
-        
-        ctx.beginPath();
-        ctx.arc(400, 350, 20, 0, Math.PI * 2);
-        ctx.fill();
-        
-        ctx.beginPath();
-        ctx.arc(600, 350, 20, 0, Math.PI * 2);
-        ctx.fill();
-      }
+      ctx.beginPath();
+      ctx.arc(600, 120, 30, 0, Math.PI * 2);
+      ctx.arc(630, 110, 40, 0, Math.PI * 2);
+      ctx.arc(660, 120, 30, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Dibujar corazones
+      hearts.forEach(heart => {
+        if (!heart.collected) {
+          ctx.drawImage(images.heart, heart.x, heart.y, heart.width, heart.height);
+        }
+      });
+      
+      // Dibujar amigos
+      friends.forEach(friend => {
+        if (!friend.hugged) {
+          ctx.drawImage(images.friend, friend.x, friend.y, friend.width, friend.height);
+        }
+      });
+      
+      // Dibujar oso
+      ctx.drawImage(images.bear, bearX, bearY, 60, 60);
+      
+      // Mover el oso
+      moveBear();
+      
+      // Verificar colisiones
+      checkCollisions();
       
       // Continuar el bucle
       if (gameState === 'playing') {
@@ -881,7 +942,7 @@
       }
     }
     
-    // Simular cambio de nivel cada 10 segundos (solo para demostración)
+    // Simular cambio de nivel cada 15 segundos (solo para demostración)
     setInterval(() => {
       if (gameState === 'playing') {
         if (currentLevel === '1-1') changeLevel('1-2');
@@ -894,7 +955,7 @@
           makeWolfAngry();
         }
       }
-    }, 10000);
+    }, 15000);
   </script>
 </body>
 </html>
