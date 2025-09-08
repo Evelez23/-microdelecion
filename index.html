@@ -301,6 +301,30 @@
       z-index: 5;
     }
 
+    /* Lobo */
+    #wolfContainer {
+      position: absolute;
+      right: -200px;
+      bottom: 50px;
+      transition: right 2s ease-in-out;
+      z-index: 4;
+      display: none;
+    }
+    
+    #wolfImage {
+      width: 180px;
+      height: auto;
+    }
+    
+    #wolfContainer.visible {
+      right: 50px;
+      display: block;
+    }
+    
+    #wolfContainer.angry #wolfImage {
+      content: url('https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/enemigos/loboferoz.png');
+    }
+
     /* Responsive */
     @media (max-width: 1100px) {
       .game-wrapper {
@@ -333,14 +357,12 @@
         font-size: 1.5rem;
       }
       
-      #storybook p {
-        max-width: 95%;
-        font-size: 1rem;
+      #wolfContainer {
+        bottom: 30px;
       }
       
-      .storybook-images img {
-        width: 100px;
-        height: 100px;
+      #wolfImage {
+        width: 120px;
       }
       
       #ui {
@@ -353,15 +375,6 @@
     }
 
     @media (max-width: 600px) {
-      .storybook-images {
-        gap: 10px;
-      }
-      
-      .storybook-images img {
-        width: 80px;
-        height: 80px;
-      }
-      
       #hint {
         font-size: 11px;
         padding: 5px 8px;
@@ -380,6 +393,56 @@
       .mobile-label {
         font-size: 12px;
       }
+      
+      #wolfImage {
+        width: 100px;
+      }
+    }
+
+    /* Efectos de victoria */
+    .celebration {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 215, 0, 0.3);
+      z-index: 30;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      color: white;
+      text-align: center;
+    }
+
+    .celebration h2 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      color: #FF6B6B;
+    }
+
+    .celebration p {
+      font-size: 1.5rem;
+      margin-bottom: 30px;
+    }
+
+    .celebration-btn {
+      padding: 15px 40px;
+      font-size: 1.5rem;
+      background: #4ECDC4;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s;
+    }
+
+    .celebration-btn:hover {
+      transform: scale(1.05);
+      background: #3BBBB3;
     }
   </style>
 </head>
@@ -424,6 +487,11 @@
 
       <div id="levelIndicator" class="level-indicator">Nivel 1-1</div>
 
+      <!-- Lobo -->
+      <div id="wolfContainer">
+        <img id="wolfImage" src="https://raw.githubusercontent.com/Evelez23/-microdelecion/161869dbb4cf0e712e05085c4879507f7270f11c/img/enemigos/lobo.svg" alt="Lobo Feroz">
+      </div>
+
       <div id="startScreen">
         <img id="coverImage" src="https://raw.githubusercontent.com/Evelez23/-microdelecion/main/img/oso/oso_portada.jpg" alt="Oso Abrazos Game Cover">
         <button id="startButton">¡Comenzar Aventura!</button>
@@ -445,6 +513,14 @@
 
       <div id="hint">Acércate a los amigos y presiona ESPACIO para abrazarlos</div>
       <button id="soundToggle">🔊</button>
+
+      <!-- Celebración -->
+      <div id="celebration" class="celebration">
+        <h2>¡Victoria!</h2>
+        <p>Has derrotado al Lobo Feroz con el poder de la amistad</p>
+        <img src="https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/oso/celebracion.png" alt="Celebración" style="width: 200px; margin: 20px auto;">
+        <button id="nextLevelBtn" class="celebration-btn">¡Siguiente Nivel!</button>
+      </div>
     </div>
 
     <!-- Controles derechos -->
@@ -459,21 +535,56 @@
     </div>
   </div>
 
-  <script src="js/game-complete.js"></script>
-
   <script>
     // =============================================
-    // CÓDIGO QUE NECESITARÍAS AGREGAR A TU game-complete.js
+    // VARIABLES GLOBALES
     // =============================================
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const startScreen = document.getElementById('startScreen');
+    const startButton = document.getElementById('startButton');
+    const soundToggle = document.getElementById('soundToggle');
+    const hintElement = document.getElementById('hint');
+    const wolfContainer = document.getElementById('wolfContainer');
+    const introMusic = document.getElementById('introMusic');
+    const battleMusic = document.getElementById('battleMusic');
+    const levelElement = document.getElementById('level');
+    const levelIndicator = document.getElementById('levelIndicator');
+    const bossHealth = document.getElementById('bossHealth');
+    const bossHealthBar = document.getElementById('bossHealthBar');
     
-    /*
-    // 1. Variables globales para la música (agregar al inicio del JS)
-    let introMusic = document.getElementById('introMusic');
-    let battleMusic = document.getElementById('battleMusic');
+    let gameState = 'start';
+    let currentLevel = '1-1';
+    let score = 0;
+    let lives = 3;
+    let unicornPower = 0;
     let musicPlaying = true;
     let currentMusic = null;
+    let hintHidden = false;
     
-    // 2. Función para controlar la música (agregar al JS)
+    // =============================================
+    // FUNCIONES DE MUSICA
+    // =============================================
+    
+    // Precargar música
+    window.addEventListener('load', function() {
+      introMusic.volume = 0.7;
+      battleMusic.volume = 0.7;
+      
+      // Solución para la aut reproducción en móviles
+      document.addEventListener('click', function() {
+        if (musicPlaying) {
+          playMusic('intro');
+        }
+      }, { once: true });
+      
+      // Ocultar la hint después de 5 segundos
+      setTimeout(() => {
+        hintElement.classList.add('hidden');
+      }, 5000);
+    });
+    
+    // Función para reproducir música
     function playMusic(type) {
       // Detener toda la música primero
       introMusic.pause();
@@ -493,22 +604,8 @@
       }
     }
     
-    // 3. Modificar la función de cambio de nivel para controlar la música
-    function changeLevel(newLevel) {
-      // ... código existente ...
-      
-      // Controlar la música según el nivel
-      if (newLevel === '1-6') {
-        playMusic('battle');
-      } else {
-        playMusic('intro');
-      }
-      
-      // ... resto del código existente ...
-    }
-    
-    // 4. Modificar la función de toggle de sonido
-    function toggleSound() {
+    // Controlar música de fondo
+    soundToggle.addEventListener('click', function() {
       musicPlaying = !musicPlaying;
       
       if (musicPlaying) {
@@ -518,52 +615,18 @@
         } else if (currentMusic === 'battle') {
           playMusic('battle');
         }
-        document.getElementById('soundToggle').textContent = '🔊';
+        soundToggle.textContent = '🔊';
       } else {
         // Pausar toda la música
         introMusic.pause();
         battleMusic.pause();
-        document.getElementById('soundToggle').textContent = '🔇';
-      }
-    }
-    */
-    
-    // =============================================
-    // CÓDigo HTML (funcionalidad básica)
-    // =============================================
-    
-    // Variables para la música
-    let musicPlaying = true;
-    const introMusic = document.getElementById('introMusic');
-    const battleMusic = document.getElementById('battleMusic');
-    const soundToggle = document.getElementById('soundToggle');
-    const hintElement = document.getElementById('hint');
-    
-    // Precargar música
-    window.addEventListener('load', function() {
-      introMusic.volume = 0.7;
-      battleMusic.volume = 0.7;
-      
-      // Ocultar la hint después de 5 segundos
-      setTimeout(() => {
-        hintElement.classList.add('hidden');
-      }, 5000);
-    });
-    
-    // Controlar música de fondo
-    soundToggle.addEventListener('click', function() {
-      // Esta función debería ser manejada por el JS del juego
-      // Por ahora, solo toggle básico
-      if (musicPlaying) {
-        introMusic.pause();
-        battleMusic.pause();
         soundToggle.textContent = '🔇';
-      } else {
-        introMusic.play().catch(e => console.log("Error al reproducir audio: ", e));
-        soundToggle.textContent = '🔊';
       }
-      musicPlaying = !musicPlaying;
     });
+    
+    // =============================================
+    // FUNCIONES DE CONTROLES MÓVILES
+    // =============================================
     
     // Función para simular teclas (para controles móviles)
     function simulateKey(key, type) {
@@ -578,6 +641,12 @@
           break;
       }
       document.dispatchEvent(event);
+      
+      // Ocultar hint al usar controles táctiles
+      if (!hintHidden) {
+        hintElement.classList.add('hidden');
+        hintHidden = true;
+      }
     }
 
     // Obtener keyCode basado en la tecla
@@ -649,6 +718,183 @@
         e.preventDefault();
       }
     }, { passive: false });
+    
+    // =============================================
+    // FUNCIONES DEL JUEGO
+    // =============================================
+    
+    // Iniciar música cuando se comienza el juego
+    startButton.addEventListener('click', function() {
+      startScreen.style.display = 'none';
+      gameState = 'playing';
+      playMusic('intro');
+      gameLoop();
+    });
+
+    // Función para cambiar de nivel
+    function changeLevel(newLevel) {
+      currentLevel = newLevel;
+      levelElement.textContent = newLevel;
+      levelIndicator.textContent = `Nivel ${newLevel}`;
+      
+      // Mostrar barra de salud del jefe y lobo solo en nivel 1-6
+      if (newLevel === '1-6') {
+        bossHealth.style.display = 'block';
+        updateBossHealth(5);
+        hintElement.textContent = "¡Cuidado con el Lobo Feroz! Recolecta corazones para invocar al Unicornio";
+        
+        // Mostrar el lobo
+        setTimeout(() => {
+          wolfContainer.style.display = 'block';
+          setTimeout(() => {
+            wolfContainer.classList.add('visible');
+            showTemporaryMessage("¡El Lobo Feroz ha aparecido!", 3000);
+            
+            // Cambiar a música de batalla
+            playMusic('battle');
+          }, 100);
+        }, 1000);
+      } else {
+        bossHealth.style.display = 'none';
+        wolfContainer.classList.remove('visible');
+        wolfContainer.style.display = 'none';
+        hintElement.textContent = "Acércate a los amigos y presiona ESPACIO para abrazarlos";
+        
+        // Cambiar a música normal si no es nivel de jefe
+        playMusic('intro');
+      }
+    }
+    
+    // Función para actualizar la salud del jefe
+    function updateBossHealth(health) {
+      const percentage = (health / 5) * 100;
+      bossHealthBar.style.width = `${percentage}%`;
+    }
+    
+    // Función para mostrar mensajes temporales
+    function showTemporaryMessage(message, duration) {
+      const messageElement = document.createElement('div');
+      messageElement.textContent = message;
+      messageElement.style.position = 'absolute';
+      messageElement.style.top = '50%';
+      messageElement.style.left = '50%';
+      messageElement.style.transform = 'translate(-50%, -50%)';
+      messageElement.style.background = 'rgba(0, 0, 0, 0.8)';
+      messageElement.style.color = 'white';
+      messageElement.style.padding = '15px 25px';
+      messageElement.style.borderRadius = '10px';
+      messageElement.style.zIndex = '100';
+      messageElement.style.fontSize = '1.5rem';
+      messageElement.style.textAlign = 'center';
+      
+      document.getElementById('gameContainer').appendChild(messageElement);
+      
+      setTimeout(() => {
+        messageElement.remove();
+      }, duration);
+    }
+    
+    // Función para hacer enojar al lobo (cuando recibe daño)
+    function makeWolfAngry() {
+      if (wolfContainer.classList.contains('visible')) {
+        wolfContainer.classList.add('angry');
+        setTimeout(() => {
+          wolfContainer.classList.remove('angry');
+        }, 1000);
+      }
+    }
+    
+    // Botón de siguiente nivel
+    document.getElementById('nextLevelBtn').addEventListener('click', function() {
+      document.getElementById('celebration').style.display = 'none';
+      
+      // Avanzar al siguiente nivel
+      if (currentLevel === '1-1') changeLevel('1-2');
+      else if (currentLevel === '1-2') changeLevel('1-3');
+      else if (currentLevel === '1-3') changeLevel('1-4');
+      else if (currentLevel === '1-4') changeLevel('1-5');
+      else if (currentLevel === '1-5') changeLevel('1-6');
+      else if (currentLevel === '1-6') changeLevel('2-1');
+    });
+    
+    // =============================================
+    // BUCLE PRINCIPAL DEL JUEGO (SIMULACIÓN)
+    // =============================================
+    
+    function gameLoop() {
+      // Limpiar el canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Dibujar fondo
+      ctx.fillStyle = '#87CEEB';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Dibujar suelo
+      ctx.fillStyle = '#2E8B57';
+      ctx.fillRect(0, 400, canvas.width, 100);
+      
+      // Dibujar personaje (oso)
+      ctx.fillStyle = '#8B4513';
+      ctx.beginPath();
+      ctx.arc(100, 350, 30, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Dibujar elementos según el nivel
+      if (currentLevel === '1-6') {
+        // Dibujar elementos del nivel del jefe
+        ctx.fillStyle = '#300';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Dibujar un volcán de fondo
+        ctx.fillStyle = '#333';
+        ctx.beginPath();
+        ctx.moveTo(200, 300);
+        ctx.lineTo(600, 300);
+        ctx.lineTo(400, 100);
+        ctx.closePath();
+        ctx.fill();
+        
+        // Dibujar lava
+        ctx.fillStyle = '#f00';
+        ctx.beginPath();
+        ctx.arc(400, 150, 40, 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        // Dibujar elementos de niveles normales
+        ctx.fillStyle = '#FF6B6B';
+        ctx.beginPath();
+        ctx.arc(200, 350, 20, 0, Math.PI * 2);
+        ctx.fill();
+        
+        ctx.beginPath();
+        ctx.arc(400, 350, 20, 0, Math.PI * 2);
+        ctx.fill();
+        
+        ctx.beginPath();
+        ctx.arc(600, 350, 20, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      
+      // Continuar el bucle
+      if (gameState === 'playing') {
+        requestAnimationFrame(gameLoop);
+      }
+    }
+    
+    // Simular cambio de nivel cada 10 segundos (solo para demostración)
+    setInterval(() => {
+      if (gameState === 'playing') {
+        if (currentLevel === '1-1') changeLevel('1-2');
+        else if (currentLevel === '1-2') changeLevel('1-3');
+        else if (currentLevel === '1-3') changeLevel('1-4');
+        else if (currentLevel === '1-4') changeLevel('1-5');
+        else if (currentLevel === '1-5') changeLevel('1-6');
+        else if (currentLevel === '1-6') {
+          // Simular daño al lobo
+          makeWolfAngry();
+        }
+      }
+    }, 10000);
   </script>
 </body>
 </html>
