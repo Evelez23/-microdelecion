@@ -39,11 +39,18 @@
       max-width: 800px;
     }
     
+    .game-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    
     #gameContainer {
       position: relative;
       width: 800px;
       height: 500px;
-      margin: 0 auto;
       overflow: hidden;
       background: #87CEEB;
       border: 5px solid #FF6B6B;
@@ -164,16 +171,17 @@
 
     #hint {
       position: absolute;
-      bottom: 100px;
+      bottom: 70px;
       left: 50%;
       transform: translateX(-50%);
       background: rgba(0, 0, 0, 0.7);
       color: white;
-      padding: 10px 15px;
+      padding: 8px 12px;
       border-radius: 5px;
       z-index: 5;
       text-align: center;
       max-width: 80%;
+      font-size: 14px;
     }
 
     #soundToggle {
@@ -196,20 +204,17 @@
       transform: scale(1.1);
     }
 
-    /* Botones móviles */
+    /* Botones móviles - FUERA del juego */
     .mobile-controls {
-      position: absolute;
-      bottom: 20px;
-      width: 100%;
       display: flex;
-      justify-content: space-between;
-      padding: 0 20px;
-      pointer-events: none;
-      z-index: 5;
+      flex-direction: column;
+      gap: 15px;
+      margin-left: 20px;
     }
 
-    .left-controls, .right-controls {
+    .mobile-controls-column {
       display: flex;
+      flex-direction: column;
       gap: 15px;
     }
 
@@ -217,21 +222,29 @@
       width: 70px;
       height: 70px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.7);
       color: black;
-      font-size: 2rem;
+      font-size: 1.8rem;
       border: none;
-      pointer-events: auto;
-      touch-action: manipulation;
       display: flex;
       justify-content: center;
       align-items: center;
       transition: all 0.2s;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      touch-action: manipulation;
     }
 
     .mobile-btn:active {
-      background: rgba(255, 255, 255, 0.5);
+      background: rgba(255, 255, 255, 0.9);
       transform: scale(0.95);
+    }
+
+    .mobile-label {
+      color: white;
+      text-align: center;
+      margin-top: 5px;
+      font-size: 14px;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
     }
 
     /* Storybook */
@@ -339,6 +352,20 @@
     }
 
     /* Responsive */
+    @media (max-width: 1000px) {
+      .game-wrapper {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .mobile-controls {
+        flex-direction: row;
+        margin-left: 0;
+        margin-top: 20px;
+        gap: 30px;
+      }
+    }
+
     @media (max-width: 850px) {
       #gameContainer {
         width: 100%;
@@ -382,8 +409,23 @@
       }
       
       #hint {
-        font-size: 14px;
-        bottom: 120px;
+        font-size: 12px;
+        bottom: 80px;
+        padding: 6px 10px;
+      }
+      
+      .mobile-controls {
+        gap: 15px;
+      }
+      
+      .mobile-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
+      }
+      
+      .mobile-label {
+        font-size: 12px;
       }
     }
 
@@ -438,87 +480,98 @@
   <h1>Oso Abrazos - Aventura Completa</h1>
   <p>¡Ayuda al Oso Abrazos a derrotar al Lobo Feroz en 6 niveles emocionantes!</p>
   
-  <div id="gameContainer">
-    <canvas id="gameCanvas" width="800" height="500"></canvas>
+  <div class="game-wrapper">
+    <div id="gameContainer">
+      <canvas id="gameCanvas" width="800" height="500"></canvas>
 
-    <div id="ui">
-      <div>Puntos: <span id="score">0</span></div>
-      <div>Vidas: <span id="lives">❤️❤️❤️</span></div>
-      <div>Nivel: <span id="level">1-1</span></div>
-      <div id="unicornPower">
-        <span>Poder del Unicornio:</span>
-        <div class="power-bar">
-            <div class="power-level" id="unicornPowerLevel"></div>
+      <div id="ui">
+        <div>Puntos: <span id="score">0</span></div>
+        <div>Vidas: <span id="lives">❤️❤️❤️</span></div>
+        <div>Nivel: <span id="level">1-1</span></div>
+        <div id="unicornPower">
+          <span>Poder del Unicornio:</span>
+          <div class="power-bar">
+              <div class="power-level" id="unicornPowerLevel"></div>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div id="bossHealth" class="boss-health">
-      <div class="boss-health-bar" id="bossHealthBar"></div>
-    </div>
-
-    <div id="levelIndicator" class="level-indicator">Nivel 1-1</div>
-
-    <div id="startScreen">
-      <img id="coverImage" src="https://raw.githubusercontent.com/Evelez23/-microdelecion/main/img/oso/oso_portada.jpg" alt="Oso Abrazos Game Cover">
-      <button id="startButton">¡Comenzar Aventura!</button>
-      <audio id="introMusic" loop>
-        <source src="https://github.com/Evelez23/-microdelecion/raw/main/sounds/intro.mp3" type="audio/mpeg">
-      </audio>
-      <audio id="battleMusic">
-        <source src="https://github.com/Evelez23/-microdelecion/raw/main/sounds/para%20la%20batalla.mp3" type="audio/mpeg">
-      </audio>
-    </div>
-
-    <div id="loadingScreen" style="display: none;">
-      <h2>Cargando...</h2>
-      <div class="progress-bar">
-        <div class="progress" id="loadingProgress"></div>
+      <div id="bossHealth" class="boss-health">
+        <div class="boss-health-bar" id="bossHealthBar"></div>
       </div>
-      <p id="loadingText">0%</p>
+
+      <div id="levelIndicator" class="level-indicator">Nivel 1-1</div>
+
+      <div id="startScreen">
+        <img id="coverImage" src="https://raw.githubusercontent.com/Evelez23/-microdelecion/main/img/oso/oso_portada.jpg" alt="Oso Abrazos Game Cover">
+        <button id="startButton">¡Comenzar Aventura!</button>
+        <audio id="introMusic" loop>
+          <source src="https://github.com/Evelez23/-microdelecion/raw/main/sounds/intro.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="battleMusic">
+          <source src="https://github.com/Evelez23/-microdelecion/raw/main/sounds/para%20la%20batalla.mp3" type="audio/mpeg">
+        </audio>
+      </div>
+
+      <div id="loadingScreen" style="display: none;">
+        <h2>Cargando...</h2>
+        <div class="progress-bar">
+          <div class="progress" id="loadingProgress"></div>
+        </div>
+        <p id="loadingText">0%</p>
+      </div>
+
+      <div id="hint">Acércate a los amigos y presiona ESPACIO para abrazarlos</div>
+      <button id="soundToggle">🔊</button>
+
+      <!-- Storybook -->
+      <div id="storybook" style="display: none;">
+        <h2>Oso Abrazos vs. El Lobo Feroz</h2>
+        <p>¡El malvado Lobo Feroz ha aparecido y quiere arruinar la diversión!</p>
+        <p>Debes recolectar corazones para invocar al Unicornio y derrotar al lobo.</p>
+        
+        <div class="storybook-images">
+          <img src="https://raw.githubusercontent.com/Evelez23/-microdelecion/161869dbb4cf0e712e05085c4879507f7270f11c/img/enemigos/lobo.svg" alt="Lobo Normal">
+          <img src="https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/enemigos/loboferoz.png" alt="Lobo Enfurecido">
+          <img src="https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/oso/corazon.png" alt="Corazón">
+          <img src="https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/oso/uniyosocombat.png" alt="Oso y Unicornio">
+        </div>
+        
+        <p>El lobo tiene 5 puntos de vida. Debes golpearlo 5 veces con el poder del Unicornio para derrotarlo.</p>
+        <p>¡Ten cuidado con sus ataques de fuego!</p>
+        
+        <button id="startGame" class="storybook-btn">¡Entendido! ¡A jugar!</button>
+      </div>
+
+      <!-- Celebración -->
+      <div id="celebration" class="celebration">
+        <h2>¡Victoria!</h2>
+        <p>Has derrotado al Lobo Feroz con el poder de la amistad</p>
+        <img src="https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/oso/celebracion.png" alt="Celebración" style="width: 200px; margin: 20px auto;">
+        <button id="nextLevelBtn" class="celebration-btn">¡Siguiente Nivel!</button>
+      </div>
     </div>
 
-    <div id="hint">Acércate a los amigos y presiona ESPACIO para abrazarlos</div>
-    <button id="soundToggle">🔊</button>
-
-    <!-- Controles móviles -->
+    <!-- Botones móviles - FUERA del juego -->
     <div class="mobile-controls">
-      <div class="left-controls">
+      <div class="mobile-controls-column">
         <button class="mobile-btn" id="leftBtn">⬅</button>
+        <div class="mobile-label">Izquierda</div>
+        
         <button class="mobile-btn" id="rightBtn">➡</button>
+        <div class="mobile-label">Derecha</div>
+        
         <button class="mobile-btn" id="jumpBtn">⬆</button>
+        <div class="mobile-label">Saltar</div>
       </div>
-      <div class="right-controls">
+      
+      <div class="mobile-controls-column">
         <button class="mobile-btn" id="hugBtn">🤗</button>
+        <div class="mobile-label">Abrazar</div>
+        
         <button class="mobile-btn" id="fireBtn">🔫</button>
+        <div class="mobile-label">Disparar</div>
       </div>
-    </div>
-
-    <!-- Storybook -->
-    <div id="storybook" style="display: none;">
-      <h2>Oso Abrazos vs. El Lobo Feroz</h2>
-      <p>¡El malvado Lobo Feroz ha aparecido y quiere arruinar la diversión!</p>
-      <p>Debes recolectar corazones para invocar al Unicornio y derrotar al lobo.</p>
-      
-      <div class="storybook-images">
-        <img src="https://raw.githubusercontent.com/Evelez23/-microdelecion/161869dbb4cf0e712e05085c4879507f7270f11c/img/enemigos/lobo.svg" alt="Lobo Normal">
-        <img src="https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/enemigos/loboferoz.png" alt="Lobo Enfurecido">
-        <img src="https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/oso/corazon.png" alt="Corazón">
-        <img src="https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/oso/uniyosocombat.png" alt="Oso y Unicornio">
-      </div>
-      
-      <p>El lobo tiene 5 puntos de vida. Debes golpearlo 5 veces con el poder del Unicornio para derrotarlo.</p>
-      <p>¡Ten cuidado con sus ataques de fuego!</p>
-      
-      <button id="startGame" class="storybook-btn">¡Entendido! ¡A jugar!</button>
-    </div>
-
-    <!-- Celebración -->
-    <div id="celebration" class="celebration">
-      <h2>¡Victoria!</h2>
-      <p>Has derrotado al Lobo Feroz con el poder de la amistad</p>
-      <img src="https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/oso/celebracion.png" alt="Celebración" style="width: 200px; margin: 20px auto;">
-      <button id="nextLevelBtn" class="celebration-btn">¡Siguiente Nivel!</button>
     </div>
   </div>
 
@@ -536,6 +589,13 @@
       introMusic.volume = 0.7;
       battleMusic.volume = 0.7;
       battleMusic.loop = true;
+      
+      // Solución para la aut reproducción en móviles
+      document.addEventListener('click', function() {
+        if (musicPlaying && introMusic.paused) {
+          introMusic.play().catch(e => console.log("Error al reproducir audio: ", e));
+        }
+      }, { once: true });
     });
     
     // Controlar música de fondo
@@ -547,10 +607,11 @@
       } else {
         // Solo reproducir si no está en la pantalla de inicio
         if (document.getElementById('startScreen').style.display === 'none') {
-          if (document.getElementById('level').textContent === '1-6') {
-            battleMusic.play();
+          const currentLevel = document.getElementById('level').textContent;
+          if (currentLevel === '1-6') {
+            battleMusic.play().catch(e => console.log("Error al reproducir audio: ", e));
           } else {
-            introMusic.play();
+            introMusic.play().catch(e => console.log("Error al reproducir audio: ", e));
           }
         }
         soundToggle.textContent = '🔊';
@@ -561,15 +622,28 @@
     // Función para simular teclas (para controles móviles)
     function simulateKey(key, type) {
       let event;
+      const keyCode = getKeyCode(key);
       switch(type) {
         case "keydown":
-          event = new KeyboardEvent('keydown', { key: key });
+          event = new KeyboardEvent('keydown', { key: key, keyCode: keyCode, which: keyCode });
           break;
         case "keyup":
-          event = new KeyboardEvent('keyup', { key: key });
+          event = new KeyboardEvent('keyup', { key: key, keyCode: keyCode, which: keyCode });
           break;
       }
       document.dispatchEvent(event);
+    }
+
+    // Obtener keyCode basado en la tecla
+    function getKeyCode(key) {
+      switch(key) {
+        case "ArrowLeft": return 37;
+        case "ArrowRight": return 39;
+        case "ArrowUp": return 38;
+        case " ": return 32;
+        case "z": return 90;
+        default: return 0;
+      }
     }
 
     // Configurar botones móviles
@@ -633,7 +707,7 @@
     // Iniciar música cuando se comienza el juego
     document.getElementById('startButton').addEventListener('click', function() {
       if (musicPlaying) {
-        introMusic.play();
+        introMusic.play().catch(e => console.log("Error al reproducir audio: ", e));
       }
     });
 
@@ -648,13 +722,50 @@
       document.getElementById('storybook').style.display = 'none';
       // Aquí se iniciaría el juego normalmente
       // gameStart();
+      
+      // Simulación de cambio de nivel (solo para demostración)
+      simulateLevelChange('1-2');
     });
 
     // Botón de siguiente nivel
     document.getElementById('nextLevelBtn').addEventListener('click', function() {
       document.getElementById('celebration').style.display = 'none';
       // Aquí se cargaría el siguiente nivel
+      
+      // Simulación de cambio de nivel (solo para demostración)
+      const currentLevel = document.getElementById('level').textContent;
+      if (currentLevel === '1-1') simulateLevelChange('1-2');
+      else if (currentLevel === '1-2') simulateLevelChange('1-3');
+      else if (currentLevel === '1-3') simulateLevelChange('1-4');
+      else if (currentLevel === '1-4') simulateLevelChange('1-5');
+      else if (currentLevel === '1-5') simulateLevelChange('1-6');
     });
+
+    // Función para simular cambio de nivel (solo para demostración)
+    function simulateLevelChange(level) {
+      document.getElementById('level').textContent = level;
+      document.getElementById('levelIndicator').textContent = `Nivel ${level}`;
+      
+      // Mostrar barra de salud del jefe solo en nivel 1-6
+      if (level === '1-6') {
+        document.getElementById('bossHealth').style.display = 'block';
+        document.getElementById('hint').textContent = "¡Cuidado con el Lobo Feroz! Recolecta corazones para invocar al Unicornio";
+        
+        // Cambiar a música de batalla
+        if (musicPlaying) {
+          introMusic.pause();
+          battleMusic.play().catch(e => console.log("Error al reproducir audio: ", e));
+        }
+      } else {
+        document.getElementById('bossHealth').style.display = 'none';
+        document.getElementById('hint').textContent = "Acércate a los amigos y presiona ESPACIO para abrazarlos";
+      }
+    }
+
+    // Simular victoria después de 5 segundos (solo para demostración)
+    setTimeout(() => {
+      // document.getElementById('celebration').style.display = 'flex';
+    }, 5000);
   </script>
 </body>
 </html>
