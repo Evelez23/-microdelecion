@@ -503,13 +503,13 @@
       <div id="levelIndicator" class="level-indicator">Nivel 1-1</div>
 
       <div id="startScreen">
-        <img id="coverImage" src="https://raw.githubusercontent.com/Evelez23/-microdelecion/main/img/oso/oso_portada.jpg" alt="Oso Abrazos Game Cover">
+        <img id="coverImage" src="https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/refs/heads/main/img/oso/oso_portada.jpg" alt="Oso Abrazos Game Cover">
         <button id="startButton">¡Comenzar Aventura!</button>
         <audio id="introMusic" loop>
-          <source src="https://github.com/Evelez23/-microdelecion/raw/main/sounds/intro.mp3" type="audio/mpeg">
+          <source src="https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/refs/heads/main/sounds/intro.mp3" type="audio/mpeg">
         </audio>
         <audio id="battleMusic">
-          <source src="https://github.com/Evelez23/-microdelecion/raw/main/sounds/para%20la%20batalla.mp3" type="audio/mpeg">
+          <source src="https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/refs/heads/main/sounds/para%20la%20batalla.mp3" type="audio/mpeg">
         </audio>
       </div>
 
@@ -531,10 +531,10 @@
         <p>Debes recolectar corazones para invocar al Unicornio y derrotar al lobo.</p>
         
         <div class="storybook-images">
-          <img src="https://raw.githubusercontent.com/Evelez23/-microdelecion/161869dbb4cf0e712e05085c4879507f7270f11c/img/enemigos/lobo.svg" alt="Lobo Normal">
-          <img src="https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/enemigos/loboferoz.png" alt="Lobo Enfurecido">
-          <img src="https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/oso/corazon.png" alt="Corazón">
-          <img src="https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/oso/uniyosocombat.png" alt="Oso y Unicornio">
+          <img src="https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/refs/heads/main/img/enemigos/lobo.svg" alt="Lobo Normal">
+          <img src="https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/refs/heads/main/img/enemigos/loboferoz.png" alt="Lobo Enfurecido">
+          <img src="https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/refs/heads/main/img/oso/corazon.png" alt="Corazón">
+          <img src="https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/refs/heads/main/img/oso/uniyosocombat.png" alt="Oso y Unicornio">
         </div>
         
         <p>El lobo tiene 5 puntos de vida. Debes golpearlo 5 veces con el poder del Unicornio para derrotarlo.</p>
@@ -547,7 +547,7 @@
       <div id="celebration" class="celebration">
         <h2>¡Victoria!</h2>
         <p>Has derrotado al Lobo Feroz con el poder de la amistad</p>
-        <img src="https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/oso/celebracion.png" alt="Celebración" style="width: 200px; margin: 20px auto;">
+        <img src="https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/refs/heads/main/img/oso/celebracion.png" alt="Celebración" style="width: 200px; margin: 20px auto;">
         <button id="nextLevelBtn" class="celebration-btn">¡Siguiente Nivel!</button>
       </div>
     </div>
@@ -575,1194 +575,197 @@
     </div>
   </div>
 
+  <script src="js/game-complete.js"></script>
+
   <script>
-    // Esperar a que todo esté completamente cargado
+    // Variables para la música
+    let musicPlaying = true;
+    const introMusic = document.getElementById('introMusic');
+    const battleMusic = document.getElementById('battleMusic');
+    const soundToggle = document.getElementById('soundToggle');
+    
+    // Precargar música
     window.addEventListener('load', function() {
-        console.log("🎮 Iniciando juego Oso Abrazos...");
-        
-        // Obtener elementos del DOM
-        const canvas = document.getElementById("gameCanvas");
-        if (!canvas) {
-            console.error("❌ No se encontró el elemento canvas");
-            return;
+      introMusic.volume = 0.7;
+      battleMusic.volume = 0.7;
+      battleMusic.loop = true;
+      
+      // Solución para la aut reproducción en móviles
+      document.addEventListener('click', function() {
+        if (musicPlaying && introMusic.paused) {
+          introMusic.play().catch(e => console.log("Error al reproducir audio: ", e));
         }
-        
-        const ctx = canvas.getContext("2d");
-        if (!ctx) {
-            console.error("❌ No se pudo obtener el contexto 2D del canvas");
-            return;
-        }
-        
-        console.log("✅ Canvas y contexto inicializados correctamente");
-        
-        const scoreElement = document.getElementById("score");
-        const livesElement = document.getElementById("lives");
-        const levelElement = document.getElementById("level");
-        const startScreen = document.getElementById("startScreen");
-        const startButton = document.getElementById("startButton");
-        const loadingScreen = document.getElementById("loadingScreen");
-        const loadingProgress = document.getElementById("loadingProgress");
-        const loadingText = document.getElementById("loadingText");
-        const coverImage = document.getElementById("coverImage");
-        const hintElement = document.getElementById("hint");
-        const soundToggle = document.getElementById("soundToggle");
-        const unicornPowerElement = document.getElementById("unicornPower");
-        const unicornPowerLevelElement = document.getElementById("unicornPowerLevel");
-        const bossHealth = document.getElementById("bossHealth");
-        const bossHealthBar = document.getElementById("bossHealthBar");
-        const levelIndicator = document.getElementById("levelIndicator");
-        const celebration = document.getElementById("celebration");
-        const nextLevelBtn = document.getElementById("nextLevelBtn");
-        const storybook = document.getElementById("storybook");
-        const startGameBtn = document.getElementById("startGame");
-        const introMusic = document.getElementById("introMusic");
-        const battleMusic = document.getElementById("battleMusic");
-
-        // Sprites
-        const sprites = {
-          oso_idle: new Image(),
-          oso_walk: new Image(),
-          oso_jump: new Image(),
-          oso_run: new Image(),
-          oso_sit: new Image(),
-          oso_hugging: new Image(),
-          oso_portada: new Image(),
-          ardilla: new Image(),
-          conejo: new Image(),
-          pajarito: new Image(),
-          Enemigos_01: new Image(),
-          Enemigos_02: new Image(),
-          Enemigos_03: new Image(),
-          miel: new Image(),
-          uni_solo: new Image(),    // Unicornio solo
-          osoyuni: new Image(),     // Oso montando unicornio
-          uni_run: new Image(),
-          uni_shup: new Image(),
-          uni_corazon: new Image(),
-          lobo_normal: new Image(),
-          lobo_feroz: new Image(),
-          lobo_triste: new Image(),
-          fuego: new Image(),
-          corazon: new Image(),
-          celebracion: new Image(),
-          // Fondos
-          bosque1: new Image(),
-          bosque2: new Image(),
-          bosque3: new Image(),
-          bosque4: new Image()
-        };
-        
-        // URLs CORREGIDAS
-        const baseUrl = "https://raw.githubusercontent.com/Evelez23/-microdelecion/main/img/";
-        const imageUrls = {
-          oso_idle: `${baseUrl}oso/oso_idle.svg`,
-          oso_walk: `${baseUrl}oso/oso_walk.svg`,
-          oso_jump: `${baseUrl}oso/oso_jump.svg`,
-          oso_run: `${baseUrl}oso/oso_run.svg`,
-          oso_sit: `${baseUrl}oso/oso_sit.svg`,
-          oso_hugging: `${baseUrl}oso/oso_hugging.svg`,
-          oso_portada: `${baseUrl}oso/oso_portada.jpg`,
-          ardilla: `${baseUrl}Amigos/ardilla.png`,
-          conejo: `${baseUrl}Amigos/conejo.png`,
-          pajarito: `${baseUrl}Amigos/pajarito.png`,
-          Enemigos_01: `${baseUrl}enemigos/Enemigos-01.svg`,
-          Enemigos_02: `${baseUrl}enemigos/Enemigos-02.svg`,
-          Enemigos_03: `${baseUrl}enemigos/Enemigos-03.svg`,
-          miel: `${baseUrl}Amigos/miel.png`,
-          uni_solo: `${baseUrl}Amigos/unien4patas.png`,  // Unicornio solo
-          osoyuni: `${baseUrl}Amigos/osoyuni.png`,       // Oso montando unicornio
-          uni_run: `${baseUrl}Amigos/unirun.png`,
-          uni_shup: `${baseUrl}Amigos/unirshup.png`,
-          uni_corazon: `${baseUrl}Amigos/lovepower.png`,
-          lobo_normal: "https://raw.githubusercontent.com/Evelez23/-microdelecion/161869dbb4cf0e712e05085c4879507f7270f11c/img/enemigos/lobo.svg",
-          lobo_feroz: "https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/enemigos/loboferoz.png",
-          lobo_triste: "https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/enemigos/lobotriste.png",
-          fuego: "https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/enemigos/fire.png",
-          corazon: "https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/oso/corazon.png",
-          celebracion: "https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/oso/celebracion.png",
-          // Fondos
-          bosque1: `${baseUrl}fondos/bosque1.jpg`,
-          bosque2: `${baseUrl}fondos/bosque2.jpg`,
-          bosque3: `${baseUrl}fondos/bosque3.jpg`,
-          bosque4: `${baseUrl}fondos/bosque4.jpg`
-        };
-
-        // URLs de sonidos
-        const soundUrls = {
-            background: 'https://raw.githubusercontent.com/Evelez23/-microdelecion/main/sounds/background.mp3.mp3',
-            jump: 'https://raw.githubusercontent.com/Evelez23/-microdelecion/main/sounds/jump.mp3.mp3',
-            collect: 'https://raw.githubusercontent.com/Evelez23/-microdelecion/main/sounds/collect.mp3.mp3',
-            hug: 'https://raw.githubusercontent.com/Evelez23/-microdelecion/main/sounds/hug.mp3.mp3',
-            hurt: 'https://raw.githubusercontent.com/Evelez23/-microdelecion/main/sounds/hurt.mp3.mp3',
-            enemy: 'https://raw.githubusercontent.com/Evelez23/-microdelecion/main/sounds/enemy.mp3.mp3',
-            shot: 'https://raw.githubusercontent.com/Evelez23/-microdelecion/main/sounds/shot.mp3.mp3',
-            powerUp: 'https://raw.githubusercontent.com/Evelez23/-microdelecion/main/sounds/powerup.mp3.mp3',
-            fire: 'https://raw.githubusercontent.com/Evelez23/-microdelecion/main/sounds/enemy.mp3.mp3',
-            bossHit: 'https://raw.githubusercontent.com/Evelez23/-microdelecion/main/sounds/enemy.mp3.mp3',
-            victory: 'https://raw.githubusercontent.com/Evelez23/-microdelecion/main/sounds/collect.mp3.mp3'
-        };
-
-        const sounds = {};
-
-        // Estado del juego
-        let gameState = {
-          score: 0,
-          lives: 3,
-          level: 1,
-          sublevel: 1,
-          gameStarted: false,
-          soundEnabled: true,
-          musicPlaying: true,
-          bossDefeated: false
-        };
-
-        // Estado del oso
-        let oso = {
-          x: 100,
-          y: 380,
-          width: 80,
-          height: 80,
-          vx: 0,
-          vy: 0,
-          speed: 4,
-          jumpForce: 13,
-          gravity: 0.6,
-          grounded: true,
-          action: "idle",
-          direction: 1,
-          hugging: false,
-          hugCooldown: 0,
-          invincible: 0,
-          hasUnicorn: false
-        };
-
-        // Estado del lobo (jefe)
-        let lobo = {
-          x: 600,
-          y: 350,
-          width: 120,
-          height: 100,
-          health: 5,
-          maxHealth: 5,
-          vx: 0,
-          state: "normal", // normal, enraged, defeated
-          attackCooldown: 0,
-          fireballs: []
-        };
-
-        // Estado del unicornio
-        let unicorn = {
-            x: 0,
-            y: 0,
-            width: 100,
-            height: 100,
-            active: false,
-            power: 100,
-            cooldown: 0
-        };
-
-        // Elementos del juego
-        let platforms = [
-          {x: 0, y: 450, width: 800, height: 50},
-          {x: 200, y: 350, width: 100, height: 20},
-          {x: 400, y: 300, width: 100, height: 20},
-          {x: 600, y: 250, width: 100, height: 20}
-        ];
-
-        let friends = [];
-        let enemies = [];
-        let items = [];
-        let projectiles = [];
-        let particles = [];
-        let hintTimer = 0;
-        let keys = {};
-        let fondoActual = 'bosque1';
-
-        // Función para cargar sonidos
-        function loadSounds() {
-            console.log("🔊 Cargando sonidos...");
-            
-            let loadedSounds = 0;
-            const totalSounds = Object.keys(soundUrls).length;
-            
-            for (let key in soundUrls) {
-                sounds[key] = new Audio(soundUrls[key]);
-                sounds[key].volume = 0.6;
-                sounds[key].preload = 'auto';
-                
-                sounds[key].oncanplaythrough = () => {
-                    loadedSounds++;
-                    console.log(`✅ Sonido cargado: ${key} (${loadedSounds}/${totalSounds})`);
-                };
-                
-                sounds[key].onerror = (e) => {
-                    loadedSounds++;
-                    console.error(`❌ Error cargando sonido ${key}:`, soundUrls[key], e);
-                };
-            }
-            
-            sounds.background.loop = true;
-        }
-
-        // Función para reproducir sonidos
-        function playSound(soundName) {
-            if (gameState.soundEnabled && sounds[soundName]) {
-                try {
-                    // Para sonidos cortos (todos excepto background)
-                    if (soundName !== 'background') {
-                        const soundClone = new Audio(sounds[soundName].src);
-                        soundClone.volume = 0.6;
-                        soundClone.play().catch(e => {
-                            console.log("Error reproduciendo sonido: ", e);
-                        });
-                    } 
-                    // Para música de fondo
-                    else if (soundName === 'background') {
-                        sounds.background.play().catch(e => {
-                            console.log("Error autoplay música: ", e);
-                        });
-                    }
-                } catch (error) {
-                    console.error("Error con el sonido: ", error);
-                }
-            } else if (!gameState.soundEnabled) {
-                console.log(`🔇 Sonido desactivado: ${soundName}`);
-            } else if (!sounds[soundName]) {
-                console.error(`❌ Sonido no encontrado: ${soundName}`);
-            }
-        }
-
-        // Teclas
-        window.addEventListener("keydown", e => {
-          keys[e.key] = true;
-          if(["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " ", "z"].includes(e.key)) {
-            e.preventDefault();
-          }
-        });
-        window.addEventListener("keyup", e => keys[e.key] = false);
-        
-        // Disparar corazones con el mouse
-        canvas.addEventListener("mousedown", e => {
-          if (oso.hasUnicorn) {
-            shootHeart();
-          }
-        });
-
-        function shootHeart() {
-            if (unicorn.cooldown <= 0 && unicorn.power > 0) {
-                let heartSpeed = 10;
-                let heartSize = 25;
-                let heartVx = oso.direction * heartSpeed;
-
-                let startX = oso.direction === 1 ? oso.x + oso.width : oso.x - heartSize;
-
-                projectiles.push({
-                    x: startX,
-                    y: oso.y + oso.height / 3,
-                    vx: heartVx,
-                    width: heartSize,
-                    height: heartSize,
-                    type: "heart"
-                });
-
-                unicorn.power -= 10;
-                unicorn.cooldown = 15;
-                playSound('shot');
-            }
-        }
-
-        // Control de sonido
-        function toggleSound() {
-            gameState.soundEnabled = !gameState.soundEnabled;
-            
-            if (gameState.soundEnabled) {
-                soundToggle.textContent = "🔊";
-                console.log("🔊 Sonidos activados");
-                // Reanudar música de fondo si existe
-                if (sounds.background) {
-                    playSound('background');
-                }
-            } else {
-                soundToggle.textContent = "🔇";
-                console.log("🔇 Sonidos desactivados");
-                // Pausar música de fondo si existe
-                if (sounds.background && !sounds.background.paused) {
-                    sounds.background.pause();
-                }
-            }
-        }
-
-        // Iniciar juego
-        startButton.addEventListener("click", startGame);
-        soundToggle.addEventListener("click", toggleSound);
-        startGameBtn.addEventListener("click", startGameFromStorybook);
-        nextLevelBtn.addEventListener("click", nextLevel);
-
-        // Precargar recursos
-        let totalResources = Object.keys(imageUrls).length;
-        let loadedResources = 0;
-
-        function loadResources() {
-            console.log("🔄 Iniciando carga de recursos...");
-            
-            // Primero cargar sonidos
-            loadSounds();
-            
-            // Luego cargar imágenes
-            for (let key in imageUrls) {
-                const img = sprites[key];
-                img.crossOrigin = "Anonymous";
-                
-                img.onload = () => {
-                    loadedResources++;
-                    const progress = Math.floor((loadedResources / totalResources) * 100);
-                    loadingProgress.style.width = `${progress}%`;
-                    loadingText.textContent = `${progress}%`;
-                    
-                    console.log(`✅ ${key} cargado: ${imageUrls[key]}`);
-                    
-                    if (loadedResources === totalResources) {
-                        console.log("🎉 ¡Todos los recursos cargados!");
-                        setTimeout(() => {
-                            loadingScreen.style.display = "none";
-                            startScreen.style.display = "flex";
-                            coverImage.src = imageUrls.oso_portada;
-                        }, 500);
-                    }
-                };
-                
-                img.onerror = (e) => {
-                    console.error(`❌ ERROR cargando ${key}:`, imageUrls[key]);
-                    loadedResources++;
-                    
-                    if (loadedResources === totalResources) {
-                        loadingScreen.style.display = "none";
-                        startScreen.style.display = "flex";
-                    }
-                };
-                
-                console.log(`📦 Cargando: ${key} -> ${imageUrls[key]}`);
-                img.src = imageUrls[key];
-            }
-        }
-
-        function startGame() {
-            gameState.gameStarted = true;
-            startScreen.style.display = "none";
-            storybook.style.display = "flex";
-            
-            // Iniciar música de fondo
-            if (gameState.soundEnabled && gameState.musicPlaying) {
-                introMusic.play().catch(e => console.log("Error al reproducir audio: ", e));
-            }
-        }
-
-        function startGameFromStorybook() {
-            storybook.style.display = "none";
-            resetLevel();
-            
-            // Cambiar a música de batalla si estamos en el nivel del jefe
-            if (gameState.sublevel === 6) {
-                introMusic.pause();
-                battleMusic.play().catch(e => console.log("Error al reproducir audio: ", e));
-            }
-        }
-
-        function nextLevel() {
-            celebration.style.display = "none";
-            gameState.sublevel++;
-            
-            if (gameState.sublevel > 6) {
-                gameState.level++;
-                gameState.sublevel = 1;
-            }
-            
-            resetLevel();
-        }
-
-        function resetLevel() {
-            // Reiniciar posición del oso
-            oso.x = 100;
-            oso.y = 380;
-            oso.vx = 0;
-            oso.vy = 0;
-            oso.action = "idle";
-            oso.hugging = false;
-            oso.hugCooldown = 0;
-            oso.invincible = 0;
-            oso.hasUnicorn = false;
-            
-            // Reiniciar estado del lobo
-            lobo.x = 600;
-            lobo.y = 350;
-            lobo.health = lobo.maxHealth;
-            lobo.state = "normal";
-            lobo.attackCooldown = 0;
-            lobo.fireballs = [];
-            
-            // Reiniciar unicornio
-            unicorn.active = false;
-            unicorn.power = 100;
-            unicorn.cooldown = 0;
-            
-            // Limpiar arrays
-            friends = [];
-            enemies = [];
-            items = [];
-            projectiles = [];
-            particles = [];
-            
-            // Configurar nivel actual
-            setupLevel();
-            
-            // Actualizar UI
-            updateUI();
-        }
-
-        function setupLevel() {
-            // Configurar nivel actual
-            const currentLevel = `${gameState.level}-${gameState.sublevel}`;
-            levelElement.textContent = currentLevel;
-            levelIndicator.textContent = `Nivel ${currentLevel}`;
-            
-            // Mostrar indicador de nivel por 3 segundos
-            levelIndicator.style.display = "block";
-            setTimeout(() => {
-                levelIndicator.style.display = "none";
-            }, 3000);
-            
-            // Configurar según el nivel
-            if (gameState.sublevel === 6) {
-                // Nivel del jefe - Lobo Feroz
-                fondoActual = 'bosque4';
-                bossHealth.style.display = "block";
-                bossHealthBar.style.width = "100%";
-                unicornPowerElement.style.display = "block";
-                
-                // Añadir corazones para recolectar
-                items.push({
-                    x: 200, y: 300, width: 30, height: 30, type: "heart"
-                });
-                items.push({
-                    x: 400, y: 250, width: 30, height: 30, type: "heart"
-                });
-                items.push({
-                    x: 600, y: 200, width: 30, height: 30, type: "heart"
-                });
-                
-                // Cambiar a música de batalla
-                introMusic.pause();
-                if (gameState.soundEnabled) {
-                    battleMusic.play().catch(e => console.log("Error al reproducir audio: ", e));
-                }
-            } else {
-                // Niveles normales
-                fondoActual = `bosque${gameState.sublevel}`;
-                bossHealth.style.display = "none";
-                unicornPowerElement.style.display = "none";
-                
-                // Añadir amigos
-                for (let i = 0; i < 3; i++) {
-                    friends.push({
-                        x: 200 + i * 200,
-                        y: 350,
-                        width: 50,
-                        height: 50,
-                        type: ["ardilla", "conejo", "pajarito"][i]
-                    });
-                }
-                
-                // Añadir enemigos
-                for (let i = 0; i < 2; i++) {
-                    enemies.push({
-                        x: 300 + i * 200,
-                        y: 350,
-                        width: 50,
-                        height: 50,
-                        vx: 1 + i * 0.5,
-                        type: ["Enemigos_01", "Enemigos_02", "Enemigos_03"][i]
-                    });
-                }
-                
-                // Añadir miel
-                for (let i = 0; i < 3; i++) {
-                    items.push({
-                        x: 150 + i * 200,
-                        y: 300,
-                        width: 30,
-                        height: 30,
-                        type: "miel"
-                    });
-                }
-            }
-        }
-
-        function updateUI() {
-            scoreElement.textContent = gameState.score;
-            livesElement.textContent = "❤️".repeat(gameState.lives);
-            
-            // Actualizar barra de poder del unicornio
-            unicornPowerLevelElement.style.width = `${unicorn.power}%`;
-            
-            // Actualizar barra de salud del jefe
-            if (gameState.sublevel === 6) {
-                bossHealthBar.style.width = `${(lobo.health / lobo.maxHealth) * 100}%`;
-            }
-        }
-
-        function update() {
-            if (!gameState.gameStarted) return;
-            
-            // Actualizar estado del oso
-            updateOso();
-            
-            // Actualizar estado del lobo (solo en nivel 6)
-            if (gameState.sublevel === 6) {
-                updateLobo();
-            }
-            
-            // Actualizar enemigos
-            updateEnemies();
-            
-            // Actualizar proyectiles
-            updateProjectiles();
-            
-            // Actualizar partículas
-            updateParticles();
-            
-            // Actualizar cooldowns
-            if (oso.hugCooldown > 0) oso.hugCooldown--;
-            if (oso.invincible > 0) oso.invincible--;
-            if (unicorn.cooldown > 0) unicorn.cooldown--;
-            
-            // Actualizar temporizador de pista
-            hintTimer++;
-            if (hintTimer > 300) {
-                hintElement.style.display = "none";
-            }
-            
-            // Regenerar poder del unicornio
-            if (unicorn.active && unicorn.power < 100) {
-                unicorn.power += 0.1;
-            }
-            
-            // Comprobar victoria
-            checkVictory();
-            
-            // Actualizar UI
-            updateUI();
-        }
-
-        function updateOso() {
-            // Movimiento horizontal
-            if (keys.ArrowLeft || keys.a) {
-                oso.vx = -oso.speed;
-                oso.direction = -1;
-                oso.action = "walk";
-            } else if (keys.ArrowRight || keys.d) {
-                oso.vx = oso.speed;
-                oso.direction = 1;
-                oso.action = "walk";
-            } else {
-                oso.vx = 0;
-                if (oso.grounded && !oso.hugging) {
-                    oso.action = "idle";
-                }
-            }
-            
-            // Salto
-            if ((keys.ArrowUp || keys.w || keys[" "]) && oso.grounded) {
-                oso.vy = -oso.jumpForce;
-                oso.grounded = false;
-                oso.action = "jump";
-                playSound('jump');
-            }
-            
-            // Aplicar gravedad
-            oso.vy += oso.gravity;
-            oso.y += oso.vy;
-            
-            // Colisión con plataformas
-            oso.grounded = false;
-            for (let platform of platforms) {
-                if (collision(oso, platform)) {
-                    if (oso.vy > 0) {
-                        oso.y = platform.y - oso.height;
-                        oso.vy = 0;
-                        oso.grounded = true;
-                        if (oso.action === "jump") {
-                            oso.action = "idle";
-                        }
-                    }
-                }
-            }
-            
-            // Limitar movimiento vertical
-            if (oso.y > canvas.height - oso.height) {
-                oso.y = canvas.height - oso.height;
-                oso.vy = 0;
-                oso.grounded = true;
-            }
-            
-            // Movimiento horizontal con colisión
-            oso.x += oso.vx;
-            for (let platform of platforms) {
-                if (collision(oso, platform)) {
-                    if (oso.vx > 0) {
-                        oso.x = platform.x - oso.width;
-                    } else if (oso.vx < 0) {
-                        oso.x = platform.x + platform.width;
-                    }
-                }
-            }
-            
-            // Limitar movimiento horizontal
-            if (oso.x < 0) oso.x = 0;
-            if (oso.x > canvas.width - oso.width) oso.x = canvas.width - oso.width;
-            
-            // Abrazar amigos
-            if ((keys.z || keys.e) && oso.hugCooldown === 0) {
-                for (let i = 0; i < friends.length; i++) {
-                    if (collision(oso, friends[i])) {
-                        oso.hugging = true;
-                        oso.hugCooldown = 30;
-                        gameState.score += 100;
-                        playSound('hug');
-                        
-                        // Crear partículas de amor
-                        for (let j = 0; j < 10; j++) {
-                            particles.push({
-                                x: friends[i].x + friends[i].width / 2,
-                                y: friends[i].y + friends[i].height / 2,
-                                vx: Math.random() * 4 - 2,
-                                vy: Math.random() * -4 - 1,
-                                size: Math.random() * 10 + 5,
-                                color: "#ff5e8e",
-                                life: 30
-                            });
-                        }
-                        
-                        setTimeout(() => {
-                            oso.hugging = false;
-                        }, 500);
-                        break;
-                    }
-                }
-            }
-            
-            // Disparar corazones (con tecla x o ratón)
-            if ((keys.x || keys.m) && oso.hasUnicorn) {
-                shootHeart();
-            }
-            
-            // Recolectar items
-            for (let i = items.length - 1; i >= 0; i--) {
-                if (collision(oso, items[i])) {
-                    if (items[i].type === "miel") {
-                        gameState.score += 50;
-                        playSound('collect');
-                    } else if (items[i].type === "heart") {
-                        // Activar unicornio
-                        oso.hasUnicorn = true;
-                        unicorn.active = true;
-                        unicorn.power = 100;
-                        playSound('powerUp');
-                    }
-                    
-                    // Crear partículas
-                    for (let j = 0; j < 5; j++) {
-                        particles.push({
-                            x: items[i].x + items[i].width / 2,
-                            y: items[i].y + items[i].height / 2,
-                            vx: Math.random() * 2 - 1,
-                            vy: Math.random() * -2 - 1,
-                            size: Math.random() * 8 + 3,
-                            color: items[i].type === "miel" ? "#ffbb00" : "#ff5e8e",
-                            life: 20
-                        });
-                    }
-                    
-                    items.splice(i, 1);
-                }
-            }
-            
-            // Colisión con enemigos
-            if (oso.invincible === 0) {
-                for (let enemy of enemies) {
-                    if (collision(oso, enemy)) {
-                        gameState.lives--;
-                        oso.invincible = 60;
-                        playSound('hurt');
-                        
-                        if (gameState.lives <= 0) {
-                            gameOver();
-                        }
-                        break;
-                    }
-                }
-            }
-        }
-
-        function updateLobo() {
-            // Comportamiento del lobo según su estado
-            if (lobo.state === "normal") {
-                // Moverse aleatoriamente
-                if (Math.random() < 0.02) {
-                    lobo.vx = Math.random() * 4 - 2;
-                }
-                
-                // Atacar con fuego
-                if (lobo.attackCooldown <= 0) {
-                    if (Math.random() < 0.03) {
-                        // Crear bola de fuego
-                        let fireballSpeed = 5;
-                        let fireballDirection = oso.x < lobo.x ? -1 : 1;
-                        
-                        lobo.fireballs.push({
-                            x: lobo.x + lobo.width / 2,
-                            y: lobo.y + lobo.height / 2,
-                            vx: fireballDirection * fireballSpeed,
-                            width: 40,
-                            height: 40,
-                            type: "fire"
-                        });
-                        
-                        lobo.attackCooldown = 60;
-                        playSound('fire');
-                    }
-                } else {
-                    lobo.attackCooldown--;
-                }
-                
-                // Cambiar a estado enfurecido si tiene poca salud
-                if (lobo.health <= lobo.maxHealth / 2) {
-                    lobo.state = "enraged";
-                }
-            } 
-            else if (lobo.state === "enraged") {
-                // Moverse más rápido
-                if (Math.random() < 0.03) {
-                    lobo.vx = Math.random() * 6 - 3;
-                }
-                
-                // Atacar más frecuentemente
-                if (lobo.attackCooldown <= 0) {
-                    if (Math.random() < 0.05) {
-                        // Crear dos bolas de fuego
-                        let fireballSpeed = 6;
-                        
-                        lobo.fireballs.push({
-                            x: lobo.x + lobo.width / 2,
-                            y: lobo.y + lobo.height / 2,
-                            vx: -fireballSpeed,
-                            width: 40,
-                            height: 40,
-                            type: "fire"
-                        });
-                        
-                        lobo.fireballs.push({
-                            x: lobo.x + lobo.width / 2,
-                            y: lobo.y + lobo.height / 2,
-                            vx: fireballSpeed,
-                            width: 40,
-                            height: 40,
-                            type: "fire"
-                        });
-                        
-                        lobo.attackCooldown = 40;
-                        playSound('fire');
-                    }
-                } else {
-                    lobo.attackCooldown--;
-                }
-            }
-            
-            // Aplicar movimiento
-            lobo.x += lobo.vx;
-            
-            // Limitar movimiento del lobo
-            if (lobo.x < 400) lobo.x = 400;
-            if (lobo.x > canvas.width - lobo.width - 100) lobo.x = canvas.width - lobo.width - 100;
-            
-            // Actualizar bolas de fuego
-            for (let i = lobo.fireballs.length - 1; i >= 0; i--) {
-                let fireball = lobo.fireballs[i];
-                fireball.x += fireball.vx;
-                
-                // Colisión con el oso
-                if (collision(oso, fireball) && oso.invincible === 0) {
-                    gameState.lives--;
-                    oso.invincible = 60;
-                    playSound('hurt');
-                    
-                    if (gameState.lives <= 0) {
-                        gameOver();
-                    }
-                    
-                    lobo.fireballs.splice(i, 1);
-                    continue;
-                }
-                
-                // Eliminar bolas de fuego que salen de la pantalla
-                if (fireball.x < -50 || fireball.x > canvas.width + 50) {
-                    lobo.fireballs.splice(i, 1);
-                }
-            }
-        }
-
-        function updateEnemies() {
-            for (let enemy of enemies) {
-                // Movimiento simple de izquierda a derecha
-                enemy.x += enemy.vx;
-                
-                // Rebotar en los bordes
-                if (enemy.x < 0 || enemy.x > canvas.width - enemy.width) {
-                    enemy.vx *= -1;
-                }
-            }
-        }
-
-        function updateProjectiles() {
-            for (let i = projectiles.length - 1; i >= 0; i--) {
-                let projectile = projectiles[i];
-                projectile.x += projectile.vx;
-                
-                // Colisión con el lobo
-                if (gameState.sublevel === 6 && collision(projectile, lobo) && projectile.type === "heart") {
-                    lobo.health--;
-                    playSound('bossHit');
-                    
-                    // Crear partículas
-                    for (let j = 0; j < 10; j++) {
-                        particles.push({
-                            x: projectile.x + projectile.width / 2,
-                            y: projectile.y + projectile.height / 2,
-                            vx: Math.random() * 4 - 2,
-                            vy: Math.random() * -4 - 1,
-                            size: Math.random() * 8 + 3,
-                            color: "#ff5e8e",
-                            life: 30
-                        });
-                    }
-                    
-                    projectiles.splice(i, 1);
-                    continue;
-                }
-                
-                // Colisión con enemigos
-                for (let j = enemies.length - 1; j >= 0; j--) {
-                    if (collision(projectile, enemies[j])) {
-                        gameState.score += 50;
-                        playSound('enemy');
-                        
-                        // Crear partículas
-                        for (let k = 0; k < 10; k++) {
-                            particles.push({
-                                x: enemies[j].x + enemies[j].width / 2,
-                                y: enemies[j].y + enemies[j].height / 2,
-                                vx: Math.random() * 4 - 2,
-                                vy: Math.random() * -4 - 1,
-                                size: Math.random() * 8 + 3,
-                                color: "#ff5e8e",
-                                life: 30
-                            });
-                        }
-                        
-                        enemies.splice(j, 1);
-                        projectiles.splice(i, 1);
-                        break;
-                    }
-                }
-                
-                // Eliminar proyectiles que salen de la pantalla
-                if (projectile.x < -50 || projectile.x > canvas.width + 50) {
-                    projectiles.splice(i, 1);
-                }
-            }
-        }
-
-        function updateParticles() {
-            for (let i = particles.length - 1; i >= 0; i--) {
-                particles[i].x += particles[i].vx;
-                particles[i].y += particles[i].vy;
-                particles[i].life--;
-                
-                if (particles[i].life <= 0) {
-                    particles.splice(i, 1);
-                }
-            }
-        }
-
-        function checkVictory() {
-            // Victoria en niveles normales
-            if (gameState.sublevel < 6 && friends.length === 0 && enemies.length === 0) {
-                gameState.score += 500;
-                showVictory();
-            }
-            
-            // Victoria en nivel del jefe
-            if (gameState.sublevel === 6 && lobo.health <= 0 && lobo.state !== "defeated") {
-                lobo.state = "defeated";
-                gameState.score += 1000;
-                gameState.bossDefeated = true;
-                showVictory();
-                
-                // Cambiar a música de introducción
-                battleMusic.pause();
-                if (gameState.soundEnabled) {
-                    introMusic.play().catch(e => console.log("Error al reproducir audio: ", e));
-                }
-            }
-        }
-
-        function showVictory() {
-            playSound('victory');
-            celebration.style.display = "flex";
-        }
-
-        function gameOver() {
-            alert("¡Game Over! Tu puntuación: " + gameState.score);
-            gameState.gameStarted = false;
-            gameState.score = 0;
-            gameState.lives = 3;
-            gameState.level = 1;
-            gameState.sublevel = 1;
-            startScreen.style.display = "flex";
-        }
-
-        function collision(a, b) {
-            return a.x < b.x + b.width &&
-                   a.x + a.width > b.x &&
-                   a.y < b.y + b.height &&
-                   a.y + a.height > b.y;
-        }
-
-        function draw() {
-            if (!gameState.gameStarted) return;
-            
-            // Limpiar canvas
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Dibujar fondo
-            if (sprites[fondoActual].complete) {
-                ctx.drawImage(sprites[fondoActual], 0, 0, canvas.width, canvas.height);
-            } else {
-                ctx.fillStyle = "#87CEEB";
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-            }
-            
-            // Dibujar plataformas
-            ctx.fillStyle = "#8B4513";
-            for (let platform of platforms) {
-                ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
-            }
-            
-            // Dibujar items
-            for (let item of items) {
-                if (sprites[item.type] && sprites[item.type].complete) {
-                    ctx.drawImage(sprites[item.type], item.x, item.y, item.width, item.height);
-                } else {
-                    ctx.fillStyle = item.type === "miel" ? "#ffbb00" : "#ff5e8e";
-                    ctx.fillRect(item.x, item.y, item.width, item.height);
-                }
-            }
-            
-            // Dibujar amigos
-            for (let friend of friends) {
-                if (sprites[friend.type] && sprites[friend.type].complete) {
-                    ctx.drawImage(sprites[friend.type], friend.x, friend.y, friend.width, friend.height);
-                } else {
-                    ctx.fillStyle = "#4ECDC4";
-                    ctx.fillRect(friend.x, friend.y, friend.width, friend.height);
-                }
-            }
-            
-            // Dibujar enemigos
-            for (let enemy of enemies) {
-                if (sprites[enemy.type] && sprites[enemy.type].complete) {
-                    ctx.drawImage(sprites[enemy.type], enemy.x, enemy.y, enemy.width, enemy.height);
-                } else {
-                    ctx.fillStyle = "#FF6B6B";
-                    ctx.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
-                }
-            }
-            
-            // Dibujar lobo (solo en nivel 6)
-            if (gameState.sublevel === 6) {
-                let loboSprite;
-                if (lobo.state === "defeated") {
-                    loboSprite = sprites.lobo_triste;
-                } else if (lobo.state === "enraged") {
-                    loboSprite = sprites.lobo_feroz;
-                } else {
-                    loboSprite = sprites.lobo_normal;
-                }
-                
-                if (loboSprite && loboSprite.complete) {
-                    // Voltear sprite según la dirección
-                    ctx.save();
-                    if (lobo.vx < 0) {
-                        ctx.scale(-1, 1);
-                        ctx.drawImage(loboSprite, -lobo.x - lobo.width, lobo.y, lobo.width, lobo.height);
-                    } else {
-                        ctx.drawImage(loboSprite, lobo.x, lobo.y, lobo.width, lobo.height);
-                    }
-                    ctx.restore();
-                } else {
-                    ctx.fillStyle = lobo.state === "enraged" ? "#ff0000" : "#888";
-                    ctx.fillRect(lobo.x, lobo.y, lobo.width, lobo.height);
-                }
-                
-                // Dibujar bolas de fuego
-                for (let fireball of lobo.fireballs) {
-                    if (sprites.fuego && sprites.fuego.complete) {
-                        ctx.drawImage(sprites.fuego, fireball.x - fireball.width/2, fireball.y - fireball.height/2, fireball.width, fireball.height);
-                    } else {
-                        ctx.fillStyle = "#ff5e00";
-                        ctx.beginPath();
-                        ctx.arc(fireball.x, fireball.y, fireball.width/2, 0, Math.PI * 2);
-                        ctx.fill();
-                    }
-                }
-            }
-            
-            // Dibujar proyectiles
-            for (let projectile of projectiles) {
-                if (projectile.type === "heart") {
-                    if (sprites.corazon && sprites.corazon.complete) {
-                        ctx.drawImage(sprites.corazon, projectile.x, projectile.y, projectile.width, projectile.height);
-                    } else {
-                        ctx.fillStyle = "#ff5e8e";
-                        ctx.beginPath();
-                        ctx.moveTo(projectile.x + projectile.width/2, projectile.y);
-                        ctx.bezierCurveTo(
-                            projectile.x + projectile.width, projectile.y,
-                            projectile.x + projectile.width, projectile.y + projectile.height,
-                            projectile.x + projectile.width/2, projectile.y + projectile.height
-                        );
-                        ctx.bezierCurveTo(
-                            projectile.x, projectile.y + projectile.height,
-                            projectile.x, projectile.y,
-                            projectile.x + projectile.width/2, projectile.y
-                        );
-                        ctx.fill();
-                    }
-                }
-            }
-            
-            // Dibujar partículas
-            for (let particle of particles) {
-                ctx.fillStyle = particle.color;
-                ctx.beginPath();
-                ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-            
-            // Dibujar oso
-            let osoSprite;
-            if (oso.hugging) {
-                osoSprite = sprites.oso_hugging;
-            } else if (!oso.grounded) {
-                osoSprite = sprites.oso_jump;
-            } else if (oso.vx !== 0) {
-                osoSprite = sprites.oso_walk;
-            } else {
-                osoSprite = sprites.oso_idle;
-            }
-            
-            // Efecto de invencibilidad (parpadeo)
-            if (oso.invincible > 0 && oso.invincible % 10 < 5) {
-                ctx.globalAlpha = 0.5;
-            }
-            
-            if (osoSprite && osoSprite.complete) {
-                // Voltear sprite según la dirección
-                ctx.save();
-                if (oso.direction === -1) {
-                    ctx.scale(-1, 1);
-                    ctx.drawImage(osoSprite, -oso.x - oso.width, oso.y, oso.width, oso.height);
-                } else {
-                    ctx.drawImage(osoSprite, oso.x, oso.y, oso.width, oso.height);
-                }
-                ctx.restore();
-            } else {
-                // Dibujo de respaldo si la imagen no está cargada
-                ctx.fillStyle = oso.hugging ? "#4ECDC4" : "#FF6B6B";
-                ctx.fillRect(oso.x, oso.y, oso.width, oso.height);
-            }
-            
-            ctx.globalAlpha = 1;
-            
-            // Dibujar unicornio si está activo
-            if (oso.hasUnicorn) {
-                let unicornSprite = sprites.osoyuni;
-                
-                if (unicornSprite && unicornSprite.complete) {
-                    ctx.save();
-                    if (oso.direction === -1) {
-                        ctx.scale(-1, 1);
-                        ctx.drawImage(unicornSprite, -oso.x - oso.width, oso.y - 20, oso.width * 1.5, oso.height * 1.5);
-                    } else {
-                        ctx.drawImage(unicornSprite, oso.x - 20, oso.y - 20, oso.width * 1.5, oso.height * 1.5);
-                    }
-                    ctx.restore();
-                } else {
-                    // Dibujo de respaldo
-                    ctx.fillStyle = "#ffffff";
-                    ctx.fillRect(oso.x - 20, oso.y - 20, oso.width * 1.5, oso.height * 1.5);
-                }
-            }
-        }
-
-        // Botones móviles
-        const leftBtn = document.getElementById("leftBtn");
-        const rightBtn = document.getElementById("rightBtn");
-        const jumpBtn = document.getElementById("jumpBtn");
-        const hugBtn = document.getElementById("hugBtn");
-        const fireBtn = document.getElementById("fireBtn");
-
-        // Eventos para botones móviles
-        function setupMobileControls() {
-            // Botones de movimiento
-            leftBtn.addEventListener("touchstart", () => keys.ArrowLeft = true);
-            leftBtn.addEventListener("touchend", () => keys.ArrowLeft = false);
-            rightBtn.addEventListener("touchstart", () => keys.ArrowRight = true);
-            rightBtn.addEventListener("touchend", () => keys.ArrowRight = false);
-            jumpBtn.addEventListener("touchstart", () => {
-                keys.ArrowUp = true;
-                setTimeout(() => keys.ArrowUp = false, 200);
-            });
-            hugBtn.addEventListener("touchstart", () => {
-                keys.z = true;
-                setTimeout(() => keys.z = false, 200);
-            });
-            fireBtn.addEventListener("touchstart", () => {
-                keys.x = true;
-                setTimeout(() => keys.x = false, 200);
-            });
-            
-            // Prevenir acciones por defecto
-            const buttons = [leftBtn, rightBtn, jumpBtn, hugBtn, fireBtn];
-            buttons.forEach(btn => {
-                btn.addEventListener("touchstart", e => e.preventDefault());
-                btn.addEventListener("touchend", e => e.preventDefault());
-            });
-        }
-
-        // Bucle del juego
-        function gameLoop() {
-            update();
-            draw();
-            requestAnimationFrame(gameLoop);
-        }
-
-        // Iniciar todo
-        console.log("🔄 Iniciando precarga de recursos...");
-        loadingScreen.style.display = "flex";
-        loadResources();
-        setupMobileControls();
-        gameLoop();
+      }, { once: true });
     });
+    
+    // Controlar música de fondo
+    soundToggle.addEventListener('click', function() {
+      if (musicPlaying) {
+        introMusic.pause();
+        battleMusic.pause();
+        soundToggle.textContent = '🔇';
+      } else {
+        // Solo reproducir si no está en la pantalla de inicio
+        if (document.getElementById('startScreen').style.display === 'none') {
+          const currentLevel = document.getElementById('level').textContent;
+          if (currentLevel === '1-6') {
+            battleMusic.play().catch(e => console.log("Error al reproducir audio: ", e));
+          } else {
+            introMusic.play().catch(e => console.log("Error al reproducir audio: ", e));
+          }
+        }
+        soundToggle.textContent = '🔊';
+      }
+      musicPlaying = !musicPlaying;
+    });
+    
+    // Función para simular teclas (para controles móviles)
+    function simulateKey(key, type) {
+      let event;
+      const keyCode = getKeyCode(key);
+      switch(type) {
+        case "keydown":
+          event = new KeyboardEvent('keydown', { key: key, keyCode: keyCode, which: keyCode });
+          break;
+        case "keyup":
+          event = new KeyboardEvent('keyup', { key: key, keyCode: keyCode, which: keyCode });
+          break;
+      }
+      document.dispatchEvent(event);
+    }
+
+    // Obtener keyCode basado en la tecla
+    function getKeyCode(key) {
+      switch(key) {
+        case "ArrowLeft": return 37;
+        case "ArrowRight": return 39;
+        case "ArrowUp": return 38;
+        case " ": return 32;
+        case "z": return 90;
+        default: return 0;
+      }
+    }
+
+    // Configurar botones móviles
+    const leftBtn = document.getElementById("leftBtn");
+    leftBtn.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      simulateKey("ArrowLeft", "keydown");
+    });
+    leftBtn.addEventListener("touchend", (e) => {
+      e.preventDefault();
+      simulateKey("ArrowLeft", "keyup");
+    });
+
+    const rightBtn = document.getElementById("rightBtn");
+    rightBtn.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      simulateKey("ArrowRight", "keydown");
+    });
+    rightBtn.addEventListener("touchend", (e) => {
+      e.preventDefault();
+      simulateKey("ArrowRight", "keyup");
+    });
+
+    const jumpBtn = document.getElementById("jumpBtn");
+    jumpBtn.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      simulateKey("ArrowUp", "keydown");
+    });
+    jumpBtn.addEventListener("touchend", (e) => {
+      e.preventDefault();
+      simulateKey("ArrowUp", "keyup");
+    });
+
+    const hugBtn = document.getElementById("hugBtn");
+    hugBtn.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      simulateKey(" ", "keydown");
+    });
+    hugBtn.addEventListener("touchend", (e) => {
+      e.preventDefault();
+      simulateKey(" ", "keyup");
+    });
+
+    const fireBtn = document.getElementById("fireBtn");
+    fireBtn.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      simulateKey("z", "keydown");
+    });
+    fireBtn.addEventListener("touchend", (e) => {
+      e.preventDefault();
+      simulateKey("z", "keyup");
+    });
+
+    // Prevenir scroll en dispositivos táctiles
+    document.addEventListener('touchmove', function(e) {
+      if (e.target.classList.contains('mobile-btn')) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+
+    // Iniciar música cuando se comienza el juego
+    document.getElementById('startButton').addEventListener('click', function() {
+      if (musicPlaying) {
+        introMusic.play().catch(e => console.log("Error al reproducir audio: ", e));
+      }
+    });
+
+    // Iniciar storybook cuando se comienza el juego
+    document.getElementById('startButton').addEventListener('click', function() {
+      document.getElementById('startScreen').style.display = 'none';
+      document.getElementById('storybook').style.display = 'flex';
+    });
+
+    // Comenzar juego desde storybook
+    document.getElementById('startGame').addEventListener('click', function() {
+      document.getElementById('storybook').style.display = 'none';
+      // Aquí se iniciaría el juego normalmente
+      // gameStart();
+      
+      // Simulación de cambio de nivel (solo para demostración)
+      simulateLevelChange('1-2');
+    });
+
+    // Botón de siguiente nivel
+    document.getElementById('nextLevelBtn').addEventListener('click', function() {
+      document.getElementById('celebration').style.display = 'none';
+      // Aquí se cargaría el siguiente nivel
+      
+      // Simulación de cambio de nivel (solo para demostración)
+      const currentLevel = document.getElementById('level').textContent;
+      if (currentLevel === '1-1') simulateLevelChange('1-2');
+      else if (currentLevel === '1-2') simulateLevelChange('1-3');
+      else if (currentLevel === '1-3') simulateLevelChange('1-4');
+      else if (currentLevel === '1-4') simulateLevelChange('1-5');
+      else if (currentLevel === '1-5') simulateLevelChange('1-6');
+    });
+
+    // Función para simular cambio de nivel (solo para demostración)
+    function simulateLevelChange(level) {
+      document.getElementById('level').textContent = level;
+      document.getElementById('levelIndicator').textContent = `Nivel ${level}`;
+      
+      // Mostrar barra de salud del jefe solo en nivel 1-6
+      if (level === '1-6') {
+        document.getElementById('bossHealth').style.display = 'block';
+        document.getElementById('hint').textContent = "¡Cuidado con el Lobo Feroz! Recolecta corazones para invocar al Unicornio";
+        
+        // Cambiar a música de batalla
+        if (musicPlaying) {
+          introMusic.pause();
+          battleMusic.play().catch(e => console.log("Error al reproducir audio: ", e));
+        }
+      } else {
+        document.getElementById('bossHealth').style.display = 'none';
+        document.getElementById('hint').textContent = "Acércate a los amigos y presiona ESPACIO para abrazarlos";
+      }
+    }
+
+    // Simular victoria después de 5 segundos (solo para demostración)
+    setTimeout(() => {
+      // document.getElementById('celebration').style.display = 'flex';
+    }, 5000);
   </script>
 </body>
 </html>
