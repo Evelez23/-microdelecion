@@ -4,22 +4,88 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Oso Abrazos - Aventura Completa</title>
-  <link rel="stylesheet" href="css/style.css">
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+    
+    h1 {
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    
+    p {
+      color: white;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+      margin-bottom: 20px;
+      text-align: center;
+      max-width: 800px;
+    }
+    
     #gameContainer {
       position: relative;
       width: 800px;
       height: 500px;
       margin: 0 auto;
       overflow: hidden;
-      background: #000;
-      max-width: 100%;
+      background: #87CEEB;
+      border: 5px solid #FF6B6B;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     }
 
     #gameCanvas {
       display: block;
       width: 100%;
       height: 100%;
+    }
+
+    #ui {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      color: white;
+      z-index: 5;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 10px;
+      border-radius: 5px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      font-size: 14px;
+    }
+
+    .power-bar {
+      width: 150px;
+      height: 15px;
+      background: #555;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 5px;
+    }
+
+    .power-level {
+      height: 100%;
+      background: linear-gradient(to right, #ff5e00, #ffbb00);
+      width: 0%;
+      transition: width 0.3s;
     }
 
     #startScreen {
@@ -29,6 +95,11 @@
       width: 100%;
       height: 100%;
       z-index: 10;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.7);
     }
 
     #coverImage {
@@ -52,34 +123,12 @@
       cursor: pointer;
       box-shadow: 0 4px 10px rgba(0,0,0,0.4);
       z-index: 11;
+      transition: all 0.3s;
     }
 
-    #ui {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      color: white;
-      font-family: Arial, sans-serif;
-      z-index: 5;
-      background: rgba(0, 0, 0, 0.5);
-      padding: 10px;
-      border-radius: 5px;
-    }
-
-    .power-bar {
-      width: 150px;
-      height: 15px;
-      background: #555;
-      border-radius: 10px;
-      overflow: hidden;
-      margin-top: 5px;
-    }
-
-    .power-level {
-      height: 100%;
-      background: linear-gradient(to right, #ff5e00, #ffbb00);
-      width: 0%;
-      transition: width 0.3s;
+    #startButton:hover {
+      transform: translate(-50%, -50%) scale(1.05);
+      background: rgba(255, 127, 80, 1);
     }
 
     #loadingScreen {
@@ -94,7 +143,6 @@
       justify-content: center;
       align-items: center;
       color: white;
-      font-family: Arial, sans-serif;
       z-index: 20;
     }
 
@@ -123,9 +171,9 @@
       color: white;
       padding: 10px 15px;
       border-radius: 5px;
-      font-family: Arial, sans-serif;
-      display: none;
       z-index: 5;
+      text-align: center;
+      max-width: 80%;
     }
 
     #soundToggle {
@@ -139,6 +187,13 @@
       border-radius: 50%;
       cursor: pointer;
       z-index: 5;
+      font-size: 1.2rem;
+      transition: all 0.3s;
+    }
+
+    #soundToggle:hover {
+      background: rgba(0, 0, 0, 0.7);
+      transform: scale(1.1);
     }
 
     /* Botones móviles */
@@ -171,10 +226,120 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      transition: all 0.2s;
+    }
+
+    .mobile-btn:active {
+      background: rgba(255, 255, 255, 0.5);
+      transform: scale(0.95);
+    }
+
+    /* Storybook */
+    #storybook {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 25;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      overflow-y: auto;
+    }
+
+    #storybook h2 {
+      font-size: 2.5rem;
+      color: #FF6B6B;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 0 #000;
+    }
+
+    #storybook p {
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+      max-width: 80%;
+    }
+
+    .storybook-images {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+
+    .storybook-images img {
+      width: 150px;
+      height: 150px;
+      object-fit: contain;
+      border: 3px solid #FF6B6B;
+      border-radius: 10px;
+      background: white;
+      padding: 5px;
+    }
+
+    .storybook-btn {
+      margin-top: 20px;
+      padding: 12px 30px;
+      font-size: 1.2rem;
+      background: #4ECDC4;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s;
+    }
+
+    .storybook-btn:hover {
+      transform: scale(1.05);
+      background: #3BBBB3;
+    }
+
+    /* Jefe */
+    .boss-health {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 300px;
+      height: 20px;
+      background: #555;
+      border-radius: 10px;
+      overflow: hidden;
+      z-index: 5;
+      border: 2px solid #fff;
+      display: none;
+    }
+
+    .boss-health-bar {
+      height: 100%;
+      background: linear-gradient(to right, #ff0000, #ff5e00);
+      width: 100%;
+      transition: width 0.3s;
+    }
+
+    .level-indicator {
+      position: absolute;
+      top: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-size: 1.2rem;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 5px 15px;
+      border-radius: 20px;
+      z-index: 5;
     }
 
     /* Responsive */
-    @media (max-width: 800px) {
+    @media (max-width: 850px) {
       #gameContainer {
         width: 100%;
         height: auto;
@@ -186,17 +351,100 @@
         height: 60px;
         font-size: 1.5rem;
       }
+      
+      #storybook p {
+        max-width: 95%;
+        font-size: 1rem;
+      }
+      
+      .storybook-images img {
+        width: 100px;
+        height: 100px;
+      }
+      
+      #ui {
+        font-size: 12px;
+      }
+      
+      .power-bar {
+        width: 120px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .storybook-images {
+        gap: 10px;
+      }
+      
+      .storybook-images img {
+        width: 80px;
+        height: 80px;
+      }
+      
+      #hint {
+        font-size: 14px;
+        bottom: 120px;
+      }
+    }
+
+    /* Efectos de victoria */
+    .celebration {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 215, 0, 0.3);
+      z-index: 30;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      color: white;
+      text-align: center;
+    }
+
+    .celebration h2 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      color: #FF6B6B;
+    }
+
+    .celebration p {
+      font-size: 1.5rem;
+      margin-bottom: 30px;
+    }
+
+    .celebration-btn {
+      padding: 15px 40px;
+      font-size: 1.5rem;
+      background: #4ECDC4;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s;
+    }
+
+    .celebration-btn:hover {
+      transform: scale(1.05);
+      background: #3BBBB3;
     }
   </style>
 </head>
 <body>
+  <h1>Oso Abrazos - Aventura Completa</h1>
+  <p>¡Ayuda al Oso Abrazos a derrotar al Lobo Feroz en 6 niveles emocionantes!</p>
+  
   <div id="gameContainer">
     <canvas id="gameCanvas" width="800" height="500"></canvas>
 
     <div id="ui">
       <div>Puntos: <span id="score">0</span></div>
       <div>Vidas: <span id="lives">❤️❤️❤️</span></div>
-      <div>Nivel: <span id="level">1</span></div>
+      <div>Nivel: <span id="level">1-1</span></div>
       <div id="unicornPower">
         <span>Poder del Unicornio:</span>
         <div class="power-bar">
@@ -205,16 +453,24 @@
       </div>
     </div>
 
+    <div id="bossHealth" class="boss-health">
+      <div class="boss-health-bar" id="bossHealthBar"></div>
+    </div>
+
+    <div id="levelIndicator" class="level-indicator">Nivel 1-1</div>
+
     <div id="startScreen">
       <img id="coverImage" src="https://raw.githubusercontent.com/Evelez23/-microdelecion/main/img/oso/oso_portada.jpg" alt="Oso Abrazos Game Cover">
       <button id="startButton">¡Comenzar Aventura!</button>
-      <audio id="backgroundMusic" loop>
-        <source src="https://assets.mixkit.org/music/preview/mixkit-games-worldbeat-466.mp3" type="audio/mpeg">
-        Tu navegador no soporta el elemento de audio.
+      <audio id="introMusic" loop>
+        <source src="https://github.com/Evelez23/-microdelecion/raw/main/sounds/intro.mp3" type="audio/mpeg">
+      </audio>
+      <audio id="battleMusic">
+        <source src="https://github.com/Evelez23/-microdelecion/raw/main/sounds/para%20la%20batalla.mp3" type="audio/mpeg">
       </audio>
     </div>
 
-    <div id="loadingScreen">
+    <div id="loadingScreen" style="display: none;">
       <h2>Cargando...</h2>
       <div class="progress-bar">
         <div class="progress" id="loadingProgress"></div>
@@ -237,80 +493,87 @@
         <button class="mobile-btn" id="fireBtn">🔫</button>
       </div>
     </div>
+
+    <!-- Storybook -->
+    <div id="storybook" style="display: none;">
+      <h2>Oso Abrazos vs. El Lobo Feroz</h2>
+      <p>¡El malvado Lobo Feroz ha aparecido y quiere arruinar la diversión!</p>
+      <p>Debes recolectar corazones para invocar al Unicornio y derrotar al lobo.</p>
+      
+      <div class="storybook-images">
+        <img src="https://raw.githubusercontent.com/Evelez23/-microdelecion/161869dbb4cf0e712e05085c4879507f7270f11c/img/enemigos/lobo.svg" alt="Lobo Normal">
+        <img src="https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/enemigos/loboferoz.png" alt="Lobo Enfurecido">
+        <img src="https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/oso/corazon.png" alt="Corazón">
+        <img src="https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/oso/uniyosocombat.png" alt="Oso y Unicornio">
+      </div>
+      
+      <p>El lobo tiene 5 puntos de vida. Debes golpearlo 5 veces con el poder del Unicornio para derrotarlo.</p>
+      <p>¡Ten cuidado con sus ataques de fuego!</p>
+      
+      <button id="startGame" class="storybook-btn">¡Entendido! ¡A jugar!</button>
+    </div>
+
+    <!-- Celebración -->
+    <div id="celebration" class="celebration">
+      <h2>¡Victoria!</h2>
+      <p>Has derrotado al Lobo Feroz con el poder de la amistad</p>
+      <img src="https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/oso/celebracion.png" alt="Celebración" style="width: 200px; margin: 20px auto;">
+      <button id="nextLevelBtn" class="celebration-btn">¡Siguiente Nivel!</button>
+    </div>
   </div>
 
   <script src="js/game-complete.js"></script>
 
   <script>
-    // Variables globales
-    let musicPlaying = false;
-    const backgroundMusic = document.getElementById('backgroundMusic');
+    // Variables para la música
+    let musicPlaying = true;
+    const introMusic = document.getElementById('introMusic');
+    const battleMusic = document.getElementById('battleMusic');
     const soundToggle = document.getElementById('soundToggle');
     
-    // Inicializar música
+    // Precargar música
     window.addEventListener('load', function() {
-      // Precargar música pero no reproducirla aún
-      backgroundMusic.volume = 0.5;
-      backgroundMusic.load();
+      introMusic.volume = 0.7;
+      battleMusic.volume = 0.7;
+      battleMusic.loop = true;
     });
     
     // Controlar música de fondo
     soundToggle.addEventListener('click', function() {
       if (musicPlaying) {
-        backgroundMusic.pause();
+        introMusic.pause();
+        battleMusic.pause();
         soundToggle.textContent = '🔇';
       } else {
-        backgroundMusic.play().catch(e => {
-          console.log("La reproducción automática fue prevenida: ", e);
-        });
+        // Solo reproducir si no está en la pantalla de inicio
+        if (document.getElementById('startScreen').style.display === 'none') {
+          if (document.getElementById('level').textContent === '1-6') {
+            battleMusic.play();
+          } else {
+            introMusic.play();
+          }
+        }
         soundToggle.textContent = '🔊';
       }
       musicPlaying = !musicPlaying;
     });
     
-    // Reproducir música cuando se inicia el juego
-    document.getElementById('startButton').addEventListener('click', function() {
-      if (!musicPlaying) {
-        backgroundMusic.play();
-        soundToggle.textContent = '🔊';
-        musicPlaying = true;
-      }
-    });
-
-    // Función para simular teclas
+    // Función para simular teclas (para controles móviles)
     function simulateKey(key, type) {
       let event;
       switch(type) {
         case "keydown":
-          event = new KeyboardEvent('keydown', { key: key, keyCode: getKeyCode(key), which: getKeyCode(key) });
+          event = new KeyboardEvent('keydown', { key: key });
           break;
         case "keyup":
-          event = new KeyboardEvent('keyup', { key: key, keyCode: getKeyCode(key), which: getKeyCode(key) });
+          event = new KeyboardEvent('keyup', { key: key });
           break;
       }
       document.dispatchEvent(event);
     }
 
-    // Obtener keyCode basado en la tecla
-    function getKeyCode(key) {
-      switch(key) {
-        case "ArrowLeft": return 37;
-        case "ArrowRight": return 39;
-        case "ArrowUp": return 38;
-        case " ": return 32;
-        case "z": return 90;
-        default: return 0;
-      }
-    }
-
     // Configurar botones móviles
     const leftBtn = document.getElementById("leftBtn");
-    const rightBtn = document.getElementById("rightBtn");
-    const jumpBtn = document.getElementById("jumpBtn");
-    const hugBtn = document.getElementById("hugBtn");
-    const fireBtn = document.getElementById("fireBtn");
-
-    // Botón izquierda
     leftBtn.addEventListener("touchstart", (e) => {
       e.preventDefault();
       simulateKey("ArrowLeft", "keydown");
@@ -320,7 +583,7 @@
       simulateKey("ArrowLeft", "keyup");
     });
 
-    // Botón derecha
+    const rightBtn = document.getElementById("rightBtn");
     rightBtn.addEventListener("touchstart", (e) => {
       e.preventDefault();
       simulateKey("ArrowRight", "keydown");
@@ -330,7 +593,7 @@
       simulateKey("ArrowRight", "keyup");
     });
 
-    // Botón saltar
+    const jumpBtn = document.getElementById("jumpBtn");
     jumpBtn.addEventListener("touchstart", (e) => {
       e.preventDefault();
       simulateKey("ArrowUp", "keydown");
@@ -340,7 +603,7 @@
       simulateKey("ArrowUp", "keyup");
     });
 
-    // Botón abrazar (espacio)
+    const hugBtn = document.getElementById("hugBtn");
     hugBtn.addEventListener("touchstart", (e) => {
       e.preventDefault();
       simulateKey(" ", "keydown");
@@ -350,7 +613,7 @@
       simulateKey(" ", "keyup");
     });
 
-    // Botón disparo (Z)
+    const fireBtn = document.getElementById("fireBtn");
     fireBtn.addEventListener("touchstart", (e) => {
       e.preventDefault();
       simulateKey("z", "keydown");
@@ -366,6 +629,32 @@
         e.preventDefault();
       }
     }, { passive: false });
+
+    // Iniciar música cuando se comienza el juego
+    document.getElementById('startButton').addEventListener('click', function() {
+      if (musicPlaying) {
+        introMusic.play();
+      }
+    });
+
+    // Iniciar storybook cuando se comienza el juego
+    document.getElementById('startButton').addEventListener('click', function() {
+      document.getElementById('startScreen').style.display = 'none';
+      document.getElementById('storybook').style.display = 'flex';
+    });
+
+    // Comenzar juego desde storybook
+    document.getElementById('startGame').addEventListener('click', function() {
+      document.getElementById('storybook').style.display = 'none';
+      // Aquí se iniciaría el juego normalmente
+      // gameStart();
+    });
+
+    // Botón de siguiente nivel
+    document.getElementById('nextLevelBtn').addEventListener('click', function() {
+      document.getElementById('celebration').style.display = 'none';
+      // Aquí se cargaría el siguiente nivel
+    });
   </script>
 </body>
 </html>
