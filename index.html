@@ -45,8 +45,6 @@
       align-items: flex-start;
       gap: 20px;
       flex-wrap: wrap;
-      width: 100%;
-      max-width: 1200px;
     }
     
     #gameContainer {
@@ -58,7 +56,6 @@
       border: 5px solid #FF6B6B;
       border-radius: 10px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-      order: 2;
     }
 
     #gameCanvas {
@@ -185,13 +182,6 @@
       text-align: center;
       max-width: 80%;
       font-size: 14px;
-      opacity: 0.9;
-      transition: opacity 0.5s;
-    }
-
-    #hint.hidden {
-      opacity: 0;
-      pointer-events: none;
     }
 
     #soundToggle {
@@ -218,22 +208,14 @@
     .mobile-controls {
       display: flex;
       flex-direction: column;
-      gap: 20px;
-      order: 1;
-    }
-
-    .mobile-controls-right {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      order: 3;
+      gap: 15px;
+      margin-left: 20px;
     }
 
     .mobile-controls-column {
       display: flex;
       flex-direction: column;
       gap: 15px;
-      align-items: center;
     }
 
     .mobile-btn {
@@ -265,12 +247,80 @@
       text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
     }
 
+    /* Storybook */
+    #storybook {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 25;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      overflow-y: auto;
+    }
+
+    #storybook h2 {
+      font-size: 2.5rem;
+      color: #FF6B6B;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 0 #000;
+    }
+
+    #storybook p {
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+      max-width: 80%;
+    }
+
+    .storybook-images {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+
+    .storybook-images img {
+      width: 150px;
+      height: 150px;
+      object-fit: contain;
+      border: 3px solid #FF6B6B;
+      border-radius: 10px;
+      background: white;
+      padding: 5px;
+    }
+
+    .storybook-btn {
+      margin-top: 20px;
+      padding: 12px 30px;
+      font-size: 1.2rem;
+      background: #4ECDC4;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s;
+    }
+
+    .storybook-btn:hover {
+      transform: scale(1.05);
+      background: #3BBBB3;
+    }
+
     /* Jefe */
     .boss-health {
       position: absolute;
       top: 10px;
       left: 50%;
-      transform: translateX(-50');
+      transform: translateX(-50%);
       width: 300px;
       height: 20px;
       background: #555;
@@ -301,46 +351,18 @@
       z-index: 5;
     }
 
-    /* Lobo */
-    #wolfContainer {
-      position: absolute;
-      right: -200px;
-      bottom: 50px;
-      transition: right 2s ease-in-out;
-      z-index: 4;
-      display: none;
-    }
-    
-    #wolfImage {
-      width: 180px;
-      height: auto;
-    }
-    
-    #wolfContainer.visible {
-      right: 50px;
-      display: block;
-    }
-    
-    #wolfContainer.angry #wolfImage {
-      content: url('https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/enemigos/loboferoz.png');
-    }
-
     /* Responsive */
-    @media (max-width: 1100px) {
+    @media (max-width: 1000px) {
       .game-wrapper {
         flex-direction: column;
         align-items: center;
       }
       
-      .mobile-controls, .mobile-controls-right {
+      .mobile-controls {
         flex-direction: row;
+        margin-left: 0;
         margin-top: 20px;
         gap: 30px;
-        order: 3;
-      }
-      
-      #gameContainer {
-        order: 1;
       }
     }
 
@@ -357,12 +379,14 @@
         font-size: 1.5rem;
       }
       
-      #wolfContainer {
-        bottom: 30px;
+      #storybook p {
+        max-width: 95%;
+        font-size: 1rem;
       }
       
-      #wolfImage {
-        width: 120px;
+      .storybook-images img {
+        width: 100px;
+        height: 100px;
       }
       
       #ui {
@@ -375,13 +399,22 @@
     }
 
     @media (max-width: 600px) {
+      .storybook-images {
+        gap: 10px;
+      }
+      
+      .storybook-images img {
+        width: 80px;
+        height: 80px;
+      }
+      
       #hint {
         font-size: 12px;
         bottom: 80px;
         padding: 6px 10px;
       }
       
-      .mobile-controls, .mobile-controls-right {
+      .mobile-controls {
         gap: 15px;
       }
       
@@ -394,10 +427,52 @@
       .mobile-label {
         font-size: 12px;
       }
-      
-      #wolfImage {
-        width: 100px;
-      }
+    }
+
+    /* Efectos de victoria */
+    .celebration {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 215, 0, 0.3);
+      z-index: 30;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      color: white;
+      text-align: center;
+    }
+
+    .celebration h2 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      color: #FF6B6B;
+    }
+
+    .celebration p {
+      font-size: 1.5rem;
+      margin-bottom: 30px;
+    }
+
+    .celebration-btn {
+      padding: 15px 40px;
+      font-size: 1.5rem;
+      background: #4ECDC4;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s;
+    }
+
+    .celebration-btn:hover {
+      transform: scale(1.05);
+      background: #3BBBB3;
     }
   </style>
 </head>
@@ -406,21 +481,6 @@
   <p>¡Ayuda al Oso Abrazos a derrotar al Lobo Feroz en 6 niveles emocionantes!</p>
   
   <div class="game-wrapper">
-    <!-- Controles izquierdos -->
-    <div class="mobile-controls">
-      <div class="mobile-controls-column">
-        <button class="mobile-btn" id="leftBtn">⬅</button>
-        <div class="mobile-label">Izquierda</div>
-        
-        <button class="mobile-btn" id="rightBtn">➡</button>
-        <div class="mobile-label">Derecha</div>
-        
-        <button class="mobile-btn" id="jumpBtn">⬆</button>
-        <div class="mobile-label">Saltar</div>
-      </div>
-    </div>
-    
-    <!-- Juego -->
     <div id="gameContainer">
       <canvas id="gameCanvas" width="800" height="500"></canvas>
 
@@ -442,15 +502,10 @@
 
       <div id="levelIndicator" class="level-indicator">Nivel 1-1</div>
 
-      <!-- Lobo -->
-      <div id="wolfContainer">
-        <img id="wolfImage" src="https://raw.githubusercontent.com/Evelez23/-microdelecion/161869dbb4cf0e712e05085c4879507f7270f11c/img/enemigos/lobo.svg" alt="Lobo Feroz">
-      </div>
-
       <div id="startScreen">
         <img id="coverImage" src="https://raw.githubusercontent.com/Evelez23/-microdelecion/main/img/oso/oso_portada.jpg" alt="Oso Abrazos Game Cover">
         <button id="startButton">¡Comenzar Aventura!</button>
-        <audio id="introMusic">
+        <audio id="introMusic" loop>
           <source src="https://github.com/Evelez23/-microdelecion/raw/main/sounds/intro.mp3" type="audio/mpeg">
         </audio>
         <audio id="battleMusic">
@@ -468,10 +523,48 @@
 
       <div id="hint">Acércate a los amigos y presiona ESPACIO para abrazarlos</div>
       <button id="soundToggle">🔊</button>
+
+      <!-- Storybook -->
+      <div id="storybook" style="display: none;">
+        <h2>Oso Abrazos vs. El Lobo Feroz</h2>
+        <p>¡El malvado Lobo Feroz ha aparecido y quiere arruinar la diversión!</p>
+        <p>Debes recolectar corazones para invocar al Unicornio y derrotar al lobo.</p>
+        
+        <div class="storybook-images">
+          <img src="https://raw.githubusercontent.com/Evelez23/-microdelecion/161869dbb4cf0e712e05085c4879507f7270f11c/img/enemigos/lobo.svg" alt="Lobo Normal">
+          <img src="https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/enemigos/loboferoz.png" alt="Lobo Enfurecido">
+          <img src="https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/oso/corazon.png" alt="Corazón">
+          <img src="https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/oso/uniyosocombat.png" alt="Oso y Unicornio">
+        </div>
+        
+        <p>El lobo tiene 5 puntos de vida. Debes golpearlo 5 veces con el poder del Unicornio para derrotarlo.</p>
+        <p>¡Ten cuidado con sus ataques de fuego!</p>
+        
+        <button id="startGame" class="storybook-btn">¡Entendido! ¡A jugar!</button>
+      </div>
+
+      <!-- Celebración -->
+      <div id="celebration" class="celebration">
+        <h2>¡Victoria!</h2>
+        <p>Has derrotado al Lobo Feroz con el poder de la amistad</p>
+        <img src="https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/oso/celebracion.png" alt="Celebración" style="width: 200px; margin: 20px auto;">
+        <button id="nextLevelBtn" class="celebration-btn">¡Siguiente Nivel!</button>
+      </div>
     </div>
 
-    <!-- Controles derechos -->
-    <div class="mobile-controls-right">
+    <!-- Botones móviles - FUERA del juego -->
+    <div class="mobile-controls">
+      <div class="mobile-controls-column">
+        <button class="mobile-btn" id="leftBtn">⬅</button>
+        <div class="mobile-label">Izquierda</div>
+        
+        <button class="mobile-btn" id="rightBtn">➡</button>
+        <div class="mobile-label">Derecha</div>
+        
+        <button class="mobile-btn" id="jumpBtn">⬆</button>
+        <div class="mobile-label">Saltar</div>
+      </div>
+      
       <div class="mobile-controls-column">
         <button class="mobile-btn" id="hugBtn">🤗</button>
         <div class="mobile-label">Abrazar</div>
@@ -482,147 +575,49 @@
     </div>
   </div>
 
+  <script src="js/game-complete.js"></script>
+
   <script>
-    // =============================================
-    // VARIABLES GLOBALES
-    // =============================================
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    const startScreen = document.getElementById('startScreen');
-    const startButton = document.getElementById('startButton');
-    const soundToggle = document.getElementById('soundToggle');
-    const hintElement = document.getElementById('hint');
-    const wolfContainer = document.getElementById('wolfContainer');
+    // Variables para la música
+    let musicPlaying = true;
     const introMusic = document.getElementById('introMusic');
     const battleMusic = document.getElementById('battleMusic');
-    const levelElement = document.getElementById('level');
-    const levelIndicator = document.getElementById('levelIndicator');
-    const bossHealth = document.getElementById('bossHealth');
-    const bossHealthBar = document.getElementById('bossHealthBar');
-    const scoreElement = document.getElementById('score');
-    const livesElement = document.getElementById('lives');
-    const unicornPowerElement = document.getElementById('unicornPowerLevel');
-    
-    // Cargar imágenes
-    const images = {
-      bear: new Image(),
-      heart: new Image(),
-      friend: new Image(),
-      unicorn: new Image(),
-      celebration: new Image()
-    };
-    
-    images.bear.src = 'https://raw.githubusercontent.com/Evelez23/-microdelecion/main/img/oso/oso_portada.jpg';
-    images.heart.src = 'https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/oso/corazon.png';
-    images.friend.src = 'https://raw.githubusercontent.com/Evelez23/-microdelecion/main/img/oso/celebracion.png';
-    images.unicorn.src = 'https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/oso/uniyosocombat.png';
-    images.celebration.src = 'https://raw.githubusercontent.com/Evelez23/-microdelecion/refs/heads/main/img/oso/celebracion.png';
-    
-    let gameState = 'start';
-    let currentLevel = '1-1';
-    let score = 0;
-    let lives = 3;
-    let unicornPower = 0;
-    let musicPlaying = true;
-    let currentMusic = null;
-    let hintHidden = false;
-    let bearX = 100;
-    let bearY = 350;
-    let bearVelocityY = 0;
-    let isJumping = false;
-    let hearts = [];
-    let friends = [];
-    let fires = [];
-    
-    // Inicializar elementos del juego
-    function initGameElements() {
-      hearts = [];
-      friends = [];
-      
-      for (let i = 0; i < 5; i++) {
-        hearts.push({
-          x: Math.random() * 700 + 50,
-          y: 350,
-          width: 30,
-          height: 30,
-          collected: false
-        });
-        
-        friends.push({
-          x: Math.random() * 700 + 50,
-          y: 350,
-          width: 40,
-          height: 40,
-          hugged: false
-        });
-      }
-    }
-    
-    // =============================================
-    // FUNCIONES DE MUSICA
-    // =============================================
+    const soundToggle = document.getElementById('soundToggle');
     
     // Precargar música
     window.addEventListener('load', function() {
       introMusic.volume = 0.7;
       battleMusic.volume = 0.7;
+      battleMusic.loop = true;
       
       // Solución para la aut reproducción en móviles
       document.addEventListener('click', function() {
-        if (musicPlaying) {
-          playMusic('intro');
+        if (musicPlaying && introMusic.paused) {
+          introMusic.play().catch(e => console.log("Error al reproducir audio: ", e));
         }
       }, { once: true });
-      
-      // Ocultar la hint después de 5 segundos
-      setTimeout(() => {
-        hintElement.classList.add('hidden');
-      }, 5000);
     });
-    
-    // Función para reproducir música
-    function playMusic(type) {
-      // Detener toda la música primero
-      introMusic.pause();
-      battleMusic.pause();
-      
-      if (!musicPlaying) return;
-      
-      // Reproducir la música solicitada
-      if (type === 'intro') {
-        introMusic.currentTime = 0;
-        introMusic.play().catch(e => console.log("Error al reproducir audio: ", e));
-        currentMusic = 'intro';
-      } else if (type === 'battle') {
-        battleMusic.currentTime = 0;
-        battleMusic.play().catch(e => console.log("Error al reproducir audio: ", e));
-        currentMusic = 'battle';
-      }
-    }
     
     // Controlar música de fondo
     soundToggle.addEventListener('click', function() {
-      musicPlaying = !musicPlaying;
-      
       if (musicPlaying) {
-        // Reanudar la música actual
-        if (currentMusic === 'intro') {
-          playMusic('intro');
-        } else if (currentMusic === 'battle') {
-          playMusic('battle');
-        }
-        soundToggle.textContent = '🔊';
-      } else {
-        // Pausar toda la música
         introMusic.pause();
         battleMusic.pause();
         soundToggle.textContent = '🔇';
+      } else {
+        // Solo reproducir si no está en la pantalla de inicio
+        if (document.getElementById('startScreen').style.display === 'none') {
+          const currentLevel = document.getElementById('level').textContent;
+          if (currentLevel === '1-6') {
+            battleMusic.play().catch(e => console.log("Error al reproducir audio: ", e));
+          } else {
+            introMusic.play().catch(e => console.log("Error al reproducir audio: ", e));
+          }
+        }
+        soundToggle.textContent = '🔊';
       }
+      musicPlaying = !musicPlaying;
     });
-    
-    // =============================================
-    // FUNCIONES DE CONTROLES MÓVILES
-    // =============================================
     
     // Función para simular teclas (para controles móviles)
     function simulateKey(key, type) {
@@ -637,12 +632,6 @@
           break;
       }
       document.dispatchEvent(event);
-      
-      // Ocultar hint al usar controles táctiles
-      if (!hintHidden) {
-        hintElement.classList.add('hidden');
-        hintHidden = true;
-      }
     }
 
     // Obtener keyCode basado en la tecla
@@ -703,7 +692,6 @@
       e.preventDefault();
       simulateKey("z", "keydown");
     });
-    // CORRECCIÓN DEL ERROR: Esta línea tenía una comilla mal cerrada
     fireBtn.addEventListener("touchend", (e) => {
       e.preventDefault();
       simulateKey("z", "keyup");
@@ -715,254 +703,69 @@
         e.preventDefault();
       }
     }, { passive: false });
-    
-    // =============================================
-    // FUNCIONES DEL JUEGO
-    // =============================================
-    
+
     // Iniciar música cuando se comienza el juego
-    startButton.addEventListener('click', function() {
-      startScreen.style.display = 'none';
-      gameState = 'playing';
-      initGameElements();
-      playMusic('intro');
-      gameLoop();
+    document.getElementById('startButton').addEventListener('click', function() {
+      if (musicPlaying) {
+        introMusic.play().catch(e => console.log("Error al reproducir audio: ", e));
+      }
     });
 
-    // Función para cambiar de nivel
-    function changeLevel(newLevel) {
-      currentLevel = newLevel;
-      levelElement.textContent = newLevel;
-      levelIndicator.textContent = `Nivel ${newLevel}`;
-      
-      // Mostrar barra de salud del jefe y lobo solo en nivel 1-6
-      if (newLevel === '1-6') {
-        bossHealth.style.display = 'block';
-        updateBossHealth(5);
-        hintElement.textContent = "¡Cuidado con el Lobo Feroz! Recolecta corazones para invocar al Unicornio";
-        
-        // Mostrar el lobo
-        setTimeout(() => {
-          wolfContainer.style.display = 'block';
-          setTimeout(() => {
-            wolfContainer.classList.add('visible');
-            showTemporaryMessage("¡El Lobo Feroz ha aparecido!", 3000);
-            
-            // Cambiar a música de batalla
-            playMusic('battle');
-          }, 100);
-        }, 1000);
-      } else {
-        bossHealth.style.display = 'none';
-        wolfContainer.classList.remove('visible');
-        wolfContainer.style.display = 'none';
-        hintElement.textContent = "Acércate a los amigos y presiona ESPACIO para abrazarlos";
-        
-        // Cambiar a música normal si no es nivel de jefe
-        playMusic('intro');
-      }
-    }
-    
-    // Función para actualizar la salud del jefe
-    function updateBossHealth(health) {
-      const percentage = (health / 5) * 100;
-      bossHealthBar.style.width = `${percentage}%`;
-    }
-    
-    // Función para mostrar mensajes temporales
-    function showTemporaryMessage(message, duration) {
-      const messageElement = document.createElement('div');
-      messageElement.textContent = message;
-      messageElement.style.position = 'absolute';
-      messageElement.style.top = '50%';
-      messageElement.style.left = '50%';
-      messageElement.style.transform = 'translate(-50%, -50%)';
-      messageElement.style.background = 'rgba(0, 0, 0, 0.8)';
-      messageElement.style.color = 'white';
-      messageElement.style.padding = '15px 25px';
-      messageElement.style.borderRadius = '10px';
-      messageElement.style.zIndex = '100';
-      messageElement.style.fontSize = '1.5rem';
-      messageElement.style.textAlign = 'center';
-      
-      document.getElementById('gameContainer').appendChild(messageElement);
-      
-      setTimeout(() => {
-        messageElement.remove();
-      }, duration);
-    }
-    
-    // Función para hacer enojar al lobo (cuando recibe daño)
-    function makeWolfAngry() {
-      if (wolfContainer.classList.contains('visible')) {
-        wolfContainer.classList.add('angry');
-        setTimeout(() => {
-          wolfContainer.classList.remove('angry');
-        }, 1000);
-      }
-    }
-    
-    // Detectar colisiones
-    function checkCollisions() {
-      // Colisión con corazones
-      hearts.forEach(heart => {
-        if (!heart.collected && 
-            bearX < heart.x + heart.width &&
-            bearX + 60 > heart.x &&
-            bearY < heart.y + heart.height &&
-            bearY + 60 > heart.y) {
-          heart.collected = true;
-          score += 10;
-          unicornPower += 20;
-          scoreElement.textContent = score;
-          unicornPowerElement.style.width = `${unicornPower}%`;
-          
-          if (unicornPower >= 100) {
-            unicornPower = 100;
-            showTemporaryMessage("¡Poder de Unicornio completo!", 2000);
-          }
-        }
-      });
-      
-      // Colisión con amigos
-      friends.forEach(friend => {
-        if (!friend.hugged && 
-            bearX < friend.x + friend.width &&
-            bearX + 60 > friend.x &&
-            bearY < friend.y + friend.height &&
-            bearY + 60 > friend.y) {
-          friend.hugged = true;
-          score += 20;
-          lives = Math.min(lives + 1, 3);
-          scoreElement.textContent = score;
-          livesElement.textContent = '❤️'.repeat(lives);
-          showTemporaryMessage("¡Abrazo recibido! +1 Vida", 1500);
-        }
-      });
-    }
-    
-    // Mover el oso
-    function moveBear() {
-      // Gravedad
-      if (isJumping) {
-        bearVelocityY += 0.5;
-        bearY += bearVelocityY;
-        
-        // Verificar si llegó al suelo
-        if (bearY >= 350) {
-          bearY = 350;
-          isJumping = false;
-          bearVelocityY = 0;
-        }
-      }
-    }
-    
-    // Controlar teclas
-    document.addEventListener('keydown', function(e) {
-      // Ocultar hint al usar teclado
-      if (!hintHidden) {
-        hintElement.classList.add('hidden');
-        hintHidden = true;
-      }
-      
-      if (e.key === 'ArrowLeft') {
-        bearX = Math.max(0, bearX - 5);
-      } else if (e.key === 'ArrowRight') {
-        bearX = Math.min(canvas.width - 60, bearX + 5);
-      } else if (e.key === 'ArrowUp' && !isJumping) {
-        isJumping = true;
-        bearVelocityY = -12;
-      } else if (e.key === ' ' || e.key === 'z') {
-        // Disparar o abrazar
-        if (currentLevel === '1-6' && unicornPower >= 20) {
-          // Disparar al lobo
-          fires.push({
-            x: bearX + 30,
-            y: bearY,
-            width: 10,
-            height: 10,
-            speed: 10
-          });
-          unicornPower -= 20;
-          unicornPowerElement.style.width = `${unicornPower}%`;
-          makeWolfAngry();
-        }
-      }
+    // Iniciar storybook cuando se comienza el juego
+    document.getElementById('startButton').addEventListener('click', function() {
+      document.getElementById('startScreen').style.display = 'none';
+      document.getElementById('storybook').style.display = 'flex';
     });
-    
-    // =============================================
-    // BUCLE PRINCIPAL DEL JUEGO
-    // =============================================
-    
-    function gameLoop() {
-      // Limpiar el canvas
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Comenzar juego desde storybook
+    document.getElementById('startGame').addEventListener('click', function() {
+      document.getElementById('storybook').style.display = 'none';
+      // Aquí se iniciaría el juego normalmente
+      // gameStart();
       
-      // Dibujar fondo
-      ctx.fillStyle = '#87CEEB';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      // Simulación de cambio de nivel (solo para demostración)
+      simulateLevelChange('1-2');
+    });
+
+    // Botón de siguiente nivel
+    document.getElementById('nextLevelBtn').addEventListener('click', function() {
+      document.getElementById('celebration').style.display = 'none';
+      // Aquí se cargaría el siguiente nivel
       
-      // Dibujar suelo
-      ctx.fillStyle = '#2E8B57';
-      ctx.fillRect(0, 400, canvas.width, 100);
+      // Simulación de cambio de nivel (solo para demostración)
+      const currentLevel = document.getElementById('level').textContent;
+      if (currentLevel === '1-1') simulateLevelChange('1-2');
+      else if (currentLevel === '1-2') simulateLevelChange('1-3');
+      else if (currentLevel === '1-3') simulateLevelChange('1-4');
+      else if (currentLevel === '1-4') simulateLevelChange('1-5');
+      else if (currentLevel === '1-5') simulateLevelChange('1-6');
+    });
+
+    // Función para simular cambio de nivel (solo para demostración)
+    function simulateLevelChange(level) {
+      document.getElementById('level').textContent = level;
+      document.getElementById('levelIndicator').textContent = `Nivel ${level}`;
       
-      // Dibujar nubes
-      ctx.fillStyle = 'white';
-      ctx.beginPath();
-      ctx.arc(100, 80, 30, 0, Math.PI * 2);
-      ctx.arc(130, 70, 40, 0, Math.PI * 2);
-      ctx.arc(160, 80, 30, 0, Math.PI * 2);
-      ctx.fill();
-      
-      ctx.beginPath();
-      ctx.arc(600, 120, 30, 0, Math.PI * 2);
-      ctx.arc(630, 110, 40, 0, Math.PI * 2);
-      ctx.arc(660, 120, 30, 0, Math.PI * 2);
-      ctx.fill();
-      
-      // Dibujar corazones
-      hearts.forEach(heart => {
-        if (!heart.collected) {
-          ctx.drawImage(images.heart, heart.x, heart.y, heart.width, heart.height);
+      // Mostrar barra de salud del jefe solo en nivel 1-6
+      if (level === '1-6') {
+        document.getElementById('bossHealth').style.display = 'block';
+        document.getElementById('hint').textContent = "¡Cuidado con el Lobo Feroz! Recolecta corazones para invocar al Unicornio";
+        
+        // Cambiar a música de batalla
+        if (musicPlaying) {
+          introMusic.pause();
+          battleMusic.play().catch(e => console.log("Error al reproducir audio: ", e));
         }
-      });
-      
-      // Dibujar amigos
-      friends.forEach(friend => {
-        if (!friend.hugged) {
-          ctx.drawImage(images.friend, friend.x, friend.y, friend.width, friend.height);
-        }
-      });
-      
-      // Dibujar oso
-      ctx.drawImage(images.bear, bearX, bearY, 60, 60);
-      
-      // Mover el oso
-      moveBear();
-      
-      // Verificar colisiones
-      checkCollisions();
-      
-      // Continuar el bucle
-      if (gameState === 'playing') {
-        requestAnimationFrame(gameLoop);
+      } else {
+        document.getElementById('bossHealth').style.display = 'none';
+        document.getElementById('hint').textContent = "Acércate a los amigos y presiona ESPACIO para abrazarlos";
       }
     }
-    
-    // Simular cambio de nivel cada 15 segundos (solo para demostración)
-    setInterval(() => {
-      if (gameState === 'playing') {
-        if (currentLevel === '1-1') changeLevel('1-2');
-        else if (currentLevel === '1-2') changeLevel('1-3');
-        else if (currentLevel === '1-3') changeLevel('1-4');
-        else if (currentLevel === '1-4') changeLevel('1-5');
-        else if (currentLevel === '1-5') changeLevel('1-6');
-        else if (currentLevel === '1-6') {
-          // Simular daño al lobo
-          makeWolfAngry();
-        }
-      }
-    }, 15000);
+
+    // Simular victoria después de 5 segundos (solo para demostración)
+    setTimeout(() => {
+      // document.getElementById('celebration').style.display = 'flex';
+    }, 5000);
   </script>
 </body>
 </html>
