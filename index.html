@@ -45,6 +45,8 @@
       align-items: flex-start;
       gap: 20px;
       flex-wrap: wrap;
+      width: 100%;
+      max-width: 1200px;
     }
     
     #gameContainer {
@@ -56,6 +58,7 @@
       border: 5px solid #FF6B6B;
       border-radius: 10px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      order: 2;
     }
 
     #gameCanvas {
@@ -171,17 +174,24 @@
 
     #hint {
       position: absolute;
-      bottom: 70px;
+      bottom: 10px;
       left: 50%;
       transform: translateX(-50%);
       background: rgba(0, 0, 0, 0.7);
       color: white;
-      padding: 8px 12px;
+      padding: 6px 10px;
       border-radius: 5px;
       z-index: 5;
       text-align: center;
-      max-width: 80%;
-      font-size: 14px;
+      max-width: 90%;
+      font-size: 12px;
+      opacity: 0.8;
+      transition: opacity 0.5s;
+    }
+
+    #hint.hidden {
+      opacity: 0;
+      pointer-events: none;
     }
 
     #soundToggle {
@@ -208,14 +218,22 @@
     .mobile-controls {
       display: flex;
       flex-direction: column;
-      gap: 15px;
-      margin-left: 20px;
+      gap: 20px;
+      order: 1;
+    }
+
+    .mobile-controls-right {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      order: 3;
     }
 
     .mobile-controls-column {
       display: flex;
       flex-direction: column;
       gap: 15px;
+      align-items: center;
     }
 
     .mobile-btn {
@@ -352,17 +370,21 @@
     }
 
     /* Responsive */
-    @media (max-width: 1000px) {
+    @media (max-width: 1100px) {
       .game-wrapper {
         flex-direction: column;
         align-items: center;
       }
       
-      .mobile-controls {
+      .mobile-controls, .mobile-controls-right {
         flex-direction: row;
-        margin-left: 0;
         margin-top: 20px;
         gap: 30px;
+        order: 3;
+      }
+      
+      #gameContainer {
+        order: 1;
       }
     }
 
@@ -409,12 +431,11 @@
       }
       
       #hint {
-        font-size: 12px;
-        bottom: 80px;
-        padding: 6px 10px;
+        font-size: 11px;
+        padding: 5px 8px;
       }
       
-      .mobile-controls {
+      .mobile-controls, .mobile-controls-right {
         gap: 15px;
       }
       
@@ -481,6 +502,21 @@
   <p>¡Ayuda al Oso Abrazos a derrotar al Lobo Feroz en 6 niveles emocionantes!</p>
   
   <div class="game-wrapper">
+    <!-- Controles izquierdos -->
+    <div class="mobile-controls">
+      <div class="mobile-controls-column">
+        <button class="mobile-btn" id="leftBtn">⬅</button>
+        <div class="mobile-label">Izquierda</div>
+        
+        <button class="mobile-btn" id="rightBtn">➡</button>
+        <div class="mobile-label">Derecha</div>
+        
+        <button class="mobile-btn" id="jumpBtn">⬆</button>
+        <div class="mobile-label">Saltar</div>
+      </div>
+    </div>
+    
+    <!-- Juego -->
     <div id="gameContainer">
       <canvas id="gameCanvas" width="800" height="500"></canvas>
 
@@ -552,19 +588,8 @@
       </div>
     </div>
 
-    <!-- Botones móviles - FUERA del juego -->
-    <div class="mobile-controls">
-      <div class="mobile-controls-column">
-        <button class="mobile-btn" id="leftBtn">⬅</button>
-        <div class="mobile-label">Izquierda</div>
-        
-        <button class="mobile-btn" id="rightBtn">➡</button>
-        <div class="mobile-label">Derecha</div>
-        
-        <button class="mobile-btn" id="jumpBtn">⬆</button>
-        <div class="mobile-label">Saltar</div>
-      </div>
-      
+    <!-- Controles derechos -->
+    <div class="mobile-controls-right">
       <div class="mobile-controls-column">
         <button class="mobile-btn" id="hugBtn">🤗</button>
         <div class="mobile-label">Abrazar</div>
@@ -583,6 +608,7 @@
     const introMusic = document.getElementById('introMusic');
     const battleMusic = document.getElementById('battleMusic');
     const soundToggle = document.getElementById('soundToggle');
+    const hintElement = document.getElementById('hint');
     
     // Precargar música
     window.addEventListener('load', function() {
@@ -596,6 +622,20 @@
           introMusic.play().catch(e => console.log("Error al reproducir audio: ", e));
         }
       }, { once: true });
+      
+      // Ocultar la hint después de 5 segundos
+      setTimeout(() => {
+        hintElement.classList.add('hidden');
+      }, 5000);
+    });
+    
+    // Mostrar hint al mover el personaje
+    let hintHidden = false;
+    document.addEventListener('keydown', function() {
+      if (!hintHidden) {
+        hintElement.classList.add('hidden');
+        hintHidden = true;
+      }
     });
     
     // Controlar música de fondo
@@ -632,6 +672,12 @@
           break;
       }
       document.dispatchEvent(event);
+      
+      // Ocultar hint al usar controles táctiles
+      if (!hintHidden) {
+        hintElement.classList.add('hidden');
+        hintHidden = true;
+      }
     }
 
     // Obtener keyCode basado en la tecla
@@ -724,7 +770,7 @@
       // gameStart();
       
       // Simulación de cambio de nivel (solo para demostración)
-      simulateLevelChange('1-2');
+      simulateLevelChange('1-1');
     });
 
     // Botón de siguiente nivel
@@ -732,16 +778,17 @@
       document.getElementById('celebration').style.display = 'none';
       // Aquí se cargaría el siguiente nivel
       
-      // Simulación de cambio de nivel (solo para demostración)
+      // Simulación de cambio de nivel
       const currentLevel = document.getElementById('level').textContent;
       if (currentLevel === '1-1') simulateLevelChange('1-2');
       else if (currentLevel === '1-2') simulateLevelChange('1-3');
       else if (currentLevel === '1-3') simulateLevelChange('1-4');
       else if (currentLevel === '1-4') simulateLevelChange('1-5');
       else if (currentLevel === '1-5') simulateLevelChange('1-6');
+      else if (currentLevel === '1-6') simulateLevelChange('2-1');
     });
 
-    // Función para simular cambio de nivel (solo para demostración)
+    // Función para simular cambio de nivel
     function simulateLevelChange(level) {
       document.getElementById('level').textContent = level;
       document.getElementById('levelIndicator').textContent = `Nivel ${level}`;
@@ -756,10 +803,36 @@
           introMusic.pause();
           battleMusic.play().catch(e => console.log("Error al reproducir audio: ", e));
         }
+        
+        // Mostrar mensaje de que el lobo ha aparecido
+        showTemporaryMessage("¡El Lobo Feroz ha aparecido!", 3000);
       } else {
         document.getElementById('bossHealth').style.display = 'none';
         document.getElementById('hint').textContent = "Acércate a los amigos y presiona ESPACIO para abrazarlos";
       }
+    }
+
+    // Función para mostrar mensajes temporales
+    function showTemporaryMessage(message, duration) {
+      const messageElement = document.createElement('div');
+      messageElement.textContent = message;
+      messageElement.style.position = 'absolute';
+      messageElement.style.top = '50%';
+      messageElement.style.left = '50%';
+      messageElement.style.transform = 'translate(-50%, -50%)';
+      messageElement.style.background = 'rgba(0, 0, 0, 0.8)';
+      messageElement.style.color = 'white';
+      messageElement.style.padding = '15px 25px';
+      messageElement.style.borderRadius = '10px';
+      messageElement.style.zIndex = '100';
+      messageElement.style.fontSize = '1.5rem';
+      messageElement.style.textAlign = 'center';
+      
+      document.getElementById('gameContainer').appendChild(messageElement);
+      
+      setTimeout(() => {
+        messageElement.remove();
+      }, duration);
     }
 
     // Simular victoria después de 5 segundos (solo para demostración)
