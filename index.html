@@ -105,6 +105,12 @@
       border-radius: 10px;
       margin-bottom: 30px;
       border: 3px solid #FFD700;
+      background-color: #8B4513;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-weight: bold;
     }
     
     #startButton, .storybook-btn, .celebration-btn {
@@ -226,14 +232,17 @@
       margin: 20px 0;
     }
     
-    .storybook-images img {
+    .storybook-images .img-placeholder {
       width: 100px;
       height: 100px;
-      object-fit: contain;
       border: 2px solid #FFD700;
       border-radius: 10px;
       background: white;
       padding: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2rem;
     }
     
     .storybook-controls {
@@ -348,6 +357,16 @@
       25% { transform: translateX(-5px) rotate(-2deg); }
       75% { transform: translateX(5px) rotate(2deg); }
     }
+
+    .img-placeholder {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #f0f0f0;
+      border-radius: 10px;
+      color: #666;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -392,21 +411,15 @@
 
       <!-- Pantalla de inicio con nueva música -->
       <div id="startScreen">
-        <img id="coverImage" src="https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/oso/oso_portada.jpg" alt="Oso Abrazos Game Cover">
+        <div id="coverImage" class="img-placeholder">Portada del Juego</div>
         <button id="startButton">🎮 ¡Comenzar Aventura!</button>
-        <audio id="introMusic" loop>
-          <source src="https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/sounds/intro.mp3" type="audio/mpeg">
-        </audio>
-        <audio id="battleMusic">
-          <source src="https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/sounds/para%20la%20batalla.mp3" type="audio/mpeg">
-        </audio>
       </div>
 
       <!-- Pantalla de victoria mejorada -->
       <div id="victoryScreen" class="victory-animation">
         <h2 class="victory-title">🎉 ¡VICTORIA! 🎉</h2>
         <p style="font-size: 1.5rem; margin-bottom: 20px;">¡Has derrotado al Lobo Feroz!</p>
-        <img src="https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/oso/celebracion.png" alt="Celebración" style="width: 200px; margin: 20px auto;">
+        <div class="img-placeholder" style="width: 200px; height: 200px; margin: 20px auto;">Celebración</div>
         <div style="font-size: 1.2rem; margin-bottom: 30px;">
           <p>Puntuación Final: <span id="finalScore">0</span></p>
           <p>Corazones Recolectados: <span id="finalHearts">0</span></p>
@@ -422,10 +435,10 @@
           <p>Debes recolectar <strong>3 corazones mágicos</strong> para invocar al Unicornio de la Amistad.</p>
           
           <div class="storybook-images">
-            <img src="https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/enemigos/lobo.svg" alt="Lobo Normal">
-            <img src="https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/enemigos/loboferoz.png" alt="Lobo Enfurecido">
-            <img src="https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/oso/corazon.png" alt="Corazón">
-            <img src="https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/oso/uniyosocombat.png" alt="Oso y Unicornio">
+            <div class="img-placeholder">🐺 Lobo</div>
+            <div class="img-placeholder">😠 Lobo Enfurecido</div>
+            <div class="img-placeholder">❤️ Corazón</div>
+            <div class="img-placeholder">🦄 Unicornio</div>
           </div>
           
           <p>🔥 <strong>El lobo tiene 5 puntos de vida</strong> y lanzará fuego desde su boca.</p>
@@ -611,6 +624,10 @@
       
       // Configurar controles de teclado
       document.addEventListener('keydown', (e) => {
+        // Prevenir la acción por defecto para la barra espaciadora
+        if (e.code === 'Space') {
+          e.preventDefault();
+        }
         window.keys[e.key] = true;
       });
       
@@ -661,15 +678,6 @@
       } else {
         setupLevel("1-1");
       }
-      
-      // Reproducir música de fondo si está habilitado
-      if (window.gameState.soundEnabled) {
-        const introMusic = document.getElementById('introMusic');
-        if (introMusic) {
-          introMusic.volume = 0.7;
-          introMusic.play().catch(e => console.log("Error reproduciendo música:", e));
-        }
-      }
     }
     
     function nextLevel() {
@@ -694,22 +702,6 @@
       
       if (soundToggle) {
         soundToggle.textContent = window.gameState.soundEnabled ? "🔊" : "🔇";
-      }
-      
-      // Pausar o reanudar música según el estado
-      const introMusic = document.getElementById('introMusic');
-      const battleMusic = document.getElementById('battleMusic');
-      
-      if (window.gameState.soundEnabled) {
-        if (introMusic && window.gameState.gameStarted && !window.gameState.bossFight) {
-          introMusic.play().catch(e => console.log("Error reproduciendo música:", e));
-        }
-        if (battleMusic && window.gameState.gameStarted && window.gameState.bossFight) {
-          battleMusic.play().catch(e => console.log("Error reproduciendo música:", e));
-        }
-      } else {
-        if (introMusic) introMusic.pause();
-        if (battleMusic) battleMusic.pause();
       }
     }
     
@@ -940,7 +932,7 @@
         shootHeart();
       }
       
-      // Abrazar
+      // Abrazar - CORRECCIÓN DEL BUG DEL ESPACIADOR
       if (window.keys && window.keys[" "] && window.oso.hugCooldown <= 0 && window.oso.grounded) {
         window.oso.action = "hugging";
         window.oso.hugging = true;
@@ -961,6 +953,14 @@
             createTextParticle(friend.x + friend.width/2, friend.y, "+100", "#FFD700");
           }
         }
+        
+        // IMPORTANTE: Resetear el estado de abrazo después de un tiempo
+        setTimeout(() => {
+          window.oso.hugging = false;
+          if (window.oso.grounded) {
+            window.oso.action = "idle";
+          }
+        }, 500);
       }
       
       // Física
@@ -1512,7 +1512,6 @@
           color: color,
           life: 40
         });
-      }
     }
 
     function createTextParticle(x, y, text, color) {
