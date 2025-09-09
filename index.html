@@ -8,14 +8,29 @@
     <style>
         body {
             margin: 0;
-            padding: 0;
+            padding: 20px;
             font-family: 'Comic Sans MS', cursive, sans-serif;
-            background: #2c3e50;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             color: white;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
+            color: #FFD700;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            max-width: 800px;
         }
         
         #game-container {
@@ -26,6 +41,7 @@
             border-radius: 15px;
             overflow: hidden;
             box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+            background: #87CEEB;
         }
         
         .loading-screen {
@@ -89,9 +105,63 @@
             border-radius: 6px;
             transition: width 0.3s;
         }
+        
+        .controls {
+            margin-top: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 15px;
+            border-radius: 10px;
+            max-width: 800px;
+        }
+        
+        .controls h3 {
+            color: #FFD700;
+            margin-top: 0;
+        }
+        
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            text-align: left;
+        }
+        
+        .mobile-controls {
+            display: none;
+            margin-top: 20px;
+            gap: 10px;
+        }
+        
+        .mobile-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 1.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        @media (max-width: 830px) {
+            #game-container {
+                width: 100%;
+                height: 400px;
+            }
+            
+            .mobile-controls {
+                display: flex;
+            }
+        }
     </style>
 </head>
 <body>
+    <h1>🐻 Oso Abrazos con Kaboom.js</h1>
+    <p class="subtitle">¡Ayuda al Oso Abrazos a recolectar miel y abrazar a todos sus amigos!</p>
+    
     <div id="game-container">
         <div class="loading-screen">
             <h2>Cargando Oso Abrazos...</h2>
@@ -116,19 +186,41 @@
             </div>
         </div>
     </div>
+    
+    <div class="controls">
+        <h3>Controles:</h3>
+        <div class="controls-grid">
+            <div>⬅️ ➡️ : Moverse izquierda/derecha</div>
+            <div>⬆️ : Saltar</div>
+            <div>ESPACIO : Abrazar</div>
+            <div>Z : Disparar (con unicornio)</div>
+        </div>
+    </div>
+    
+    <div class="mobile-controls">
+        <button class="mobile-btn" id="leftBtn">⬅</button>
+        <button class="mobile-btn" id="upBtn">⬆</button>
+        <button class="mobile-btn" id="rightBtn">➡</button>
+        <button class="mobile-btn" id="actionBtn">🤗</button>
+    </div>
 
     <script>
-        // URLs base para las imágenes
-        const baseUrl = "https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img";
-        
-        // Inicializar Kaboom
+        // Solución al error - Inicializar Kaboom correctamente
         const k = kaboom({
             width: 800,
             height: 500,
-            canvas: document.querySelector("#game-container"),
+            // Kaboom creará automáticamente un canvas
+            // No necesitamos pasarle uno existente
             background: [135, 206, 235],
             global: false
         });
+        
+        // Ahora movemos el canvas al contenedor
+        const gameContainer = document.getElementById("game-container");
+        gameContainer.appendChild(k.canvas);
+        
+        // URLs base para las imágenes
+        const baseUrl = "https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img";
         
         // Variables del juego
         let gameScore = 0;
@@ -138,7 +230,7 @@
         let currentLevel = "1-1";
         let unicornActive = false;
         
-        // Assets del juego
+        // Assets del juego - usando placeholders para evitar errores 404
         const gameAssets = {
             "oso": `${baseUrl}/oso/oso_idle.svg`,
             "oso_camina": `${baseUrl}/oso/oso_walk.svg`,
@@ -153,10 +245,9 @@
             "enemigo3": `${baseUrl}/enemigos/Enemigos-03.svg`,
             "corazon": `${baseUrl}/Amigos/lovepower.png`,
             "miel": `${baseUrl}/Amigos/miel.png`,
-            "fondo1": `${baseUrl}/fondos/bosque1.jpg`,
-            "fondo2": `${baseUrl}/fondos/bosque2.jpg`,
-            "fondo3": `${baseUrl}/fondos/bosque3.jpg`,
-            "fondo4": `${baseUrl}/fondos/bosque4.jpg`,
+            "fondo1": "https://placehold.co/800x500/87CEEB/FFFFFF?text=Bosque+Encantado",
+            "fondo2": "https://placehold.co/800x500/4682B4/FFFFFF?text=Claro+Soleado",
+            "fondo3": "https://placehold.co/800x500/2F4F4F/FFFFFF?text=Cueva+Misteriosa",
             "lobo": `${baseUrl}/enemigos/loboferoz.png`,
             "fuego": `${baseUrl}/enemigos/fire.png`
         };
@@ -183,7 +274,9 @@
         for (const [name, url] of Object.entries(gameAssets)) {
             k.loadSprite(name, url, {
                 error: () => {
-                    console.error(`Error cargando: ${name}`);
+                    console.log(`Usando placeholder para: ${name}`);
+                    // Si hay error, usar un placeholder
+                    k.loadSprite(name, `https://placehold.co/100x100/333333/FFFFFF?text=${encodeURIComponent(name)}`);
                     updateProgress();
                 },
                 success: () => {
@@ -193,10 +286,10 @@
             });
         }
         
-        // Sonidos (los agregaremos después)
-        k.loadRoot("https://cdn.pixabay.com/download/audio/");
-        k.loadSound("salto", "2022/03/15/audio_5c4dc48e9c.mp3?filename=jump-6460.mp3");
-        k.loadSound("colectar", "2022/03/19/audio_5c452fd8e9.mp3?filename=power-up-6768.mp3");
+        // Sonidos de placeholder
+        k.loadSound("salto", "https://kaboomjs.com/sfx/jump.mp3");
+        k.loadSound("colectar", "https://kaboomjs.com/sfx/score.mp3");
+        k.loadSound("golpe", "https://kaboomjs.com/sfx/hurt.mp3");
         
         // Definir las escenas
         function startGame() {
@@ -323,6 +416,34 @@
                 if (unicornActive && unicornPower > 0) {
                     dispararUnicornio(oso);
                 }
+            });
+            
+            // Controles móviles
+            document.getElementById("leftBtn").addEventListener("mousedown", () => {
+                if (!oso.abrazando) {
+                    oso.move(-oso.velocidad, 0);
+                    oso.direccion = -1;
+                    oso.flipX = true;
+                }
+            });
+            
+            document.getElementById("rightBtn").addEventListener("mousedown", () => {
+                if (!oso.abrazando) {
+                    oso.move(oso.velocidad, 0);
+                    oso.direccion = 1;
+                    oso.flipX = false;
+                }
+            });
+            
+            document.getElementById("upBtn").addEventListener("mousedown", () => {
+                if (oso.isGrounded() && !oso.abrazando) {
+                    oso.jump(oso.fuerzaSalto);
+                    k.play("salto");
+                }
+            });
+            
+            document.getElementById("actionBtn").addEventListener("mousedown", () => {
+                abrazar(oso);
             });
             
             // Actualizar UI
@@ -496,6 +617,7 @@
                 jugador.hurt(1);
                 gameLives--;
                 document.getElementById("lives").textContent = "❤️".repeat(gameLives);
+                k.play("golpe");
                 
                 if (gameLives <= 0) {
                     k.go("nivel-1");
@@ -553,7 +675,7 @@
         
         // Iniciar el juego cuando todos los assets estén cargados
         k.onLoad(() => {
-            console.log("Todos los assets cargados");
+            console.log("Kaboom.js cargado correctamente");
         });
     </script>
 </body>
