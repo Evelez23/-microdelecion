@@ -390,56 +390,6 @@
       width: 0%;
       transition: width 0.3s;
     }
-    
-    .img-placeholder {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: #f0f0f0;
-      border-radius: 10px;
-      color: #666;
-      font-weight: bold;
-    }
-    
-    .status-panel {
-      background: rgba(0, 0, 0, 0.7);
-      padding: 15px;
-      border-radius: 10px;
-      margin: 20px auto;
-      max-width: 800px;
-    }
-    
-    .resource-status {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
-    }
-    
-    .resource-item {
-      display: flex;
-      align-items: center;
-      background: rgba(255, 255, 255, 0.1);
-      padding: 5px 10px;
-      border-radius: 20px;
-    }
-    
-    .status-icon {
-      margin-right: 5px;
-      font-size: 1.2rem;
-    }
-    
-    .status-success {
-      color: #4CAF50;
-    }
-    
-    .status-error {
-      color: #F44336;
-    }
-    
-    .status-loading {
-      color: #FFC107;
-    }
   </style>
 </head>
 <body>
@@ -520,7 +470,7 @@
             <img id="storyEnemy1" alt="Enemigo 1">
             <img id="storyEnemy2" alt="Enemigo 2">
             <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBmaWxsPSIjZmYxNDkzIiBkPSJNNDY2LjQgMjQ1LjljNDIuNi0zNy40IDQ1LjEtOTkuMiA1LjgtMTM4LjRzLTg3LjctNDUuNi0xMjcuOC0xMC4ybC0zMi4zIDI4LjctMzIuMy0yOC43Yy00MC4xLTM1LjQtMTAzLjQtMjAuNC0xMjcuOCAxMC4ycy0zNi44IDEwMSA1LjggMTM4LjRsMTc2LjEgMTU2LjFjNC40IDMuOSAxMC44IDMuOSAxNS4yIDBsMTc2LjEtMTU2LjF6Ii8+PC9zdmc+" alt="Corazón">
-            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBmaWxsPSIjOTM3MGQiIiBkPSJNNDQ4IDI1NmMwLTEwNi04Ni0xOTItMTkyLTE5MlM2NCAxNTAgNjQgMjU2czg2IDE5MiAxOTIgMTkyIDE5Mi04NiAxOTItMTkyeiIvPjxwYXRoIGZpbGw9IiNmZmZmZmYiIGQ9Ik0zMjAgMzUyYzAgMTcuNy0xNC4zIDMyLTMyIDMycy0zMi0xNC4zLTMyLTMyIDE0LjMtMzIgMzItMzIgMzIgMTQuMyAzMiAzMnptLTY0LTgwYzAgMTcuNy0xNC4zIDMyLTMyIDMycy0zMi0xNC4zLTMyLTMyIDE0LjMtMzIgMzItMzIgMzIgMTQuMyAzMiAzMnptMTI4IDBjMCAxNy43LTE0LjMgMzItMzIgMzJzLTMyLTE0LjMtMzItMzIgMTQuMy0zMiAzMi0zMiAzMiAxNC4zIDMyIDMyeiIvPjxwYXRoIGZpbGw9IiNmZmZmZmYiIGQ9Ik0zNzYgMjcyYzAgMTcuNy0xNC4zIDMyLTMyIDMycy0zMi0xNC4zLTMyLTMyIDE0LjMtMzIgMzItMzIgMzIgMTQuMyAzMiAzMnptLTIyNi4zLTQuN2wtMTEuMy0xMS4zYy02LjItNi4yLTYuMi0xNi40IDAtMjIuNmwxNi44LTE2LjggMTEuMyAxMS4zYzYuMiA2LjIgNi4yIDE2LjQgMCAyMjZsLTE2LjggMTYuOHptMjQuNS0yNC41bC0xMS4zLTExLjNjLTYuMi02LjItNi4yLTE2LjQgMC0yMi42bDE2LjgtMTYuOCAxMS4zIDExLjNjNi4yIDYuMiA2LjIgMTYuNCAwIDIyLjZsLTE2LjggMTYuOHoiLz48cGF0aCBmaWxsPSIjZmZmZmZmIiBkPSJNMzU5LjggMjQzLjFsLTExLjMgMTEuM2MtNi4yIDYuMi0xNi40IDYuMi0yMi42IDBsLTExLjMtMTEuMy0xNi44IDE2LjhjLTYuMiA2LjItNi4yIDE2LjQgMCAyMi42bDExLjMgMTEuM2M2LjIgNi4yIDE2LjQgNi4yIDIyLjYgMGwxNi44LTE2LjggMTEuMyAxMS4zYzYuMiA2LjIgMTYuNCA2LjIgMjIuNiAwbDE2LjgtMTYuOGM2LjItNi4yIDYuMi0xNi40IDAtMjIuNmwtMTEuMy0xMS4zeiIvPjxwYXRoIGZpbGw9IiM5MzcwZCIiIGQ9Ik00MTYgMjQwbC00OCA0OFYyNDBjMC04LjggNy4yLTE2IDE2LTE2czE2IDcuMiAxNiAxNnoiLz48L3N2Zz4=" alt="Unicornio">
+            <img id="storyUnicorn" alt="Unicornio">
           </div>
           
           <p>🔥 <strong>El lobo tiene 5 puntos de vida</strong> y lanzará fuego desde su boca.</p>
@@ -598,7 +548,9 @@
       // Jefe y elementos especiales
       boss: new Image(),
       heart: new Image(),
-      fire: new Image()
+      fire: new Image(),
+      unicorn: new Image(),
+      honey: new Image()
     };
     
     // URLs de las imágenes (usando los nombres que me proporcionaste)
@@ -626,7 +578,9 @@
       // Jefe y elementos especiales
       boss: `${baseUrl}/enemigos/loboferoz.png`,
       heart: `${baseUrl}/Amigos/lovepower.png`,
-      fire: `${baseUrl}/enemigos/fire.png`
+      fire: `${baseUrl}/enemigos/fire.png`,
+      unicorn: `${baseUrl}/Amigos/unirshup.png`,
+      honey: `${baseUrl}/Amigos/miel.png`
     };
 
     // Sonidos (usando los nombres que me proporcionaste)
@@ -651,7 +605,6 @@
     let totalResources = Object.keys(imageUrls).length;
     let loadedResources = 0;
     let failedResources = 0;
-    let resourceStatus = {};
 
     // Esperar a que se cargue la página
     window.addEventListener('load', function() {
@@ -937,6 +890,7 @@
               // Preparar imágenes para el storybook
               document.getElementById('storyEnemy1').src = imageUrls.enemy1;
               document.getElementById('storyEnemy2').src = imageUrls.enemy2;
+              document.getElementById('storyUnicorn').src = imageUrls.unicorn;
             }, 500);
           }
         };
@@ -1006,10 +960,12 @@
       const bossHealthElement = document.getElementById('bossHealth');
       const fireWarningElement = document.getElementById('fireWarning');
       const heartsCollectedElement = document.getElementById('heartsCollected');
+      const unicornPowerElement = document.getElementById('unicornPower');
       
       if (bossHealthElement) bossHealthElement.style.display = 'none';
       if (fireWarningElement) fireWarningElement.style.display = 'none';
       if (heartsCollectedElement) heartsCollectedElement.style.display = 'none';
+      if (unicornPowerElement) unicornPowerElement.style.display = 'none';
       
       // Configurar plataformas
       window.platforms = [
@@ -1049,11 +1005,13 @@
           sprite: sprite,
           type: friendType,
           name: friendName,
-          hugged: false
+          hugged: false,
+          floating: 0,
+          floatDir: Math.random() > 0.5 ? 1 : -1
         });
       }
       
-      // Configurar enemigos
+      // Configurar enemigos (alejados del punto de inicio)
       window.enemies = [];
       for (let i = 0; i < level.enemies; i++) {
         const enemyType = i % 3;
@@ -1072,14 +1030,28 @@
         }
         
         window.enemies.push({
-          x: 200 + i * 180,
+          x: 300 + i * 150, // Alejar del punto de inicio
           y: 380,
           width: 60,
           height: 60,
           sprite: sprite,
           direction: i % 2 === 0 ? 1 : -1,
           speed: 2,
-          damage: 1
+          damage: 1,
+          moveRange: 100,
+          startX: 300 + i * 150
+        });
+      }
+      
+      // Configurar items (miel)
+      window.items = [];
+      for (let i = 0; i < level.items; i++) {
+        window.items.push({
+          x: 150 + i * 200,
+          y: 250,
+          width: 30,
+          height: 30,
+          collected: false
         });
       }
       
@@ -1095,7 +1067,7 @@
         });
       }
       
-      // Configurar posición del oso
+      // Configurar posición del oso (alejado de enemigos)
       window.oso.x = 100;
       window.oso.y = 380;
       window.oso.vx = 0;
@@ -1162,6 +1134,7 @@
       // Limpiar arrays
       window.friends = [];
       window.enemies = [];
+      window.items = [];
       window.hearts = [];
       window.projectiles = [];
       window.particles = [];
@@ -1206,89 +1179,68 @@
         return;
       }
       
-      // Limpiar canvas
-      const ctx = window.gameCtx;
-      const canvas = document.getElementById('gameCanvas');
+      update();
+      draw();
       
-      if (!ctx || !canvas) {
-        console.error("❌ Canvas no encontrado");
-        return;
-      }
-      
-      // Dibujar fondo según el nivel
-      const bgImage = sprites[`background_${window.gameState.currentLevel.replace('-', '_')}`];
-      if (bgImage && bgImage.complete) {
-        ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
-      } else {
-        // Fondo por defecto si la imagen no está cargada
-        ctx.fillStyle = '#87CEEB';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        // Dibujar suelo
-        ctx.fillStyle = '#8B4513';
-        ctx.fillRect(0, 450, canvas.width, canvas.height - 450);
-      }
-      
-      // Actualizar y dibujar plataformas
-      for (let platform of window.platforms) {
-        ctx.fillStyle = '#8B4513';
-        ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
-      }
-      
-      // Actualizar y dibujar amigos
+      // Continuar el bucle
+      requestAnimationFrame(gameLoop);
+    }
+
+    function update() {
+      // Actualizar amigos (animación flotante)
       for (let friend of window.friends) {
-        if (!friend.hugged && friend.sprite && friend.sprite.complete) {
-          ctx.drawImage(friend.sprite, friend.x, friend.y, friend.width, friend.height);
-        }
+        friend.floating += 0.05;
+        friend.y += Math.sin(friend.floating) * 0.5 * friend.floatDir;
       }
       
-      // Actualizar y dibujar enemigos
+      // Actualizar enemigos (movimiento)
       for (let enemy of window.enemies) {
-        if (enemy.sprite && enemy.sprite.complete) {
-          ctx.drawImage(enemy.sprite, enemy.x, enemy.y, enemy.width, enemy.height);
+        // Mover enemigos de un lado a otro
+        enemy.x += enemy.speed * enemy.direction;
+        
+        // Cambiar dirección si llegan al límite de su rango
+        if (Math.abs(enemy.x - enemy.startX) > enemy.moveRange) {
+          enemy.direction *= -1;
+        }
+        
+        // Colisión con enemigos
+        if (checkCollision(window.oso, enemy) && !window.oso.hugging && window.oso.invincible <= 0) {
+          takeDamage(enemy.damage);
         }
       }
       
-      // Actualizar y dibujar corazones
-      for (let heart of window.hearts) {
-        if (!heart.collected) {
-          ctx.fillStyle = '#FF69B4';
-          ctx.beginPath();
-          ctx.moveTo(heart.x + heart.width/2, heart.y);
-          ctx.bezierCurveTo(
-            heart.x + heart.width, heart.y,
-            heart.x + heart.width, heart.y + heart.height,
-            heart.x + heart.width/2, heart.y + heart.height
-          );
-          ctx.bezierCurveTo(
-            heart.x, heart.y + heart.height,
-            heart.x, heart.y,
-            heart.x + heart.width/2, heart.y
-          );
-          ctx.fill();
-        }
-      }
+      // Actualizar posición del oso
+      updateOso();
       
-      // Actualizar y dibujar proyectiles
+      // Actualizar proyectiles
       for (let i = window.projectiles.length - 1; i >= 0; i--) {
         const proj = window.projectiles[i];
         proj.x += proj.vx;
-        proj.y += proj.vy;
         
         // Eliminar proyectiles fuera de pantalla
-        if (proj.x < 0 || proj.x > canvas.width || proj.y < 0 || proj.y > canvas.height) {
+        if (proj.x < 0 || proj.x > 800) {
           window.projectiles.splice(i, 1);
           continue;
         }
         
-        // Dibujar proyectil
-        ctx.fillStyle = proj.type === 'fire' ? '#FF4500' : '#9370DB';
-        ctx.beginPath();
-        ctx.arc(proj.x, proj.y, proj.radius, 0, Math.PI * 2);
-        ctx.fill();
+        // Comprobar colisión de proyectiles con enemigos
+        if (proj.type === 'unicorn') {
+          for (let j = window.enemies.length - 1; j >= 0; j--) {
+            const enemy = window.enemies[j];
+            if (Math.abs(proj.x - (enemy.x + enemy.width/2)) < proj.radius + enemy.width/2 &&
+                Math.abs(proj.y - (enemy.y + enemy.height/2)) < proj.radius + enemy.height/2) {
+              // Eliminar enemigo y proyectil
+              window.enemies.splice(j, 1);
+              window.projectiles.splice(i, 1);
+              window.gameState.score += 50;
+              createParticles(enemy.x + enemy.width/2, enemy.y + enemy.height/2, 15, '#FF69B4');
+              break;
+            }
+          }
+        }
       }
       
-      // Actualizar y dibujar partículas
+      // Actualizar partículas
       for (let i = window.particles.length - 1; i >= 0; i--) {
         const p = window.particles[i];
         p.x += p.vx;
@@ -1297,95 +1249,14 @@
         
         if (p.life <= 0) {
           window.particles.splice(i, 1);
-          continue;
-        }
-        
-        ctx.globalAlpha = p.life / p.maxLife;
-        ctx.fillStyle = p.color;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.globalAlpha = 1;
-      }
-      
-      // Actualizar y dibujar jefe si está activo
-      if (window.gameState.bossFight) {
-        updateBoss();
-        
-        // Dibujar jefe
-        if (sprites.boss.complete) {
-          ctx.drawImage(sprites.boss, window.boss.x, window.boss.y, window.boss.width, window.boss.height);
-        } else {
-          ctx.fillStyle = window.boss.enraged ? '#FF0000' : '#808080';
-          ctx.fillRect(window.boss.x, window.boss.y, window.boss.width, window.boss.height);
-        }
-        
-        // Dibujar bolas de fuego del jefe
-        for (let fireball of window.boss.fireballs) {
-          if (sprites.fire.complete) {
-            ctx.drawImage(sprites.fire, fireball.x - fireball.radius, fireball.y - fireball.radius, fireball.radius * 2, fireball.radius * 2);
-          } else {
-            ctx.fillStyle = '#FF4500';
-            ctx.beginPath();
-            ctx.arc(fireball.x, fireball.y, fireball.radius, 0, Math.PI * 2);
-            ctx.fill();
-          }
         }
       }
-      
-      // Actualizar y dibujar oso
-      updateOso();
-      
-      // Dibujar oso
-      let osoSprite = sprites.idle;
-      
-      if (window.oso.hugging) {
-        osoSprite = sprites.hug;
-      } else if (!window.oso.grounded) {
-        osoSprite = sprites.jump;
-      } else if (Math.abs(window.oso.vx) > 0) {
-        osoSprite = window.oso.vx > window.oso.speed * 0.7 ? sprites.run : sprites.walk;
-      }
-      
-      if (osoSprite && osoSprite.complete) {
-        // Voltear sprite según la dirección
-        ctx.save();
-        if (window.oso.direction === -1) {
-          ctx.scale(-1, 1);
-          ctx.drawImage(osoSprite, -window.oso.x - window.oso.width, window.oso.y, window.oso.width, window.oso.height);
-        } else {
-          ctx.drawImage(osoSprite, window.oso.x, window.oso.y, window.oso.width, window.oso.height);
-        }
-        ctx.restore();
-      } else {
-        // Dibujar placeholder si el sprite no está cargado
-        ctx.fillStyle = '#8B4513';
-        ctx.fillRect(window.oso.x, window.oso.y, window.oso.width, window.oso.height);
-      }
-      
-      // Dibujar unicornio si está activo
-      if (window.unicorn.active) {
-        ctx.fillStyle = '#9370DB';
-        ctx.beginPath();
-        ctx.arc(window.oso.x + window.oso.width/2, window.oso.y - 20, 15, 0, Math.PI * 2);
-        ctx.fill();
-        
-        ctx.fillStyle = '#FFFFFF';
-        ctx.beginPath();
-        ctx.moveTo(window.oso.x + window.oso.width/2, window.oso.y - 35);
-        ctx.lineTo(window.oso.x + window.oso.width/2 + 10, window.oso.y - 20);
-        ctx.lineTo(window.oso.x + window.oso.width/2 - 10, window.oso.y - 20);
-        ctx.fill();
-      }
-      
-      // Actualizar UI
-      updateUI();
       
       // Comprobar condiciones de victoria/derrota
       checkGameConditions();
       
-      // Continuar el bucle
-      requestAnimationFrame(gameLoop);
+      // Actualizar UI
+      updateUI();
     }
 
     function updateOso() {
@@ -1393,10 +1264,10 @@
       window.oso.vy += window.oso.gravity;
       
       // Movimiento horizontal
-      if (window.keys["ArrowLeft"]) {
+      if (window.keys["ArrowLeft"] || window.keys["a"]) {
         window.oso.vx = -window.oso.speed;
         window.oso.direction = -1;
-      } else if (window.keys["ArrowRight"]) {
+      } else if (window.keys["ArrowRight"] || window.keys["d"]) {
         window.oso.vx = window.oso.speed;
         window.oso.direction = 1;
       } else {
@@ -1404,14 +1275,14 @@
       }
       
       // Saltar
-      if (window.keys["ArrowUp"] && window.oso.grounded) {
+      if ((window.keys["ArrowUp"] || window.keys["w"]) && window.oso.grounded) {
         window.oso.vy = -window.oso.jumpForce;
         window.oso.grounded = false;
         playSound("jump");
       }
       
       // Abrazar
-      if (window.keys[" "] && window.oso.hugCooldown <= 0) {
+      if (window.keys[" "] && window.oso.hugCooldown <= 0 && window.oso.grounded) {
         window.oso.hugging = true;
         window.oso.hugCooldown = 30;
         playSound("hug");
@@ -1431,7 +1302,7 @@
       }
       
       // Disparar con unicornio
-      if (window.keys["z"] && window.unicorn.active && window.unicorn.cooldown <= 0) {
+      if ((window.keys["z"] || window.keys["Z"]) && window.unicorn.active && window.unicorn.cooldown <= 0 && window.unicorn.power > 0) {
         window.projectiles.push({
           x: window.oso.x + window.oso.width/2,
           y: window.oso.y + window.oso.height/2,
@@ -1506,95 +1377,218 @@
           if (window.gameState.heartsCollected >= 3 && !window.unicorn.active) {
             window.unicorn.active = true;
             window.unicorn.power = 100;
+            const unicornPowerElement = document.getElementById('unicornPower');
+            if (unicornPowerElement) unicornPowerElement.style.display = 'block';
             showHint("¡Unicornio de la Amistad activado! Presiona Z para disparar rayos de amistad.", 5000);
           }
         }
       }
       
-      // Comprobar colisión con proyectiles enemigos
-      for (let i = window.projectiles.length - 1; i >= 0; i--) {
-        const proj = window.projectiles[i];
-        if (proj.type === 'fire' && 
-            Math.abs(proj.x - (window.oso.x + window.oso.width/2)) < proj.radius + window.oso.width/2 &&
-            Math.abs(proj.y - (window.oso.y + window.oso.height/2)) < proj.radius + window.oso.height/2) {
-          window.projectiles.splice(i, 1);
-          takeDamage(1);
-        }
-      }
-      
-      // Comprobar colisión de proyectiles del jugador con el jefe
-      if (window.gameState.bossFight) {
-        for (let i = window.projectiles.length - 1; i >= 0; i--) {
-          const proj = window.projectiles[i];
-          if (proj.type === 'unicorn' && checkCollision(proj, window.boss)) {
-            window.boss.health -= proj.damage;
-            window.projectiles.splice(i, 1);
-            createParticles(proj.x, proj.y, 20, '#9370DB');
-            updateBossHealth();
-            playSound("hurt");
-          }
+      // Comprobar colisión con items (miel)
+      for (let item of window.items) {
+        if (!item.collected && checkCollision(window.oso, item)) {
+          item.collected = true;
+          window.gameState.score += 30;
+          createParticles(item.x + item.width/2, item.y + item.height/2, 8, '#FF9800');
+          playSound("powerup");
         }
       }
     }
 
-    function updateBoss() {
-      // Reducir el cooldown de ataque
-      if (window.boss.attackCooldown > 0) {
-        window.boss.attackCooldown--;
+    function draw() {
+      const ctx = window.gameCtx;
+      const canvas = document.getElementById('gameCanvas');
+      
+      if (!ctx || !canvas) {
+        console.error("❌ Canvas no encontrado");
+        return;
       }
       
-      // Reducir el temporizador de advertencia
-      if (window.boss.warningTimer > 0) {
-        window.boss.warningTimer--;
-        
-        const fireWarning = document.getElementById('fireWarning');
-        if (fireWarning) {
-          fireWarning.style.display = window.boss.warningTimer > 0 ? 'block' : 'none';
-        }
+      // Limpiar canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Dibujar fondo según el nivel
+      const bgImage = sprites[`background_${window.gameState.currentLevel.replace('-', '_')}`];
+      if (bgImage && bgImage.complete) {
+        ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
+      } else {
+        // Fondo por defecto si la imagen no está cargada
+        const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        gradient.addColorStop(0, "#87CEEB");
+        gradient.addColorStop(1, "#E0F7FA");
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
       }
       
-      // Comprobar si es tiempo de atacar
-      if (window.boss.attackCooldown <= 0) {
-        // Mostrar advertencia
-        window.boss.warningTimer = 60;
-        
-        // Programar ataque después de la advertencia
-        setTimeout(() => {
-          if (window.gameState.bossFight) {
-            // Lanzar bola de fuego
-            window.boss.fireballs.push({
-              x: window.boss.x,
-              y: window.boss.y + 50,
-              vx: -5,
-              vy: 0,
-              radius: 15,
-              damage: 1
-            });
-            
-            playSound("enemy");
+      // Dibujar plataformas
+      for (let platform of window.platforms) {
+        ctx.fillStyle = '#8D6E63';
+        ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
+        ctx.fillStyle = '#5D4037';
+        ctx.fillRect(platform.x, platform.y, platform.width, 5);
+      }
+      
+      // Dibujar items (miel)
+      for (let item of window.items) {
+        if (!item.collected) {
+          if (sprites.honey && sprites.honey.complete) {
+            ctx.drawImage(sprites.honey, item.x, item.y, item.width, item.height);
+          } else {
+            ctx.fillStyle = '#FFB300';
+            ctx.beginPath();
+            ctx.arc(item.x + item.width/2, item.y + item.height/2, item.width/2, 0, Math.PI * 2);
+            ctx.fill();
           }
-        }, 2000);
-        
-        // Restablecer cooldown
-        window.boss.attackCooldown = 120;
-      }
-      
-      // Actualizar bolas de fuego
-      for (let i = window.boss.fireballs.length - 1; i >= 0; i--) {
-        const fireball = window.boss.fireballs[i];
-        fireball.x += fireball.vx;
-        
-        // Eliminar bolas de fuego fuera de pantalla
-        if (fireball.x < -50) {
-          window.boss.fireballs.splice(i, 1);
         }
       }
       
-      // Cambiar a fase enfadada si la salud es baja
-      if (window.boss.health <= 2 && !window.boss.enraged) {
-        window.boss.enraged = true;
-        window.boss.attackCooldown = 60; // Ataca más rápido
-        showHint("¡El lobo se ha enfurecido! ¡Ten cuidado!", 3000);
+      // Dibujar amigos
+      for (let friend of window.friends) {
+        if (!friend.hugged && friend.sprite && friend.sprite.complete) {
+          ctx.drawImage(friend.sprite, friend.x, friend.y, friend.width, friend.height);
+        }
+      }
+      
+      // Dibujar enemigos
+      for (let enemy of window.enemies) {
+        if (enemy.sprite && enemy.sprite.complete) {
+          // Voltear enemigo según dirección
+          ctx.save();
+          if (enemy.direction < 0) {
+            ctx.scale(-1, 1);
+            ctx.drawImage(enemy.sprite, -enemy.x - enemy.width, enemy.y, enemy.width, enemy.height);
+          } else {
+            ctx.drawImage(enemy.sprite, enemy.x, enemy.y, enemy.width, enemy.height);
+          }
+          ctx.restore();
+        } else {
+          // Placeholder si el sprite no está cargado
+          ctx.fillStyle = '#F44336';
+          ctx.beginPath();
+          ctx.arc(enemy.x + enemy.width/2, enemy.y + enemy.height/2, enemy.width/2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+      
+      // Dibujar corazones
+      for (let heart of window.hearts) {
+        if (!heart.collected) {
+          if (sprites.heart && sprites.heart.complete) {
+            ctx.drawImage(sprites.heart, heart.x, heart.y, heart.width, heart.height);
+          } else {
+            ctx.fillStyle = '#FF69B4';
+            ctx.beginPath();
+            ctx.moveTo(heart.x + heart.width/2, heart.y);
+            ctx.bezierCurveTo(
+              heart.x + heart.width, heart.y,
+              heart.x + heart.width, heart.y + heart.height,
+              heart.x + heart.width/2, heart.y + heart.height
+            );
+            ctx.bezierCurveTo(
+              heart.x, heart.y + heart.height,
+              heart.x, heart.y,
+              heart.x + heart.width/2, heart.y
+            );
+            ctx.fill();
+          }
+        }
+      }
+      
+      // Dibujar proyectiles
+      for (let proj of window.projectiles) {
+        if (proj.type === 'unicorn') {
+          ctx.fillStyle = '#9370DB';
+          ctx.beginPath();
+          ctx.arc(proj.x, proj.y, proj.radius, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+      
+      // Dibujar partículas
+      for (let particle of window.particles) {
+        ctx.globalAlpha = particle.life / particle.maxLife;
+        ctx.fillStyle = particle.color;
+        ctx.beginPath();
+        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      
+      // Dibujar jefe si está activo
+      if (window.gameState.bossFight) {
+        if (sprites.boss && sprites.boss.complete) {
+          ctx.drawImage(sprites.boss, window.boss.x, window.boss.y, window.boss.width, window.boss.height);
+        } else {
+          ctx.fillStyle = window.boss.enraged ? '#FF0000' : '#808080';
+          ctx.fillRect(window.boss.x, window.boss.y, window.boss.width, window.boss.height);
+        }
+        
+        // Dibujar bolas de fuego del jefe
+        for (let fireball of window.boss.fireballs) {
+          if (sprites.fire && sprites.fire.complete) {
+            ctx.drawImage(sprites.fire, fireball.x - fireball.radius, fireball.y - fireball.radius, fireball.radius * 2, fireball.radius * 2);
+          } else {
+            ctx.fillStyle = '#FF4500';
+            ctx.beginPath();
+            ctx.arc(fireball.x, fireball.y, fireball.radius, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+      }
+      
+      // Dibujar oso
+      let osoSprite = sprites.idle;
+      
+      if (window.oso.hugging) {
+        osoSprite = sprites.hug;
+      } else if (!window.oso.grounded) {
+        osoSprite = sprites.jump;
+      } else if (Math.abs(window.oso.vx) > 0) {
+        osoSprite = window.oso.vx > window.oso.speed * 0.7 ? sprites.run : sprites.walk;
+      }
+      
+      if (osoSprite && osoSprite.complete) {
+        // Voltear sprite según la dirección
+        ctx.save();
+        if (window.oso.direction === -1) {
+          ctx.scale(-1, 1);
+          ctx.drawImage(osoSprite, -window.oso.x - window.oso.width, window.oso.y, window.oso.width, window.oso.height);
+        } else {
+          ctx.drawImage(osoSprite, window.oso.x, window.oso.y, window.oso.width, window.oso.height);
+        }
+        ctx.restore();
+      } else {
+        // Dibujar placeholder si el sprite no está cargado
+        ctx.fillStyle = '#8B4513';
+        ctx.fillRect(window.oso.x, window.oso.y, window.oso.width, window.oso.height);
+      }
+      
+      // Dibujar unicornio si está activo
+      if (window.unicorn.active) {
+        if (sprites.unicorn && sprites.unicorn.complete) {
+          ctx.drawImage(sprites.unicorn, window.oso.x - 10, window.oso.y - 40, 100, 100);
+        } else {
+          ctx.fillStyle = '#9370DB';
+          ctx.beginPath();
+          ctx.arc(window.oso.x + window.oso.width/2, window.oso.y - 20, 15, 0, Math.PI * 2);
+          ctx.fill();
+          
+          ctx.fillStyle = '#FFFFFF';
+          ctx.beginPath();
+          ctx.moveTo(window.oso.x + window.oso.width/2, window.oso.y - 35);
+          ctx.lineTo(window.oso.x + window.oso.width/2 + 10, window.oso.y - 20);
+          ctx.lineTo(window.oso.x + window.oso.width/2 - 10, window.oso.y - 20);
+          ctx.fill();
+        }
+      }
+      
+      // Efecto de abrazo
+      if (window.oso.hugging) {
+        ctx.strokeStyle = "#FFD700";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(window.oso.x + window.oso.width/2, window.oso.y + window.oso.height/2, 60, 0, Math.PI * 2);
+        ctx.stroke();
       }
     }
 
@@ -1652,9 +1646,9 @@
       }
       
       // Actualizar poder del unicornio
-      const unicornPowerElement = document.getElementById('unicornPowerLevel');
-      if (unicornPowerElement) {
-        unicornPowerElement.style.width = `${window.unicorn.power}%`;
+      const unicornPowerLevelElement = document.getElementById('unicornPowerLevel');
+      if (unicornPowerLevelElement) {
+        unicornPowerLevelElement.style.width = `${window.unicorn.power}%`;
       }
       
       // Actualizar corazones recolectados
