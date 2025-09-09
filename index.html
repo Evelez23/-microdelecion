@@ -1,671 +1,1730 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Oso Abrazos con Kaboom.js</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 20px;
-            font-family: 'Comic Sans MS', cursive, sans-serif;
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            color: white;
-            text-align: center;
-        }
-        
-        h1 {
-            font-size: 2.5rem;
-            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
-            color: #FFD700;
-            margin-bottom: 10px;
-        }
-        
-        .subtitle {
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-            max-width: 800px;
-        }
-        
-        #game-container {
-            position: relative;
-            width: 800px;
-            height: 500px;
-            border: 5px solid #FFD700;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
-            background: #87CEEB;
-        }
-        
-        #start-screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-        }
-        
-        #start-button {
-            background: linear-gradient(to bottom, #FFD700, #FF9800);
-            border: none;
-            padding: 15px 30px;
-            font-size: 1.2rem;
-            border-radius: 50px;
-            color: #8B4513;
-            font-weight: bold;
-            cursor: pointer;
-            margin: 20px;
-            transition: all 0.3s;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-        
-        #start-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-        }
-        
-        .game-ui {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: rgba(0, 0, 0, 0.6);
-            padding: 10px;
-            border-radius: 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            text-align: left;
-            font-size: 16px;
-            z-index: 10;
-        }
-        
-        .power-bar {
-            width: 100px;
-            height: 12px;
-            background: #444;
-            border-radius: 6px;
-            overflow: hidden;
-            margin-top: 5px;
-        }
-        
-        .power-level {
-            height: 100%;
-            background: linear-gradient(to right, #FF69B4, #FF1493);
-            width: 100%;
-            border-radius: 6px;
-            transition: width 0.3s;
-        }
-        
-        .controls {
-            margin-top: 20px;
-            background: rgba(0, 0, 0, 0.6);
-            padding: 15px;
-            border-radius: 10px;
-            max-width: 800px;
-        }
-        
-        .controls h3 {
-            color: #FFD700;
-            margin-top: 0;
-        }
-        
-        .controls-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            text-align: left;
-        }
-        
-        .mobile-controls {
-            display: none;
-            margin-top: 20px;
-            gap: 10px;
-        }
-        
-        .mobile-btn {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            border: none;
-            background: rgba(255, 255, 255, 0.9);
-            font-size: 1.5rem;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        }
-        
-        @media (max-width: 830px) {
-            #game-container {
-                width: 100%;
-                height: 400px;
-            }
-            
-            .mobile-controls {
-                display: flex;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oso Abrazos - Aventura Completa</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+      color: white;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
+      color: #FFD700;
+      margin-bottom: 10px;
+    }
+    
+    .subtitle {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .game-wrapper {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    
+    #gameContainer {
+      position: relative;
+      width: 800px;
+      height: 500px;
+      border: 5px solid #FFD700;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+    }
+    
+    #gameCanvas {
+      display: block;
+    }
+    
+    #ui {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 10px;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      text-align: left;
+      font-size: 16px;
+      z-index: 10;
+    }
+    
+    .power-bar {
+      width: 100px;
+      height: 12px;
+      background: #444;
+      border-radius: 6px;
+      overflow: hidden;
+      margin-top: 5px;
+    }
+    
+    .power-level {
+      height: 100%;
+      background: linear-gradient(to right, #FF69B4, #FF1493);
+      width: 100%;
+      border-radius: 6px;
+      transition: width 0.3s;
+    }
+    
+    #levelIndicator {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-weight: bold;
+      z-index: 10;
+    }
+    
+    #startScreen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 20;
+    }
+    
+    #coverImage {
+      width: 300px;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      border: 3px solid #FFD700;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    }
+    
+    #startButton, .storybook-btn, .celebration-btn {
+      background: linear-gradient(to bottom, #FFD700, #FF9800);
+      border: none;
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      border-radius: 50px;
+      color: #8B4513;
+      font-weight: bold;
+      cursor: pointer;
+      margin: 10px;
+      transition: all 0.3s;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    #startButton:hover, .storybook-btn:hover, .celebration-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    }
+    
+    #hint {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 20px;
+      opacity: 0;
+      transition: opacity 0.5s;
+      z-index: 10;
+    }
+    
+    #soundToggle {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.6);
+      border: 2px solid white;
+      color: white;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      font-size: 1.5rem;
+      cursor: pointer;
+      z-index: 5;
+    }
+    
+    .mobile-controls {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      display: flex;
+      gap: 20px;
+      opacity: 0.8;
+      z-index: 10;
+    }
+    
+    .mobile-controls-column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .mobile-btn {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255, 255, 255, 0.9);
+      font-size: 1.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+    
+    .mobile-label {
+      color: white;
+      font-size: 0.8rem;
+      text-shadow: 1px 1px 2px black;
+    }
+    
+    #storybook {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 25;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      box-sizing: border-box;
+      text-align: center;
+      overflow-y: auto;
+    }
+    
+    .storybook-content {
+      max-width: 700px;
+      max-height: 90%;
+      overflow-y: auto;
+      padding: 20px;
+      background: rgba(255, 215, 0, 0.1);
+      border-radius: 15px;
+      border: 2px solid #FFD700;
+    }
+    
+    .storybook-images {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin: 20px 0;
+    }
+    
+    .storybook-images img {
+      width: 100px;
+      height: 100px;
+      border: 2px solid #FFD700;
+      border-radius: 10px;
+      object-fit: cover;
+    }
+    
+    .storybook-controls {
+      margin-top: 20px;
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    /* 🔥 Estilos para el jefe */
+    .boss-health {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 400px;
+      height: 25px;
+      background: #333;
+      border-radius: 12px;
+      overflow: hidden;
+      z-index: 15;
+      border: 3px solid #fff;
+      display: none;
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+    }
+
+    .boss-health-bar {
+      height: 100%;
+      background: linear-gradient(to right, #ff0000, #ff6600, #ffcc00);
+      width: 100%;
+      transition: width 0.5s;
+      position: relative;
+    }
+
+    .boss-health-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-weight: bold;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+      z-index: 16;
+    }
+
+    /* ⚡ Animación de advertencia de fuego */
+    .fire-warning {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 50px;
+      background: linear-gradient(to top, rgba(255, 0, 0, 0.3), transparent);
+      z-index: 14;
+      display: none;
+      animation: warningPulse 0.5s infinite;
+    }
+
+    @keyframes warningPulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.8; }
+    }
+
+    /* 💝 Animación de corazones brillantes */
+    @keyframes heartGlow {
+      0%, 100% { transform: scale(1); filter: brightness(1); }
+      50% { transform: scale(1.1); filter: brightness(1.3); }
+    }
+
+    .heart-collectible {
+      animation: heartGlow 1s infinite;
+    }
+
+    /* 🎆 Animación de victoria mejorada */
+    .victory-animation {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(255, 215, 0, 0.4), rgba(255, 140, 0, 0.2));
+      z-index: 30;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      color: white;
+      text-align: center;
+    }
+
+    .victory-title {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8);
+      color: #FFD700;
+      animation: victoryBounce 1s ease-in-out infinite alternate;
+    }
+
+    @keyframes victoryBounce {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.05); }
+    }
+
+    /* 🐺 Animación de enfado del lobo */
+    .boss-enraged {
+      animation: enrageShake 0.3s infinite;
+    }
+
+    @keyframes enrageShake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px) rotate(-2deg); }
+      75% { transform: translateX(5px) rotate(2deg); }
+    }
+
+    #loadingScreen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      z-index: 35;
+    }
+    
+    .progress-bar {
+      width: 300px;
+      height: 20px;
+      background: #555;
+      border-radius: 10px;
+      margin: 20px 0;
+      overflow: hidden;
+    }
+    
+    .progress {
+      height: 100%;
+      background: #4CAF50;
+      width: 0%;
+      transition: width 0.3s;
+    }
+  </style>
 </head>
 <body>
-    <h1>🐻 Oso Abrazos con Kaboom.js</h1>
-    <p class="subtitle">¡Ayuda al Oso Abrazos a recolectar miel y abrazar a todos sus amigos!</p>
-    
-    <div id="game-container">
-        <div id="start-screen">
-            <h2>¡Bienvenido a Oso Abrazos!</h2>
-            <p>Presiona el botón para comenzar la aventura</p>
-            <button id="start-button">🎮 Comenzar Juego</button>
-        </div>
-        
-        <div class="game-ui">
-            <div>Puntos: <span id="score">0</span></div>
-            <div>Vidas: <span id="lives">❤️❤️❤️</span></div>
-            <div>Nivel: <span id="level">1-1</span></div>
-            <div id="unicornPower" style="display: none;">
-                <span>🦄 Poder del Unicornio:</span>
-                <div class="power-bar">
-                    <div class="power-level" id="unicornPowerLevel"></div>
-                </div>
-            </div>
-            <div id="heartsCollected" style="display: none;">
-                <span>💕 Corazones: <span id="heartCount">0</span>/3</span>
-            </div>
-        </div>
-    </div>
-    
-    <div class="controls">
-        <h3>Controles:</h3>
-        <div class="controls-grid">
-            <div>⬅️ ➡️ : Moverse izquierda/derecha</div>
-            <div>⬆️ : Saltar</div>
-            <div>ESPACIO : Abrazar</div>
-            <div>Z : Disparar (con unicornio)</div>
-        </div>
-    </div>
-    
-    <div class="mobile-controls">
-        <button class="mobile-btn" id="leftBtn">⬅</button>
-        <button class="mobile-btn" id="upBtn">⬆</button>
-        <button class="mobile-btn" id="rightBtn">➡</button>
-        <button class="mobile-btn" id="actionBtn">🤗</button>
-    </div>
+  <h1>🐻 Oso Abrazos - Aventura Completa</h1>
+  <p class="subtitle">¡Ayuda al Oso Abrazos a derrotar al Lobo Feroz en 6 niveles emocionantes!</p>
+  
+  <div class="game-wrapper">
+    <div id="gameContainer">
+      <canvas id="gameCanvas" width="800" height="500"></canvas>
 
-    <!-- Cargar Kaboom.js desde CDN -->
-    <script src="https://kaboomjs.com/lib/0.6.0/kaboom.js"></script>
+      <!-- UI Mejorada -->
+      <div id="ui">
+        <div>Puntos: <span id="score">0</span></div>
+        <div>Vidas: <span id="lives">❤️❤️❤️</span></div>
+        <div>Nivel: <span id="level">1-1</span></div>
+        <div id="unicornPower" style="display: none;">
+          <span>🦄 Poder del Unicornio:</span>
+          <div class="power-bar">
+              <div class="power-level" id="unicornPowerLevel"></div>
+          </div>
+        </div>
+        <div id="heartsCollected" style="display: none;">
+          <span>💕 Corazones: <span id="heartCount">0</span>/3</span>
+        </div>
+      </div>
+
+      <!-- 🐺 Barra de salud del jefe -->
+      <div id="bossHealth" class="boss-health">
+        <div class="boss-health-bar" id="bossHealthBar">
+          <div class="boss-health-text">🐺 Lobo Feroz - Vida: <span id="bossHealthText">5/5</span></div>
+        </div>
+      </div>
+
+      <!-- ⚡ Advertencia de fuego -->
+      <div id="fireWarning" class="fire-warning">
+        <div style="text-align: center; color: white; font-weight: bold; padding-top: 10px;">
+          ⚠️ ¡CUIDADO! El lobo va a atacar con fuego ⚠️
+        </div>
+      </div>
+
+      <div id="levelIndicator" class="level-indicator">Nivel 1-1</div>
+
+      <!-- Pantalla de inicio con nueva música -->
+      <div id="startScreen">
+        <img id="coverImage" src="" alt="Portada del Juego">
+        <button id="startButton">🎮 ¡Comenzar Aventura!</button>
+      </div>
+      
+      <!-- Pantalla de carga -->
+      <div id="loadingScreen">
+        <h2>Cargando recursos del juego...</h2>
+        <div class="progress-bar">
+          <div class="progress" id="loadingProgress"></div>
+        </div>
+        <p id="loadingText">0%</p>
+        <div id="loadingDetails" style="margin-top: 20px;"></div>
+      </div>
+
+      <!-- Pantalla de victoria mejorada -->
+      <div id="victoryScreen" class="victory-animation">
+        <h2 class="victory-title">🎉 ¡VICTORIA! 🎉</h2>
+        <p style="font-size: 1.5rem; margin-bottom: 20px;">¡Has derrotado al Lobo Feroz!</p>
+        <div style="font-size: 1.2rem; margin-bottom: 30px;">
+          <p>Puntuación Final: <span id="finalScore">0</span></p>
+          <p>Corazones Recolectados: <span id="finalHearts">0</span></p>
+        </div>
+        <button id="nextLevelBtn" class="celebration-btn">🚀 ¡Jugar de nuevo!</button>
+      </div>
+
+      <!-- Storybook mejorado -->
+      <div id="storybook" style="display: none;">
+        <div class="storybook-content">
+          <h2>🐻 Oso Abrazos vs. 🐺 El Lobo Feroz</h2>
+          <p>¡El malvado Lobo Feroz ha invadido el bosque y quiere acabar con todos los abrazos!</p>
+          <p>Debes recolectar <strong>3 corazones mágicos</strong> para invocar al Unicornio de la Amistad.</p>
+          
+          <div class="storybook-images">
+            <img id="storyEnemy1" alt="Enemigo 1">
+            <img id="storyEnemy2" alt="Enemigo 2">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBmaWxs="#FF1493" d="M466.4 245.9c42.6-37.4 45.1-99.2 5.8-138.4s-87.7-45.6-127.8-10.2l-32.3 28.7-32.3-28.7c-40.1-35.4-103.4-20.4-127.8 10.2s-36.8 101 5.8 138.4l176.1 156.1c4.4 3.9 10.8 3.9 15.2 0l176.1-156.1z"/></svg>" alt="Corazón">
+            <img id="storyUnicorn" alt="Unicornio">
+          </div>
+          
+          <p>🔥 <strong>El lobo tiene 5 puntos de vida</strong> y lanzará fuego desde su boca.</p>
+          <p>💕 <strong>¡Recolecta corazones para invocar al unicornio!</strong></p>
+          <p>🦄 <strong>Con el unicornio puedes disparar rayos de amistad</strong> para derrotar al lobo.</p>
+          <p>⚠️ <strong>¡Ten cuidado!</strong> 5 disparos del lobo te derrotarán.</p>
+          
+          <h3>Controles:</h3>
+          <p>⬅️ ➡️ : Moverse izquierda/derecha</p>
+          <p>⬆️ : Saltar</p>
+          <p>ESPACIO : Abrazar</p>
+          <p>Z : Disparar (con unicornio)</p>
+          
+          <div class="storybook-controls">
+            <button id="startGame" class="storybook-btn">💪 ¡Entendido! ¡A salvar el bosque!</button>
+            <button id="backToMenu" class="storybook-btn">📋 Volver al menú</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="hint">Acércate a los amigos y presiona ESPACIO para abrazarlos</div>
+      <button id="soundToggle">🔊</button>
+
+      <!-- Controles móviles -->
+      <div class="mobile-controls">
+        <div class="mobile-controls-column">
+          <button class="mobile-btn" id="leftBtn">⬅</button>
+          <div class="mobile-label">Izquierda</div>
+          
+          <button class="mobile-btn" id="rightBtn">➡</button>
+          <div class="mobile-label">Derecha</div>
+          
+          <button class="mobile-btn" id="jumpBtn">⬆</button>
+          <div class="mobile-label">Saltar</div>
+        </div>
+        
+        <div class="mobile-controls-column">
+          <button class="mobile-btn" id="hugBtn">🤗</button>
+          <div class="mobile-label">Abrazar</div>
+          
+          <button class="mobile-btn" id="fireBtn">💫</button>
+          <div class="mobile-label">Disparar</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script de inicialización -->
+  <script>
+    // URLs base para las imágenes
+    const baseUrl = "https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img";
     
-    <script>
-        // Variables globales del juego
-        let gameScore = 0;
-        let gameLives = 3;
-        let gameHearts = 0;
-        let unicornPower = 0;
-        let currentLevel = "1-1";
-        let unicornActive = false;
-        let k; // Variable para la instancia de Kaboom
-        
-        // URLs base para las imágenes
-        const baseUrl = "https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img";
-        
-        // Assets del juego - usando placeholders para evitar errores 404
-        const gameAssets = {
-            "oso": `${baseUrl}/oso/oso_idle.svg`,
-            "oso_camina": `${baseUrl}/oso/oso_walk.svg`,
-            "oso_salta": `${baseUrl}/oso/oso_jump.svg`,
-            "oso_abrazando": `${baseUrl}/oso/oso_hugging.svg`,
-            "oso_unicornio": `${baseUrl}/Amigos/osoyuni.png`,
-            "ardilla": `${baseUrl}/Amigos/ardilla.png`,
-            "conejo": `${baseUrl}/Amigos/conejo.png`,
-            "pajaro": `${baseUrl}/Amigos/pajarito.png`,
-            "enemigo1": `${baseUrl}/enemigos/Enemigos-01.svg`,
-            "enemigo2": `${baseUrl}/enemigos/Enemigos-02.svg`,
-            "enemigo3": `${baseUrl}/enemigos/Enemigos-03.svg`,
-            "corazon": `${baseUrl}/Amigos/lovepower.png`,
-            "miel": `${baseUrl}/Amigos/miel.png`,
-            "fondo1": "https://placehold.co/800x500/87CEEB/FFFFFF?text=Bosque+Encantado",
-            "fondo2": "https://placehold.co/800x500/4682B4/FFFFFF?text=Claro+Soleado",
-            "fondo3": "https://placehold.co/800x500/2F4F4F/FFFFFF?text=Cueva+Misteriosa",
-            "lobo": `${baseUrl}/enemigos/loboferoz.png`,
-            "fuego": `${baseUrl}/enemigos/fire.png`
+    // Sprites
+    const sprites = {
+      idle: new Image(),
+      walk: new Image(),
+      jump: new Image(),
+      run: new Image(),
+      crouch: new Image(),
+      hug: new Image(),
+      cover: new Image(),
+      squirrel: new Image(),
+      rabbit: new Image(),
+      bird: new Image(),
+      enemy1: new Image(),
+      enemy2: new Image(),
+      enemy3: new Image(),
+      // Fondos de nivel
+      background_1_1: new Image(),
+      background_1_2: new Image(),
+      background_1_3: new Image(),
+      background_2_1: new Image(),
+      background_2_2: new Image(),
+      background_2_3: new Image(),
+      // Jefe y elementos especiales
+      boss: new Image(),
+      heart: new Image(),
+      fire: new Image(),
+      unicorn: new Image(),
+      honey: new Image(),
+      osoyuni: new Image()  // Nueva imagen de oso con unicornio
+    };
+    
+    // URLs de las imágenes
+    const imageUrls = {
+      idle: `${baseUrl}/oso/oso_idle.svg`,
+      walk: `${baseUrl}/oso/oso_walk.svg`,
+      jump: `${baseUrl}/oso/oso_jump.svg`,
+      run: `${baseUrl}/oso/oso_run.svg`,
+      crouch: `${baseUrl}/oso/oso_sit.svg`,
+      hug: `${baseUrl}/oso/oso_hugging.svg`,
+      cover: `${baseUrl}/oso/oso_portada.png`,
+      squirrel: `${baseUrl}/Amigos/ardilla.png`,
+      rabbit: `${baseUrl}/Amigos/conejo.png`,
+      bird: `${baseUrl}/Amigos/pajarito.png`,
+      enemy1: `${baseUrl}/enemigos/Enemigos-01.svg`,
+      enemy2: `${baseUrl}/enemigos/Enemigos-02.svg`,
+      enemy3: `${baseUrl}/enemigos/Enemigos-03.svg`,
+      // Fondos de nivel
+      background_1_1: `${baseUrl}/fondos/bosque1.jpg`,
+      background_1_2: `${baseUrl}/fondos/bosque2.jpg`,
+      background_1_3: `${baseUrl}/fondos/bosque3.jpg`,
+      background_2_1: `${baseUrl}/fondos/bosque4.jpg`,
+      background_2_2: `${baseUrl}/fondos/background_1_2.jpeg`,
+      background_2_3: `${baseUrl}/fondos/background final.jpeg`,
+      // Jefe y elementos especiales
+      boss: `${baseUrl}/enemigos/loboferoz.png`,
+      heart: `${baseUrl}/Amigos/lovepower.png`,
+      fire: `${baseUrl}/enemigos/fire.png`,
+      unicorn: `${baseUrl}/Amigos/unirshup.png`,
+      honey: `${baseUrl}/Amigos/miel.png`,
+      osoyuni: `${baseUrl}/Amigos/osoyuni.png`  // Nueva imagen de oso con unicornio
+    };
+
+    // Sonidos
+    const sounds = {
+      background: new Audio(`${baseUrl}/sounds/background.mp3.mp3`),
+      jump: new Audio(`${baseUrl}/sounds/jump.mp3.mp3`),
+      collect: new Audio(`${baseUrl}/sounds/collect.mp3.mp3`),
+      hug: new Audio(`${baseUrl}/sounds/hug.mp3.mp3`),
+      hurt: new Audio(`${baseUrl}/sounds/hurt.mp3.mp3`),
+      enemy: new Audio(`${baseUrl}/sounds/enemy.mp3.mp3`),
+      powerup: new Audio(`${baseUrl}/sounds/powerup.mp3.mp3`)
+    };
+
+    // Configurar sonidos
+    for (let key in sounds) {
+      sounds[key].volume = 0.6;
+      sounds[key].preload = 'auto';
+    }
+    sounds.background.loop = true;
+
+    // Variables para el estado de carga
+    let totalResources = Object.keys(imageUrls).length;
+    let loadedResources = 0;
+    let failedResources = 0;
+
+    // Esperar a que se cargue la página
+    window.addEventListener('load', function() {
+      console.log("🎮 Inicializando juego Oso Abrazos...");
+      
+      // Inicializar variables globales
+      window.gameState = {
+        gameStarted: false,
+        currentLevel: "1-1",
+        score: 0,
+        lives: 3,
+        heartsCollected: 0,
+        soundEnabled: true,
+        bossFight: false
+      };
+      
+      window.oso = {
+        x: 100, y: 380,
+        width: 80, height: 80,
+        vx: 0, vy: 0,
+        speed: 5,
+        jumpForce: 15,
+        gravity: 0.7,
+        grounded: false,
+        hugging: false,
+        hugCooldown: 0,
+        direction: 1,
+        action: "idle",
+        hasUnicorn: false,
+        invincible: 0
+      };
+      
+      window.boss = {
+        x: 600, y: 350,
+        width: 120, height: 120,
+        health: 5,
+        maxHealth: 5,
+        enraged: false,
+        phase: 1,
+        attackCooldown: 0,
+        warningTimer: 0,
+        fireballs: []
+      };
+      
+      window.unicorn = {
+        active: false,
+        power: 0,
+        cooldown: 0
+      };
+      
+      window.platforms = [];
+      window.friends = [];
+      window.enemies = [];
+      window.items = [];
+      window.hearts = [];
+      window.projectiles = [];
+      window.particles = [];
+      window.keys = {};
+      
+      // Definir niveles
+      window.LEVELS = {
+        "1-1": { name: "Bosque Inicial", friends: 3, enemies: 2, items: 2, hasBoss: false },
+        "1-2": { name: "Claro Soleado", friends: 4, enemies: 3, items: 3, hasBoss: false },
+        "1-3": { name: "Cueva Misteriosa", friends: 5, enemies: 4, items: 4, hasBoss: false },
+        "2-1": { name: "Montañas Altas", friends: 4, enemies: 5, items: 3, hasBoss: false },
+        "2-2": { name: "Cascada Brillante", friends: 5, enemies: 5, items: 4, hasBoss: false },
+        "2-3": { name: "Guarida del Lobo", friends: 0, enemies: 0, items: 0, hasBoss: true }
+      };
+      
+      // Obtener referencias a elementos del DOM
+      const gameCanvas = document.getElementById('gameCanvas');
+      const startScreen = document.getElementById('startScreen');
+      const startButton = document.getElementById('startButton');
+      const victoryScreen = document.getElementById('victoryScreen');
+      const nextLevelBtn = document.getElementById('nextLevelBtn');
+      const storybook = document.getElementById('storybook');
+      const startGameBtn = document.getElementById('startGame');
+      const backToMenuBtn = document.getElementById('backToMenu');
+      const soundToggle = document.getElementById('soundToggle');
+      const hintElement = document.getElementById('hint');
+      const loadingScreen = document.getElementById('loadingScreen');
+      const loadingProgress = document.getElementById('loadingProgress');
+      const loadingText = document.getElementById('loadingText');
+      const loadingDetails = document.getElementById('loadingDetails');
+      const coverImage = document.getElementById('coverImage');
+      
+      // Configurar canvas
+      if (gameCanvas) {
+        window.gameCtx = gameCanvas.getContext('2d');
+      }
+      
+      // Configurar botones
+      if (startButton) {
+        startButton.addEventListener('click', function() {
+          showStorybook();
+        });
+      }
+      
+      if (startGameBtn) {
+        startGameBtn.addEventListener('click', startGame);
+      }
+      
+      if (backToMenuBtn) {
+        backToMenuBtn.addEventListener('click', backToMenu);
+      }
+      
+      if (nextLevelBtn) {
+        nextLevelBtn.addEventListener('click', nextLevel);
+      }
+      
+      if (soundToggle) {
+        soundToggle.addEventListener('click', toggleSound);
+      }
+      
+      // Configurar controles táctiles
+      const leftBtn = document.getElementById('leftBtn');
+      const rightBtn = document.getElementById('rightBtn');
+      const jumpBtn = document.getElementById('jumpBtn');
+      const hugBtn = document.getElementById('hugBtn');
+      const fireBtn = document.getElementById('fireBtn');
+      
+      if (leftBtn) leftBtn.addEventListener('touchstart', () => window.keys["ArrowLeft"] = true);
+      if (leftBtn) leftBtn.addEventListener('touchend', () => window.keys["ArrowLeft"] = false);
+      
+      if (rightBtn) rightBtn.addEventListener('touchstart', () => window.keys["ArrowRight"] = true);
+      if (rightBtn) rightBtn.addEventListener('touchend', () => window.keys["ArrowRight"] = false);
+      
+      if (jumpBtn) jumpBtn.addEventListener('touchstart', () => {
+        window.keys["ArrowUp"] = true;
+        setTimeout(() => { window.keys["ArrowUp"] = false; }, 200);
+      });
+      
+      if (hugBtn) hugBtn.addEventListener('touchstart', () => {
+        window.keys[" "] = true;
+        setTimeout(() => { window.keys[" "] = false; }, 200);
+      });
+      
+      if (fireBtn) fireBtn.addEventListener('touchstart', () => {
+        window.keys["z"] = true;
+        setTimeout(() => { window.keys["z"] = false; }, 200);
+      });
+      
+      // Configurar controles de teclado
+      document.addEventListener('keydown', (e) => {
+        // Prevenir la acción por defecto para la barra espaciadora
+        if (e.code === 'Space') {
+          e.preventDefault();
+        }
+        window.keys[e.key] = true;
+      });
+      
+      document.addEventListener('keyup', (e) => {
+        window.keys[e.key] = false;
+      });
+      
+      // Precargar recursos
+      loadResources();
+      
+      console.log("✅ Juego inicializado correctamente");
+    });
+    
+    // Función para mostrar el storybook
+    function showStorybook() {
+      const startScreen = document.getElementById('startScreen');
+      const storybook = document.getElementById('storybook');
+      
+      if (startScreen) startScreen.style.display = 'none';
+      if (storybook) storybook.style.display = 'flex';
+    }
+    
+    // Función para volver al menú
+    function backToMenu() {
+      const storybook = document.getElementById('storybook');
+      const startScreen = document.getElementById('startScreen');
+      
+      if (storybook) storybook.style.display = 'none';
+      if (startScreen) startScreen.style.display = 'flex';
+    }
+    
+    // Función para iniciar el juego
+    function startGame() {
+      const storybook = document.getElementById('storybook');
+      if (storybook) storybook.style.display = 'none';
+      
+      window.gameState.gameStarted = true;
+      window.gameState.score = 0;
+      window.gameState.lives = 3;
+      window.gameState.heartsCollected = 0;
+      
+      // Iniciar música de fondo si está habilitada
+      if (window.gameState.soundEnabled) {
+        sounds.background.play().catch(e => console.log("Audio autoplay prevented: ", e));
+      }
+      
+      // Configurar nivel inicial
+      setupLevel("1-1");
+      
+      // Iniciar bucle del juego
+      if (!window.gameLoopRunning) {
+        window.gameLoopRunning = true;
+        gameLoop();
+      }
+    }
+    
+    // Función para el siguiente nivel
+    function nextLevel() {
+      const victoryScreen = document.getElementById('victoryScreen');
+      if (victoryScreen) victoryScreen.style.display = 'none';
+      
+      const nextLevelKey = getNextLevel(window.gameState.currentLevel);
+      
+      if (nextLevelKey) {
+        setupLevel(nextLevelKey);
+      } else {
+        // Reiniciar juego si no hay más niveles
+        startGame();
+      }
+    }
+    
+    // Función para alternar sonido
+    function toggleSound() {
+      window.gameState.soundEnabled = !window.gameState.soundEnabled;
+      const soundToggle = document.getElementById('soundToggle');
+      
+      if (soundToggle) {
+        soundToggle.textContent = window.gameState.soundEnabled ? "🔊" : "🔇";
+      }
+      
+      if (window.gameState.soundEnabled) {
+        sounds.background.play().catch(e => console.log("Audio autoplay prevented: ", e));
+      } else {
+        sounds.background.pause();
+      }
+    }
+    
+    // Función para mostrar indicaciones
+    function showHint(text, duration) {
+      const hintElement = document.getElementById('hint');
+      if (!hintElement) return;
+      
+      hintElement.textContent = text;
+      hintElement.style.opacity = '1';
+      
+      setTimeout(() => {
+        hintElement.style.opacity = '0';
+      }, duration);
+    }
+
+    // Función para reproducir sonido
+    function playSound(soundName) {
+      if (window.gameState.soundEnabled && sounds[soundName]) {
+        // Crear una nueva instancia para permitir sonidos superpuestos
+        const sound = new Audio(sounds[soundName].src);
+        sound.volume = sounds[soundName].volume;
+        sound.play().catch(e => console.log("Sound error: ", e));
+      }
+    }
+
+    // Precargar recursos
+    function loadResources() {
+      const loadingScreen = document.getElementById('loadingScreen');
+      const loadingProgress = document.getElementById('loadingProgress');
+      const loadingText = document.getElementById('loadingText');
+      const loadingDetails = document.getElementById('loadingDetails');
+      const startScreen = document.getElementById('startScreen');
+      const coverImage = document.getElementById('coverImage');
+      
+      for (let key in imageUrls) {
+        sprites[key].onload = () => {
+          loadedResources++;
+          const progress = Math.floor((loadedResources / totalResources) * 100);
+          if (loadingProgress) loadingProgress.style.width = `${progress}%`;
+          if (loadingText) loadingText.textContent = `${progress}%`;
+          
+          if (loadedResources === totalResources) {
+            setTimeout(() => {
+              if (loadingScreen) loadingScreen.style.display = "none";
+              if (startScreen) startScreen.style.display = "flex";
+              
+              // Mostrar imagen de portada
+              if (coverImage) coverImage.src = imageUrls.cover;
+              
+              // Preparar imágenes para el storybook
+              document.getElementById('storyEnemy1').src = imageUrls.enemy1;
+              document.getElementById('storyEnemy2').src = imageUrls.enemy2;
+              document.getElementById('storyUnicorn').src = imageUrls.unicorn;
+            }, 500);
+          }
         };
         
-        // Inicializar el juego después de la interacción del usuario
-        document.getElementById("start-button").addEventListener("click", initGame);
-        
-        function initGame() {
-            // Ocultar pantalla de inicio
-            document.getElementById("start-screen").style.display = "none";
+        sprites[key].onerror = () => {
+          loadedResources++;
+          failedResources++;
+          
+          const progress = Math.floor((loadedResources / totalResources) * 100);
+          if (loadingProgress) loadingProgress.style.width = `${progress}%`;
+          if (loadingText) loadingText.textContent = `${progress}%`;
+          
+          if (loadingDetails) {
+            loadingDetails.innerHTML += `<p>Error cargando: ${key} - <a href="${imageUrls[key]}" target="_blank">Ver URL</a></p>`;
+          }
+          
+          if (loadedResources === totalResources) {
+            if (loadingScreen) loadingScreen.style.display = "none";
+            if (startScreen) startScreen.style.display = "flex";
             
-            // Inicializar Kaboom después de la interacción del usuario
-            k = kaboom({
-                width: 800,
-                height: 500,
-                background: [135, 206, 235],
-                global: false
-            });
-            
-            // Cargar assets del juego
-            loadAssets();
-        }
-        
-        function loadAssets() {
-            // Cargar todos los assets
-            for (const [name, url] of Object.entries(gameAssets)) {
-                k.loadSprite(name, url, {
-                    error: () => {
-                        console.log(`Usando placeholder para: ${name}`);
-                        // Si hay error, usar un placeholder
-                        k.loadSprite(name, `https://placehold.co/100x100/333333/FFFFFF?text=${encodeURIComponent(name)}`);
-                    }
-                });
+            // Mostrar advertencia si hay errores
+            if (failedResources > 0) {
+              alert(`⚠️ Algunos recursos no se pudieron cargar (${failedResources}/${totalResources}). El juego puede no verse correctamente.`);
             }
-            
-            // Sonidos de placeholder
-            k.loadSound("salto", "https://kaboomjs.com/sfx/jump.mp3");
-            k.loadSound("colectar", "https://kaboomjs.com/sfx/score.mp3");
-            k.loadSound("golpe", "https://kaboomjs.com/sfx/hurt.mp3");
-            
-            // Iniciar el juego cuando todos los assets estén cargados
-            k.onLoad(() => {
-                console.log("Todos los assets cargados");
-                startGame();
-            });
+          }
+        };
+        
+        sprites[key].src = imageUrls[key];
+      }
+    }
+
+    // ============= FUNCIONES PRINCIPALES DEL JUEGO =============
+    function setupLevel(levelKey) {
+      console.log(`🎯 Configurando nivel: ${levelKey}`);
+      
+      const level = window.LEVELS[levelKey];
+      if (!level) {
+        console.error("❌ Nivel no encontrado:", levelKey);
+        return;
+      }
+      
+      window.gameState.currentLevel = levelKey;
+      window.gameState.bossFight = level.hasBoss;
+      
+      // Actualizar UI
+      const levelElement = document.getElementById('level');
+      if (levelElement) {
+        levelElement.textContent = `${levelKey} - ${level.name}`;
+      }
+      
+      const levelIndicator = document.getElementById('levelIndicator');
+      if (levelIndicator) {
+        levelIndicator.textContent = `Nivel ${levelKey}`;
+      }
+      
+      if (level.hasBoss) {
+        setupBossLevel();
+      } else {
+        setupNormalLevel(level);
+      }
+    }
+
+    function setupNormalLevel(level) {
+      console.log("🌲 Configurando nivel normal");
+      
+      // Ocultar elementos de jefe
+      const bossHealthElement = document.getElementById('bossHealth');
+      const fireWarningElement = document.getElementById('fireWarning');
+      const heartsCollectedElement = document.getElementById('heartsCollected');
+      const unicornPowerElement = document.getElementById('unicornPower');
+      
+      if (bossHealthElement) bossHealthElement.style.display = 'none';
+      if (fireWarningElement) fireWarningElement.style.display = 'none';
+      if (heartsCollectedElement) heartsCollectedElement.style.display = 'none';
+      if (unicornPowerElement) unicornPowerElement.style.display = 'none';
+      
+      // Configurar plataformas
+      window.platforms = [
+        { x: 0, y: 450, width: 800, height: 50 },
+        { x: 200, y: 350, width: 100, height: 20 },
+        { x: 400, y: 300, width: 100, height: 20 },
+        { x: 600, y: 350, width: 100, height: 20 }
+      ];
+      
+      // Configurar amigos
+      window.friends = [];
+      for (let i = 0; i < level.friends; i++) {
+        const friendType = i % 3;
+        let sprite;
+        let friendName;
+        
+        switch (friendType) {
+          case 0:
+            sprite = sprites.squirrel;
+            friendName = "ardilla";
+            break;
+          case 1:
+            sprite = sprites.rabbit;
+            friendName = "conejo";
+            break;
+          case 2:
+            sprite = sprites.bird;
+            friendName = "pájaro";
+            break;
         }
         
-        // Definir las escenas
-        function startGame() {
-            k.scene("nivel-1", () => setupNivel("1-1"));
-            k.scene("nivel-2", () => setupNivel("1-2"));
-            k.scene("nivel-3", () => setupNivel("1-3"));
-            k.scene("nivel-jefe", () => setupNivelJefe());
-            
-            k.go("nivel-1");
+        window.friends.push({
+          x: 150 + i * 150,
+          y: 380,
+          width: 50,
+          height: 50,
+          sprite: sprite,
+          type: friendType,
+          name: friendName,
+          hugged: false,
+          floating: 0,
+          floatDir: Math.random() > 0.5 ? 1 : -1
+        });
+      }
+      
+      // Configurar enemigos (SIEMPRE en el lado derecho, alejados del oso)
+      window.enemies = [];
+      for (let i = 0; i < level.enemies; i++) {
+        const enemyType = i % 3;
+        let sprite;
+        
+        switch (enemyType) {
+          case 0:
+            sprite = sprites.enemy1;
+            break;
+          case 1:
+            sprite = sprites.enemy2;
+            break;
+          case 2:
+            sprite = sprites.enemy3;
+            break;
         }
         
-        function setupNivel(nivel) {
-            currentLevel = nivel;
-            document.getElementById("level").textContent = nivel;
-            
-            // Configurar el nivel
-            k.add([
-                k.sprite(`fondo${nivel.split("-")[1]}`),
-                k.pos(0, 0),
-                k.fixed(),
-                k.scale(2.5)
-            ]);
-            
-            // Plataformas
-            k.add([
-                k.rect(800, 50),
-                k.pos(0, 450),
-                k.area(),
-                k.solid(),
-                k.color(139, 69, 19),
-                "plataforma"
-            ]);
-            
-            k.add([
-                k.rect(100, 20),
-                k.pos(200, 350),
-                k.area(),
-                k.solid(),
-                k.color(139, 69, 19),
-                "plataforma"
-            ]);
-            
-            k.add([
-                k.rect(100, 20),
-                k.pos(400, 300),
-                k.area(),
-                k.solid(),
-                k.color(139, 69, 19),
-                "plataforma"
-            ]);
-            
-            k.add([
-                k.rect(100, 20),
-                k.pos(600, 350),
-                k.area(),
-                k.solid(),
-                k.color(139, 69, 19),
-                "plataforma"
-            ]);
-            
-            // Crear oso
-            const oso = k.add([
-                k.sprite("oso"),
-                k.pos(100, 380),
-                k.area(),
-                k.body(),
-                k.health(3),
-                "jugador",
-                {
-                    velocidad: 200,
-                    fuerzaSalto: 400,
-                    direccion: 1,
-                    abrazando: false
-                }
-            ]);
-            
-            // Crear amigos
-            crearAmigo("ardilla", 300, 380);
-            crearAmigo("conejo", 500, 380);
-            crearAmigo("pajaro", 700, 380);
-            
-            // Crear enemigos (en el lado derecho)
-            crearEnemigo("enemigo1", 600, 380);
-            crearEnemigo("enemigo2", 700, 380);
-            
-            // Crear corazones
-            crearCorazon(200, 300);
-            crearCorazon(400, 250);
-            crearCorazon(600, 300);
-            
-            // Crear miel
-            crearMiel(250, 200);
-            crearMiel(550, 180);
-            
-            // Controles
-            k.onKeyDown("left", () => {
-                if (!oso.abrazando) {
-                    oso.move(-oso.velocidad, 0);
-                    oso.direccion = -1;
-                    oso.flipX = true;
-                }
-            });
-            
-            k.onKeyDown("right", () => {
-                if (!oso.abrazando) {
-                    oso.move(oso.velocidad, 0);
-                    oso.direccion = 1;
-                    oso.flipX = false;
-                }
-            });
-            
-            k.onKeyPress("up", () => {
-                if (oso.isGrounded() && !oso.abrazando) {
-                    oso.jump(oso.fuerzaSalto);
-                    k.play("salto");
-                }
-            });
-            
-            k.onKeyPress("space", () => {
-                abrazar(oso);
-            });
-            
-            k.onKeyPress("z", () => {
-                if (unicornActive && unicornPower > 0) {
-                    dispararUnicornio(oso);
-                }
-            });
-            
-            // Controles móviles
-            document.getElementById("leftBtn").addEventListener("mousedown", () => {
-                if (!oso.abrazando) {
-                    oso.move(-oso.velocidad, 0);
-                    oso.direccion = -1;
-                    oso.flipX = true;
-                }
-            });
-            
-            document.getElementById("rightBtn").addEventListener("mousedown", () => {
-                if (!oso.abrazando) {
-                    oso.move(oso.velocidad, 0);
-                    oso.direccion = 1;
-                    oso.flipX = false;
-                }
-            });
-            
-            document.getElementById("upBtn").addEventListener("mousedown", () => {
-                if (oso.isGrounded() && !oso.abrazando) {
-                    oso.jump(oso.fuerzaSalto);
-                    k.play("salto");
-                }
-            });
-            
-            document.getElementById("actionBtn").addEventListener("mousedown", () => {
-                abrazar(oso);
-            });
-            
-            // Actualizar UI
-            k.onUpdate(() => {
-                if (unicornActive) {
-                    document.getElementById("unicornPower").style.display = "block";
-                    document.getElementById("unicornPowerLevel").style.width = `${unicornPower}%`;
-                    
-                    // Regenerar poder lentamente
-                    if (unicornPower < 100) {
-                        unicornPower += 0.2;
-                    }
-                }
-            });
+        // Enemigos siempre en el lado derecho (a partir de 400px)
+        window.enemies.push({
+          x: 500 + i * 100, // Siempre en el lado derecho
+          y: 380,
+          width: 60,
+          height: 60,
+          sprite: sprite,
+          direction: -1, // SIEMPRE mirando hacia la izquierda (hacia el oso)
+          speed: 2,
+          damage: 1,
+          moveRange: 150,
+          startX: 500 + i * 100
+        });
+      }
+      
+      // Configurar items (miel)
+      window.items = [];
+      for (let i = 0; i < level.items; i++) {
+        window.items.push({
+          x: 150 + i * 200,
+          y: 250,
+          width: 30,
+          height: 30,
+          collected: false
+        });
+      }
+      
+      // Configurar corazones
+      window.hearts = [];
+      for (let i = 0; i < 3; i++) {
+        window.hearts.push({
+          x: 250 + i * 200,
+          y: 300,
+          width: 30,
+          height: 30,
+          collected: false
+        });
+      }
+      
+      // Configurar posición del oso (SIEMPRE en el lado izquierdo)
+      window.oso.x = 100;
+      window.oso.y = 380;
+      window.oso.vx = 0;
+      window.oso.vy = 0;
+      window.oso.grounded = false;
+      window.oso.hugging = false;
+      window.oso.hasUnicorn = false;
+      
+      // Configurar unicornio
+      window.unicorn.active = false;
+      window.unicorn.power = 0;
+      
+      // Limpiar proyectiles y partículas
+      window.projectiles = [];
+      window.particles = [];
+      
+      // Mostrar indicación
+      showHint("Acércate a los amigos y presiona ESPACIO para abrazarlos", 5000);
+    }
+
+    function setupBossLevel() {
+      console.log("🐺 Configurando nivel de jefe");
+      
+      // Mostrar elementos de jefe
+      const bossHealthElement = document.getElementById('bossHealth');
+      const heartsCollectedElement = document.getElementById('heartsCollected');
+      const unicornPowerElement = document.getElementById('unicornPower');
+      
+      if (bossHealthElement) bossHealthElement.style.display = 'block';
+      if (heartsCollectedElement) heartsCollectedElement.style.display = 'block';
+      if (unicornPowerElement) unicornPowerElement.style.display = 'block';
+      
+      // Configurar plataformas para la batalla final
+      window.platforms = [
+        { x: 0, y: 450, width: 800, height: 50 },
+        { x: 150, y: 350, width: 100, height: 20 },
+        { x: 400, y: 250, width: 100, height: 20 },
+        { x: 650, y: 350, width: 100, height: 20 }
+      ];
+      
+      // Configurar jefe
+      window.boss.x = 600;
+      window.boss.y = 350;
+      window.boss.health = window.boss.maxHealth;
+      window.boss.enraged = false;
+      window.boss.phase = 1;
+      window.boss.attackCooldown = 100;
+      window.boss.warningTimer = 0;
+      window.boss.fireballs = [];
+      
+      // Configurar posición del oso (SIEMPRE en el lado izquierdo)
+      window.oso.x = 100;
+      window.oso.y = 380;
+      window.oso.vx = 0;
+      window.oso.vy = 0;
+      window.oso.grounded = false;
+      window.oso.hugging = false;
+      window.oso.hasUnicorn = false;
+      
+      // Configurar unicornio
+      window.unicorn.active = false;
+      window.unicorn.power = 0;
+      
+      // Limpiar arrays
+      window.friends = [];
+      window.enemies = [];
+      window.items = [];
+      window.hearts = [];
+      window.projectiles = [];
+      window.particles = [];
+      
+      // Actualizar barra de salud del jefe
+      updateBossHealth();
+      
+      // Mostrar indicación
+      showHint("¡Cuidado! El lobo lanzará bolas de fuego. Usa el poder del unicornio para atacar.", 5000);
+    }
+
+    function updateBossHealth() {
+      const bossHealthBar = document.getElementById('bossHealthBar');
+      const bossHealthText = document.getElementById('bossHealthText');
+      
+      if (bossHealthBar && bossHealthText) {
+        const healthPercent = (window.boss.health / window.boss.maxHealth) * 100;
+        bossHealthBar.style.width = `${healthPercent}%`;
+        bossHealthText.textContent = `${window.boss.health}/${window.boss.maxHealth}`;
+        
+        // Cambiar color según la salud
+        if (healthPercent < 30) {
+          bossHealthBar.style.background = 'linear-gradient(to right, #ff0000, #ff3300)';
+        } else if (healthPercent < 60) {
+          bossHealthBar.style.background = 'linear-gradient(to right, #ff6600, #ff9900)';
+        } else {
+          bossHealthBar.style.background = 'linear-gradient(to right, #ff0000, #ff6600, #ffcc00)';
+        }
+      }
+    }
+
+    function checkCollision(obj1, obj2) {
+      return obj1.x < obj2.x + obj2.width &&
+             obj1.x + obj1.width > obj2.x &&
+             obj1.y < obj2.y + obj2.height &&
+             obj1.y + obj1.height > obj2.y;
+    }
+
+    function gameLoop() {
+      if (!window.gameState || !window.gameState.gameStarted) {
+        requestAnimationFrame(gameLoop);
+        return;
+      }
+      
+      update();
+      draw();
+      
+      // Continuar el bucle
+      requestAnimationFrame(gameLoop);
+    }
+
+    function update() {
+      // Actualizar amigos (animación flotante)
+      for (let friend of window.friends) {
+        friend.floating += 0.05;
+        friend.y += Math.sin(friend.floating) * 0.5 * friend.floatDir;
+      }
+      
+      // Actualizar enemigos (movimiento)
+      for (let enemy of window.enemies) {
+        // Mover enemigos de un lado a otro
+        enemy.x += enemy.speed * enemy.direction;
+        
+        // Cambiar dirección si llegan al límite de su rango
+        if (Math.abs(enemy.x - enemy.startX) > enemy.moveRange) {
+          enemy.direction *= -1;
         }
         
-        function crearAmigo(tipo, x, y) {
-            const amigo = k.add([
-                k.sprite(tipo),
-                k.pos(x, y),
-                k.area(),
-                k.body({ isStatic: true }),
-                "amigo",
-                { abrazado: false }
-            ]);
-            
-            // Animación de flotar
-            let floatDir = 1;
-            amigo.onUpdate(() => {
-                if (!amigo.abrazado) {
-                    amigo.pos.y += Math.sin(k.time() * 2) * 0.5 * floatDir;
-                }
-            });
-            
-            return amigo;
+        // Colisión con enemigos
+        if (checkCollision(window.oso, enemy) && !window.oso.hugging && window.oso.invincible <= 0) {
+          takeDamage(enemy.damage);
+        }
+      }
+      
+      // Actualizar posición del oso
+      updateOso();
+      
+      // Actualizar proyectiles
+      for (let i = window.projectiles.length - 1; i >= 0; i--) {
+        const proj = window.projectiles[i];
+        proj.x += proj.vx;
+        
+        // Eliminar proyectiles fuera de pantalla
+        if (proj.x < 0 || proj.x > 800) {
+          window.projectiles.splice(i, 1);
+          continue;
         }
         
-        function crearEnemigo(tipo, x, y) {
-            const enemigo = k.add([
-                k.sprite(tipo),
-                k.pos(x, y),
-                k.area(),
-                k.body(),
-                "enemigo",
-                {
-                    direccion: -1,
-                    velocidad: 50,
-                    rango: 100,
-                    posInicial: x
-                }
-            ]);
-            
-            // Movimiento de lado a lado
-            enemigo.onUpdate(() => {
-                enemigo.move(enemigo.velocidad * enemigo.direccion, 0);
-                
-                if (Math.abs(enemigo.pos.x - enemigo.posInicial) > enemigo.rango) {
-                    enemigo.direccion *= -1;
-                    enemigo.flipX = !enemigo.flipX;
-                }
-            });
-            
-            return enemigo;
-        }
-        
-        function crearCorazon(x, y) {
-            return k.add([
-                k.sprite("corazon"),
-                k.pos(x, y),
-                k.area(),
-                k.body({ isStatic: true }),
-                "corazon"
-            ]);
-        }
-        
-        function crearMiel(x, y) {
-            return k.add([
-                k.sprite("miel"),
-                k.pos(x, y),
-                k.area(),
-                k.body({ isStatic: true }),
-                "miel"
-            ]);
-        }
-        
-        function abrazar(oso) {
-            if (oso.abrazando) return;
-            
-            oso.abrazando = true;
-            oso.use(k.sprite("oso_abrazando"));
-            
-            // Verificar si está abrazando a un amigo
-            const amigos = k.get("amigo");
-            for (const amigo of amigos) {
-                if (oso.pos.dist(amigo.pos) < 80 && !amigo.abrazado) {
-                    amigo.abrazado = true;
-                    amigo.hidden = true;
-                    gameScore += 100;
-                    document.getElementById("score").textContent = gameScore;
-                    k.play("colectar");
-                    
-                    // Efecto de partículas
-                    for (let i = 0; i < 10; i++) {
-                        k.add([
-                            k.pos(amigo.pos),
-                            k.color(255, 215, 0),
-                            k.opacity(1),
-                            k.rotate(0),
-                            k.scale(1),
-                            k.lifespan(1),
-                            k.move(k.rand(-100, 100), k.rand(-100, 100)),
-                            k.circle(3)
-                        ]);
-                    }
-                }
+        // Comprobar colisión de proyectiles con enemigos
+        if (proj.type === 'unicorn') {
+          for (let j = window.enemies.length - 1; j >= 0; j--) {
+            const enemy = window.enemies[j];
+            if (Math.abs(proj.x - (enemy.x + enemy.width/2)) < proj.radius + enemy.width/2 &&
+                Math.abs(proj.y - (enemy.y + enemy.height/2)) < proj.radius + enemy.height/2) {
+              // Eliminar enemigo y proyectil
+              window.enemies.splice(j, 1);
+              window.projectiles.splice(i, 1);
+              window.gameState.score += 50;
+              createParticles(enemy.x + enemy.width/2, enemy.y + enemy.height/2, 15, '#FF69B4');
+              break;
             }
-            
-            // Volver a la normalidad después de un tiempo
-            k.wait(0.5, () => {
-                oso.abrazando = false;
-                oso.use(k.sprite("oso"));
-            });
+          }
         }
+      }
+      
+      // Actualizar partículas
+      for (let i = window.particles.length - 1; i >= 0; i--) {
+        const p = window.particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life--;
         
-        function dispararUnicornio(oso) {
-            if (unicornPower < 10) return;
-            
-            unicornPower -= 10;
-            
-            k.add([
-                k.pos(oso.pos.x + (oso.direccion * 30), oso.pos.y),
-                k.area(),
-                k.color(255, 105, 180),
-                k.move(oso.direccion * 300, 0),
-                k.circle(8),
-                "proyectil-unicornio",
-                k.lifespan(2)
-            ]);
-            
-            k.play("colectar");
+        if (p.life <= 0) {
+          window.particles.splice(i, 1);
         }
+      }
+      
+      // Comprobar condiciones de victoria/derrota
+      checkGameConditions();
+      
+      // Actualizar UI
+      updateUI();
+    }
+
+    function updateOso() {
+      // Aplicar gravedad
+      window.oso.vy += window.oso.gravity;
+      
+      // Movimiento horizontal
+      if (window.keys["ArrowLeft"] || window.keys["a"]) {
+        window.oso.vx = -window.oso.speed;
+        window.oso.direction = -1;
+      } else if (window.keys["ArrowRight"] || window.keys["d"]) {
+        window.oso.vx = window.oso.speed;
+        window.oso.direction = 1;
+      } else {
+        window.oso.vx *= 0.8; // Fricción
+      }
+      
+      // Saltar
+      if ((window.keys["ArrowUp"] || window.keys["w"]) && window.oso.grounded) {
+        window.oso.vy = -window.oso.jumpForce;
+        window.oso.grounded = false;
+        playSound("jump");
+      }
+      
+      // Abrazar
+      if (window.keys[" "] && window.oso.hugCooldown <= 0 && window.oso.grounded) {
+        window.oso.hugging = true;
+        window.oso.hugCooldown = 30;
+        playSound("hug");
         
-        function setupNivelJefe() {
-            // Implementaremos la escena del jefe después
-            k.go("nivel-1");
+        // Comprobar colisión con amigos
+        for (let friend of window.friends) {
+          if (!friend.hugged && checkCollision(window.oso, friend)) {
+            friend.hugged = true;
+            window.gameState.score += 100;
+            createParticles(friend.x + friend.width/2, friend.y + friend.height/2, 10, '#FF69B4');
+            playSound("collect");
+          }
         }
-        
-        // Colisiones
-        k.onCollide("jugador", "enemigo", (jugador, enemigo) => {
-            if (jugador.abrazando) {
-                // Si está abrazando, derrotar al enemigo
-                enemigo.destroy();
-                gameScore += 200;
-                document.getElementById("score").textContent = gameScore;
-                
-                // Efecto de partículas
-                for (let i = 0; i < 15; i++) {
-                    k.add([
-                        k.pos(enemigo.pos),
-                        k.color(255, 0, 0),
-                        k.opacity(1),
-                        k.rotate(0),
-                        k.scale(1),
-                        k.lifespan(1),
-                        k.move(k.rand(-150, 150), k.rand(-150, 150)),
-                        k.circle(4)
-                    ]);
-                }
-            } else {
-                // Si no está abrazando, recibir daño
-                jugador.hurt(1);
-                gameLives--;
-                document.getElementById("lives").textContent = "❤️".repeat(gameLives);
-                k.play("golpe");
-                
-                if (gameLives <= 0) {
-                    k.go("nivel-1");
-                    gameLives = 3;
-                    gameScore = 0;
-                    document.getElementById("lives").textContent = "❤️❤️❤️";
-                    document.getElementById("score").textContent = "0";
-                }
-            }
+      } else {
+        window.oso.hugging = false;
+        if (window.oso.hugCooldown > 0) window.oso.hugCooldown--;
+      }
+      
+      // Disparar con unicornio
+      if ((window.keys["z"] || window.keys["Z"]) && window.unicorn.active && window.unicorn.cooldown <= 0 && window.unicorn.power > 0) {
+        window.projectiles.push({
+          x: window.oso.x + window.oso.width/2,
+          y: window.oso.y + window.oso.height/2,
+          vx: window.oso.direction * 10,
+          vy: 0,
+          radius: 8,
+          type: 'unicorn',
+          damage: 1
         });
         
-        k.onCollide("jugador", "corazon", (jugador, corazon) => {
-            corazon.destroy();
-            gameHearts++;
-            document.getElementById("heartCount").textContent = gameHearts;
-            gameScore += 50;
-            document.getElementById("score").textContent = gameScore;
-            k.play("colectar");
-            
-            if (gameHearts >= 3 && !unicornActive) {
-                unicornActive = true;
-                gameHearts = 0;
-                document.getElementById("heartsCollected").style.display = "block";
-                jugador.use(k.sprite("oso_unicornio"));
-            }
-        });
+        window.unicorn.cooldown = 15;
+        window.unicorn.power -= 5;
         
-        k.onCollide("jugador", "miel", (jugador, miel) => {
-            miel.destroy();
-            gameScore += 30;
-            document.getElementById("score").textContent = gameScore;
-            k.play("colectar");
-        });
+        if (window.unicorn.power <= 0) {
+          window.unicorn.active = false;
+          window.oso.hasUnicorn = false;
+        }
         
-        k.onCollide("proyectil-unicornio", "enemigo", (proyectil, enemigo) => {
-            proyectil.destroy();
-            enemigo.destroy();
-            gameScore += 50;
-            document.getElementById("score").textContent = gameScore;
-            
-            // Efecto de partículas
-            for (let i = 0; i < 10; i++) {
-                k.add([
-                    k.pos(enemigo.pos),
-                    k.color(148, 0, 211),
-                    k.opacity(1),
-                    k.rotate(0),
-                    k.scale(1),
-                    k.lifespan(1),
-                    k.move(k.rand(-120, 120), k.rand(-120, 120)),
-                    k.circle(5)
-                ]);
-            }
+        playSound("enemy");
+      }
+      
+      if (window.unicorn.cooldown > 0) window.unicorn.cooldown--;
+      
+      // Actualizar posición
+      window.oso.x += window.oso.vx;
+      window.oso.y += window.oso.vy;
+      
+      // Limitar a los bordes de la pantalla
+      if (window.oso.x < 0) window.oso.x = 0;
+      if (window.oso.x > 800 - window.oso.width) window.oso.x = 800 - window.oso.width;
+      if (window.oso.y > 500) {
+        // Caer fuera de la pantalla
+        window.oso.y = 100;
+        window.oso.x = 100;
+        takeDamage(1);
+      }
+      
+      // Comprobar colisión con plataformas
+      window.oso.grounded = false;
+      for (let platform of window.platforms) {
+        if (window.oso.x + window.oso.width > platform.x && 
+            window.oso.x < platform.x + platform.width &&
+            window.oso.y + window.oso.height > platform.y && 
+            window.oso.y + window.oso.height < platform.y + 10) {
+          window.oso.y = platform.y - window.oso.height;
+          window.oso.vy = 0;
+          window.oso.grounded = true;
+        }
+      }
+      
+      // Comprobar colisión con enemigos
+      if (window.oso.invincible <= 0) {
+        for (let enemy of window.enemies) {
+          if (checkCollision(window.oso, enemy)) {
+            takeDamage(enemy.damage);
+            window.oso.invincible = 60; // 1 segundo de invencibilidad
+          }
+        }
+      } else {
+        window.oso.invincible--;
+      }
+      
+      // Comprobar colisión con corazones
+      for (let heart of window.hearts) {
+        if (!heart.collected && checkCollision(window.oso, heart)) {
+          heart.collected = true;
+          window.gameState.heartsCollected++;
+          window.gameState.score += 50;
+          createParticles(heart.x + heart.width/2, heart.y + heart.height/2, 15, '#FF69B4');
+          playSound("collect");
+          
+          // Si se recolectan 3 corazones, activar unicornio
+          if (window.gameState.heartsCollected >= 3 && !window.unicorn.active) {
+            window.unicorn.active = true;
+            window.oso.hasUnicorn = true;
+            window.unicorn.power = 100;
+            const unicornPowerElement = document.getElementById('unicornPower');
+            if (unicornPowerElement) unicornPowerElement.style.display = 'block';
+            showHint("¡Unicornio de la Amistad activado! Presiona Z para disparar rayos de amistad.", 5000);
+          }
+        }
+      }
+      
+      // Comprobar colisión con items (miel)
+      for (let item of window.items) {
+        if (!item.collected && checkCollision(window.oso, item)) {
+          item.collected = true;
+          window.gameState.score += 30;
+          createParticles(item.x + item.width/2, item.y + item.height/2, 8, '#FF9800');
+          playSound("powerup");
+        }
+      }
+    }
+
+    function draw() {
+      const ctx = window.gameCtx;
+      const canvas = document.getElementById('gameCanvas');
+      
+      if (!ctx || !canvas) {
+        console.error("❌ Canvas no encontrado");
+        return;
+      }
+      
+      // Limpiar canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Dibujar fondo según el nivel
+      const bgImage = sprites[`background_${window.gameState.currentLevel.replace('-', '_')}`];
+      if (bgImage && bgImage.complete) {
+        ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
+      } else {
+        // Fondo por defecto si la imagen no está cargada
+        const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        gradient.addColorStop(0, "#87CEEB");
+        gradient.addColorStop(1, "#E0F7FA");
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+      
+      // Dibujar plataformas
+      for (let platform of window.platforms) {
+        ctx.fillStyle = '#8D6E63';
+        ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
+        ctx.fillStyle = '#5D4037';
+        ctx.fillRect(platform.x, platform.y, platform.width, 5);
+      }
+      
+      // Dibujar items (miel)
+      for (let item of window.items) {
+        if (!item.collected) {
+          if (sprites.honey && sprites.honey.complete) {
+            ctx.drawImage(sprites.honey, item.x, item.y, item.width, item.height);
+          } else {
+            ctx.fillStyle = '#FFB300';
+            ctx.beginPath();
+            ctx.arc(item.x + item.width/2, item.y + item.height/2, item.width/2, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+      }
+      
+      // Dibujar amigos
+      for (let friend of window.friends) {
+        if (!friend.hugged && friend.sprite && friend.sprite.complete) {
+          ctx.drawImage(friend.sprite, friend.x, friend.y, friend.width, friend.height);
+        }
+      }
+      
+      // Dibujar enemigos (SIEMPRE mirando hacia la izquierda)
+      for (let enemy of window.enemies) {
+        if (enemy.sprite && enemy.sprite.complete) {
+          // Enemigos siempre mirando hacia la izquierda (hacia el oso)
+          ctx.save();
+          ctx.scale(-1, 1);
+          ctx.drawImage(enemy.sprite, -enemy.x - enemy.width, enemy.y, enemy.width, enemy.height);
+          ctx.restore();
+        } else {
+          // Placeholder si el sprite no está cargado
+          ctx.fillStyle = '#F44336';
+          ctx.beginPath();
+          ctx.arc(enemy.x + enemy.width/2, enemy.y + enemy.height/2, enemy.width/2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+      
+      // Dibujar corazones
+      for (let heart of window.hearts) {
+        if (!heart.collected) {
+          if (sprites.heart && sprites.heart.complete) {
+            ctx.drawImage(sprites.heart, heart.x, heart.y, heart.width, heart.height);
+          } else {
+            ctx.fillStyle = '#FF69B4';
+            ctx.beginPath();
+            ctx.moveTo(heart.x + heart.width/2, heart.y);
+            ctx.bezierCurveTo(
+              heart.x + heart.width, heart.y,
+              heart.x + heart.width, heart.y + heart.height,
+              heart.x + heart.width/2, heart.y + heart.height
+            );
+            ctx.bezierCurveTo(
+              heart.x, heart.y + heart.height,
+              heart.x, heart.y,
+              heart.x + heart.width/2, heart.y
+            );
+            ctx.fill();
+          }
+        }
+      }
+      
+      // Dibujar proyectiles
+      for (let proj of window.projectiles) {
+        if (proj.type === 'unicorn') {
+          ctx.fillStyle = '#9370DB';
+          ctx.beginPath();
+          ctx.arc(proj.x, proj.y, proj.radius, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+      
+      // Dibujar partículas
+      for (let particle of window.particles) {
+        ctx.globalAlpha = particle.life / particle.maxLife;
+        ctx.fillStyle = particle.color;
+        ctx.beginPath();
+        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      
+      // Dibujar jefe si está activo
+      if (window.gameState.bossFight) {
+        if (sprites.boss && sprites.boss.complete) {
+          // Jefe siempre mirando hacia la izquierda (hacia el oso)
+          ctx.save();
+          ctx.scale(-1, 1);
+          ctx.drawImage(sprites.boss, -window.boss.x - window.boss.width, window.boss.y, window.boss.width, window.boss.height);
+          ctx.restore();
+        } else {
+          ctx.fillStyle = window.boss.enraged ? '#FF0000' : '#808080';
+          ctx.fillRect(window.boss.x, window.boss.y, window.boss.width, window.boss.height);
+        }
+        
+        // Dibujar bolas de fuego del jefe
+        for (let fireball of window.boss.fireballs) {
+          if (sprites.fire && sprites.fire.complete) {
+            ctx.drawImage(sprites.fire, fireball.x - fireball.radius, fireball.y - fireball.radius, fireball.radius * 2, fireball.radius * 2);
+          } else {
+            ctx.fillStyle = '#FF4500';
+            ctx.beginPath();
+            ctx.arc(fireball.x, fireball.y, fireball.radius, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+      }
+      
+      // Dibujar oso - CON UNICORNIO si está activo
+      if (window.oso.hasUnicorn && sprites.osoyuni && sprites.osoyuni.complete) {
+        // Usar imagen de oso con unicornio
+        ctx.save();
+        if (window.oso.direction === -1) {
+          ctx.scale(-1, 1);
+          ctx.drawImage(sprites.osoyuni, -window.oso.x - window.oso.width, window.oso.y, window.oso.width, window.oso.height);
+        } else {
+          ctx.drawImage(sprites.osoyuni, window.oso.x, window.oso.y, window.oso.width, window.oso.height);
+        }
+        ctx.restore();
+      } else {
+        // Dibujar oso normal
+        let osoSprite = sprites.idle;
+        
+        if (window.oso.hugging) {
+          osoSprite = sprites.hug;
+        } else if (!window.oso.grounded) {
+          osoSprite = sprites.jump;
+        } else if (Math.abs(window.oso.vx) > 0) {
+          osoSprite = window.oso.vx > window.oso.speed * 0.7 ? sprites.run : sprites.walk;
+        }
+        
+        if (osoSprite && osoSprite.complete) {
+          // Voltear sprite según la dirección
+          ctx.save();
+          if (window.oso.direction === -1) {
+            ctx.scale(-1, 1);
+            ctx.drawImage(osoSprite, -window.oso.x - window.oso.width, window.oso.y, window.oso.width, window.oso.height);
+          } else {
+            ctx.drawImage(osoSprite, window.oso.x, window.oso.y, window.oso.width, window.oso.height);
+          }
+          ctx.restore();
+        } else {
+          // Dibujar placeholder si el sprite no está cargado
+          ctx.fillStyle = '#8B4513';
+          ctx.fillRect(window.oso.x, window.oso.y, window.oso.width, window.oso.height);
+        }
+      }
+      
+      // Efecto de abrazo
+      if (window.oso.hugging) {
+        ctx.strokeStyle = "#FFD700";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(window.oso.x + window.oso.width/2, window.oso.y + window.oso.height/2, 60, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+    }
+
+    function takeDamage(amount) {
+      if (window.oso.invincible > 0) return;
+      
+      window.gameState.lives -= amount;
+      playSound("hurt");
+      
+      if (window.gameState.lives <= 0) {
+        window.gameState.lives = 0;
+        gameOver();
+      }
+      
+      // Efecto de parpadeo al recibir daño
+      window.oso.invincible = 60;
+    }
+
+    function createParticles(x, y, count, color) {
+      for (let i = 0; i < count; i++) {
+        window.particles.push({
+          x: x,
+          y: y,
+          vx: (Math.random() - 0.5) * 5,
+          vy: (Math.random() - 0.5) * 5,
+          size: Math.random() * 5 + 2,
+          color: color,
+          life: 30,
+          maxLife: 30
         });
-    </script>
+      }
+    }
+
+    function updateUI() {
+      // Actualizar puntuación
+      const scoreElement = document.getElementById('score');
+      if (scoreElement) {
+        scoreElement.textContent = window.gameState.score;
+      }
+      
+      // Actualizar vidas
+      const livesElement = document.getElementById('lives');
+      if (livesElement) {
+        let livesText = '';
+        for (let i = 0; i < window.gameState.lives; i++) {
+          livesText += '❤️';
+        }
+        livesElement.textContent = livesText;
+      }
+      
+      // Actualizar nivel
+      const levelElement = document.getElementById('level');
+      if (levelElement) {
+        levelElement.textContent = window.gameState.currentLevel;
+      }
+      
+      // Actualizar poder del unicornio
+      const unicornPowerLevelElement = document.getElementById('unicornPowerLevel');
+      if (unicornPowerLevelElement) {
+        unicornPowerLevelElement.style.width = `${window.unicorn.power}%`;
+      }
+      
+      // Actualizar corazones recolectados
+      const heartCountElement = document.getElementById('heartCount');
+      if (heartCountElement) {
+        heartCountElement.textContent = window.gameState.heartsCollected;
+      }
+    }
+
+    function checkGameConditions() {
+      // Comprobar victoria en nivel normal
+      if (!window.gameState.bossFight) {
+        const allFriendsHugged = window.friends.every(friend => friend.hugged);
+        if (allFriendsHugged && window.friends.length > 0) {
+          levelComplete();
+        }
+      }
+      
+      // Comprobar victoria en jefe
+      if (window.gameState.bossFight && window.boss.health <= 0) {
+        victory();
+      }
+    }
+
+    function levelComplete() {
+      console.log("✅ Nivel completado");
+      window.gameState.gameStarted = false;
+      
+      // Mostrar mensaje de nivel completado
+      showHint("¡Nivel completado! Próximo nivel...", 3000);
+      
+      // Avanzar al siguiente nivel después de un breve retraso
+      setTimeout(() => {
+        const nextLevelKey = getNextLevel(window.gameState.currentLevel);
+        if (nextLevelKey) {
+          setupLevel(nextLevelKey);
+          window.gameState.gameStarted = true;
+        } else {
+          // No hay más niveles, reiniciar juego
+          startGame();
+        }
+      }, 3000);
+    }
+
+    function victory() {
+      console.log("🎉 ¡Victoria!");
+      window.gameState.gameStarted = false;
+      
+      const victoryScreen = document.getElementById('victoryScreen');
+      const finalScore = document.getElementById('finalScore');
+      const finalHearts = document.getElementById('finalHearts');
+      
+      if (victoryScreen) victoryScreen.style.display = 'flex';
+      if (finalScore) finalScore.textContent = window.gameState.score;
+      if (finalHearts) finalHearts.textContent = window.gameState.heartsCollected;
+      
+      // Reproducir sonido de victoria
+      playSound("collect");
+    }
+
+    function gameOver() {
+      console.log("💀 Game Over");
+      window.gameState.gameStarted = false;
+      
+      showHint("¡Game Over! Presiona F5 para reintentar.", 5000);
+    }
+
+    function getNextLevel(currentLevel) {
+      const levelKeys = Object.keys(window.LEVELS);
+      const currentIndex = levelKeys.indexOf(currentLevel);
+      
+      if (currentIndex < levelKeys.length - 1) {
+        return levelKeys[currentIndex + 1];
+      }
+      
+      return null; // No hay más niveles
+    }
+  </script>
 </body>
 </html>
