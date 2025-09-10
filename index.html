@@ -1109,7 +1109,7 @@
 
     // ... (el resto del código permanece igual)
 
-    function update() {
+   function update() {
       // Actualizar amigos (animación flotante)
       for (let friend of window.friends) {
         friend.floating += 0.05;
@@ -1150,15 +1150,6 @@
       if (window.gameState.bossFight) {
         updateBoss();
       }
-      
-      // Actualizar posición del oso
-      updateOso();
-      
-      // ... (el resto del código de update permanece igual)
-    }
-
-    // ... (el resto del código permanece igual)
-</script>
       
       // Actualizar posición del oso
       updateOso();
@@ -1250,6 +1241,7 @@
       
       // Actualizar UI
       updateUI();
+    
     }
 
     function updateBoss() {
