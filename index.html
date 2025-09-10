@@ -1025,7 +1025,7 @@
         });
       }
       
-      // Configurar enemigos - MEJORADO: Ahora se distribuyen mejor
+      // Configurar enemigos - MEJORADO: Movimiento más lento y siempre hacia adelante
       window.enemies = [];
       for (let i = 0; i < level.enemies; i++) {
         const enemyType = i % 3;
@@ -1043,21 +1043,19 @@
             break;
         }
         
-        // Distribuir enemigos por toda la pantalla, no solo en el lado derecho
-        const areaWidth = 600; // Área donde pueden aparecer enemigos
-        const segmentWidth = areaWidth / level.enemies;
-        const baseX = 100 + (i * segmentWidth) + (Math.random() * segmentWidth * 0.7);
+        // Distribuir enemigos en el lado derecho de la pantalla
+        const baseX = 500 + (i * 150); // Siempre en el lado derecho
         
         window.enemies.push({
-          x: Math.min(700, Math.max(100, baseX)), // Limitar para que no salgan de pantalla
+          x: Math.min(700, Math.max(400, baseX)), // Limitar para que no salgan de pantalla
           y: 380,
           width: 60,
           height: 60,
           sprite: sprite,
-          direction: Math.random() > 0.5 ? 1 : -1, // Dirección aleatoria
-          speed: 2 + Math.random() * 1, // Velocidad variada
+          direction: -1, // SIEMPRE hacia la izquierda (hacia el oso)
+          speed: 1 + Math.random() * 0.5, // Velocidad más lenta (1 a 1.5)
           damage: 1,
-          moveRange: 150 + Math.random() * 100, // Rango de movimiento variado
+          moveRange: 100 + Math.random() * 50, // Rango de movimiento variado
           startX: baseX // Posición inicial
         });
       }
@@ -1094,7 +1092,7 @@
       window.oso.grounded = false;
       window.oso.hugging = false;
       window.oso.hasUnicorn = false;
-      window.oso.invincible = 60; // 🔥 NUEVO: Inmunidad inicial para evitar daño al empezar
+      window.oso.invincible = 60; // 🔥 Inmunidad inicial para evitar daño al empezar
       
       // Configurar unicornio
       window.unicorn.active = false;
@@ -1214,25 +1212,30 @@
         friend.y += Math.sin(friend.floating) * 0.5 * friend.floatDir;
       }
       
-      // Actualizar enemigos (movimiento) - MEJORADO: Movimiento más natural
+      // Actualizar enemigos (movimiento) - MEJORADO: Movimiento más lento y siempre hacia adelante
       for (let enemy of window.enemies) {
-        // Mover enemigos de un lado a otro
+        // Mover enemigos siempre hacia la izquierda (hacia el oso)
         enemy.x += enemy.speed * enemy.direction;
         
-        // Cambiar dirección si llegan al límite de su rango
-        if (Math.abs(enemy.x - enemy.startX) > enemy.moveRange) {
-          enemy.direction *= -1;
-          enemy.startX = enemy.x; // 🔥 NUEVO: Actualizar punto de referencia
+        // Cambiar dirección si llegan al límite de su rango (solo si no es jefe)
+        if (!window.gameState.bossFight) {
+          if (Math.abs(enemy.x - enemy.startX) > enemy.moveRange) {
+            // Enemigos normales solo se mueven hacia la izquierda, pero si llegan al límite
+            // rebotan ligeramente pero mantienen dirección general hacia la izquierda
+            enemy.direction *= -0.5; // Rebote suave
+            setTimeout(() => {
+              enemy.direction = -1; // Volver a moverse hacia la izquierda después de un breve momento
+            }, 500);
+          }
         }
         
         // Limitar a los bordes de la pantalla
         if (enemy.x < 50) {
           enemy.x = 50;
-          enemy.direction = 1;
-        }
-        if (enemy.x > 750 - enemy.width) {
-          enemy.x = 750 - enemy.width;
-          enemy.direction = -1;
+          enemy.direction = 0.5; // Rebote suave
+          setTimeout(() => {
+            enemy.direction = -1; // Volver a moverse hacia la izquierda
+          }, 500);
         }
         
         // Colisión con enemigos - MEJORADO: Solo si el oso no es invencible
