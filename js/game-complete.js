@@ -1,8 +1,14 @@
 /* ============================================================
-   Oso Abrazos - game-complete.js (versión corregida)
+   Oso Abrazos - game-complete.js (versión corregida e integrada)
    ============================================================ */
 
+// Esta versión está diseñada para integrarse con el juego principal
+// y soluciona los problemas de movimiento de enemigos y sistema de vidas
+
 (function () {
+  // Solo ejecutar si el canvas existe
+  if (!document.getElementById("gameCanvas")) return;
+  
   const canvas = document.getElementById("gameCanvas");
   const ctx = canvas.getContext("2d");
 
@@ -12,127 +18,14 @@
   const GAME_WIDTH = canvas.width;
   const GAME_HEIGHT = canvas.height;
 
-  let currentLevel = 1;
-  let score = 0;
-  let lives = 3;
+  // Integración con el juego principal
+  let currentLevel = window.gameState ? window.gameState.currentLevel : "1-1";
+  let score = window.gameState ? window.gameState.score : 0;
+  let lives = window.gameState ? window.gameState.lives : 3;
   let isGameOver = false;
 
   // ========================
-  // Assets (Imágenes)
-  // ========================
-  const IMAGES = {
-    amigos: {
-      fondoBosque: "img/Amigos/Fondobosque.jpg",
-      ardilla: "img/Amigos/ardilla.png",
-      conejo: "img/Amigos/conejo.png",
-      lovepower: "img/Amigos/lovepower.png",
-      miel: "img/Amigos/miel.png",
-      osoyuni: "img/Amigos/osoyuni.png",
-      pajarito: "img/Amigos/pajarito.png",
-      unir4patas: "img/Amigos/unien4patas.png",
-      unirshup: "img/Amigos/unirshup.png",
-      unirun: "img/Amigos/unirun.png",
-    },
-    enemigos: {
-      enemigo1: "img/enemigos/Enemigos-01.svg",
-      enemigo2: "img/enemigos/Enemigos-02.svg",
-      enemigo3: "img/enemigos/Enemigos-03.svg",
-      enemigo3png: "img/enemigos/Enemigos-03.svg.png",
-      fire: "img/enemigos/fire.png",
-      lobo: "img/enemigos/lobo.svg",
-      loboFeroz: "img/enemigos/loboferoz.png",
-      loboTriste: "img/enemigos/lobotriste.png",
-    },
-    fondos: {
-      final: "img/fondos/background final.jpeg",
-      b1_1: "img/fondos/background_1_1.jpeg",
-      b1_2: "img/fondos/background_1_2.jpeg",
-      b1_3: "img/fondos/background_1_3.jpeg",
-      b2_1: "img/fondos/background_2_1.jpeg",
-      b2_2: "img/fondos/background_2_2.jpeg",
-      b2_3: "img/fondos/background_2_3.jpeg",
-      bosque1: "img/fondos/bosque1.jpg",
-      bosque2: "img/fondos/bosque2.jpg",
-      bosque3: "img/fondos/bosque3.jpg",
-      bosque4: "img/fondos/bosque4.jpg",
-    },
-    oso: {
-      hang: "img/oso/oso_hang.svg",
-      hug: "img/oso/oso_hug.svg",
-      idle: "img/oso/oso_idle.svg",
-      portada: "img/oso/oso_portada.png",
-      sit: "img/oso/oso_sit.svg",
-      walk: "img/oso/oso_walk.svg",
-    },
-  };
-
-  // ========================
-  // Assets (Sonidos)
-  // ========================
-  const SOUNDS = {
-    background: "sounds/background.mp3.mp3",
-    collect: "sounds/collect.mp3.mp3",
-    enemy: "sounds/enemy.mp3.mp3",
-    hug: "sounds/hug.mp3.mp3",
-    hurt: "sounds/hurt.mp3.mp3",
-    intro: "sounds/intro.mp3",
-    jump: "sounds/jump.mp3.mp3",
-    batalla: "sounds/para la batalla.mp3",
-    powerup: "sounds/powerup.mp3.mp3",
-    shot: "sounds/shot.mp3.mp3",
-  };
-
-  // ========================
-  // Precarga de recursos
-  // ========================
-  const loadedImages = {};
-  const loadedSounds = {};
-
-  function loadImage(name, src) {
-    return new Promise((resolve) => {
-      const img = new Image();
-      img.onload = () => resolve((loadedImages[name] = img));
-      img.onerror = () => {
-        console.warn("No se pudo cargar imagen:", src);
-        resolve((loadedImages[name] = null));
-      };
-      img.src = src;
-    });
-  }
-
-  function loadSound(name, src) {
-    return new Promise((resolve) => {
-      const audio = new Audio();
-      audio.oncanplaythrough = () => resolve((loadedSounds[name] = audio));
-      audio.onerror = () => {
-        console.warn("No se pudo cargar sonido:", src);
-        resolve((loadedSounds[name] = null));
-      };
-      audio.src = src;
-    });
-  }
-
-  async function preloadAssets() {
-    const promises = [];
-
-    // Imágenes
-    for (const group in IMAGES) {
-      for (const key in IMAGES[group]) {
-        promises.push(loadImage(`${group}_${key}`, IMAGES[group][key]));
-      }
-    }
-
-    // Sonidos
-    for (const key in SOUNDS) {
-      promises.push(loadSound(key, SOUNDS[key]));
-    }
-
-    await Promise.all(promises);
-    console.info("Todos los assets precargados");
-  }
-
-  // ========================
-  // Entidades del juego
+  // Clases mejoradas para integración
   // ========================
   class Player {
     constructor() {
@@ -144,7 +37,8 @@
       this.gravity = 0.6;
       this.jumpPower = -12;
       this.grounded = true;
-      this.sprite = loadedImages["oso_idle"];
+      this.sprite = window.sprites ? window.sprites.idle : null;
+      this.invincible = 0; // Para evitar daño inicial
     }
 
     update() {
@@ -156,43 +50,94 @@
         this.speedY = 0;
         this.grounded = true;
       }
+      
+      // Reducir tiempo de invencibilidad
+      if (this.invincible > 0) this.invincible--;
     }
 
     jump() {
       if (this.grounded) {
         this.speedY = this.jumpPower;
         this.grounded = false;
-        if (loadedSounds.jump) loadedSounds.jump.play();
+        if (window.playSound) window.playSound("jump");
       }
     }
 
     draw() {
-      if (this.sprite) {
+      if (this.sprite && this.sprite.complete) {
         ctx.drawImage(this.sprite, this.x, this.y, this.width, this.height);
       } else {
-        ctx.fillStyle = "red";
+        ctx.fillStyle = "brown";
         ctx.fillRect(this.x, this.y, this.width, this.height);
+      }
+      
+      // Efecto de invencibilidad (parpadeo)
+      if (this.invincible > 0 && this.invincible % 10 < 5) {
+        ctx.globalAlpha = 0.5;
+        ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+        ctx.globalAlpha = 1;
       }
     }
   }
 
   class Enemy {
-    constructor(x, y, sprite) {
+    constructor(x, y, type = 0) {
       this.x = x;
       this.y = y;
       this.width = 50;
       this.height = 50;
-      this.speedX = -3;
-      this.sprite = sprite;
+      this.speedX = (Math.random() > 0.5 ? 1 : -1) * (2 + Math.random() * 2); // Velocidad y dirección aleatoria
+      this.type = type;
+      
+      // Asignar sprite según tipo
+      if (window.sprites) {
+        switch(type) {
+          case 0: this.sprite = window.sprites.enemy1; break;
+          case 1: this.sprite = window.sprites.enemy2; break;
+          case 2: this.sprite = window.sprites.enemy3; break;
+          default: this.sprite = window.sprites.enemy1;
+        }
+      } else {
+        this.sprite = null;
+      }
+      
+      this.moveRange = 150 + Math.random() * 100; // Rango de movimiento variado
+      this.startX = x; // Punto de referencia para el movimiento
     }
 
     update() {
+      // Movimiento lateral completo
       this.x += this.speedX;
+      
+      // Cambiar dirección si supera el rango de movimiento
+      if (Math.abs(this.x - this.startX) > this.moveRange) {
+        this.speedX *= -1;
+        this.startX = this.x; // Actualizar punto de referencia
+      }
+      
+      // Mantener dentro de los límites de la pantalla
+      if (this.x < 20) {
+        this.x = 20;
+        this.speedX *= -1;
+      }
+      if (this.x > GAME_WIDTH - this.width - 20) {
+        this.x = GAME_WIDTH - this.width - 20;
+        this.speedX *= -1;
+      }
     }
 
     draw() {
-      if (this.sprite) {
-        ctx.drawImage(this.sprite, this.x, this.y, this.width, this.height);
+      if (this.sprite && this.sprite.complete) {
+        // Voltear sprite según dirección
+        ctx.save();
+        if (this.speedX < 0) {
+          ctx.scale(-1, 1);
+          ctx.drawImage(this.sprite, -this.x - this.width, this.y, this.width, this.height);
+        } else {
+          ctx.drawImage(this.sprite, this.x, this.y, this.width, this.height);
+        }
+        ctx.restore();
       } else {
         ctx.fillStyle = "purple";
         ctx.fillRect(this.x, this.y, this.width, this.height);
@@ -201,94 +146,113 @@
   }
 
   // ========================
-  // Lógica de juego
+  // Integración con el juego principal
   // ========================
   const player = new Player();
-  const enemies = [];
+  let enemies = [];
 
   function spawnEnemy() {
+    const type = Math.floor(Math.random() * 3);
     const y = GAME_HEIGHT - 70;
-    const sprite = loadedImages["enemigos_enemigo1"];
-    enemies.push(new Enemy(GAME_WIDTH, y, sprite));
+    const x = 100 + Math.random() * (GAME_WIDTH - 200); // Posición aleatoria
+    enemies.push(new Enemy(x, y, type));
   }
 
-  function update() {
+  function updateGame() {
     if (isGameOver) return;
+    
     player.update();
-    enemies.forEach((e) => e.update());
+    enemies.forEach(e => e.update());
 
-    // Colisiones
-    enemies.forEach((e) => {
-      if (
-        player.x < e.x + e.width &&
-        player.x + player.width > e.x &&
-        player.y < e.y + e.height &&
-        player.height + player.y > e.y
-      ) {
-        lives--;
-        if (loadedSounds.hurt) loadedSounds.hurt.play();
-        if (lives <= 0) {
-          isGameOver = true;
+    // Detectar colisiones solo si el jugador no es invencible
+    if (player.invincible <= 0) {
+      for (let i = enemies.length - 1; i >= 0; i--) {
+        const e = enemies[i];
+        if (
+          player.x < e.x + e.width &&
+          player.x + player.width > e.x &&
+          player.y < e.y + e.height &&
+          player.height + player.y > e.y
+        ) {
+          // Reducir vidas y hacer invencible temporalmente
+          if (window.gameState) window.gameState.lives--;
+          if (window.playSound) window.playSound("hurt");
+          player.invincible = 120; // 2 segundos de invencibilidad
+          
+          if (window.gameState && window.gameState.lives <= 0) {
+            isGameOver = true;
+            if (window.gameOver) window.gameOver();
+          }
+          break;
         }
       }
-    });
+    }
   }
 
-  function draw() {
-    ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
-
-    // Fondo
-    if (loadedImages["fondos_bosque1"]) {
-      ctx.drawImage(
-        loadedImages["fondos_bosque1"],
-        0,
-        0,
-        GAME_WIDTH,
-        GAME_HEIGHT
-      );
-    } else {
-      ctx.fillStyle = "#88c070";
-      ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
-    }
-
-    // Player y enemigos
+  function drawGame() {
+    // Esta función se integra con el bucle principal del juego
     player.draw();
-    enemies.forEach((e) => e.draw());
-
-    // UI
-    ctx.fillStyle = "#fff";
-    ctx.font = "18px Arial";
-    ctx.fillText("Puntos: " + score, 20, 30);
-    ctx.fillText("Vidas: " + lives, 20, 55);
+    enemies.forEach(e => e.draw());
   }
 
-  function gameLoop() {
-    update();
-    draw();
-    if (!isGameOver) {
-      requestAnimationFrame(gameLoop);
-    } else {
-      ctx.fillStyle = "#fff";
-      ctx.font = "40px Arial";
-      ctx.fillText("GAME OVER", GAME_WIDTH / 2 - 100, GAME_HEIGHT / 2);
+  function clearEnemies() {
+    enemies = [];
+  }
+
+  // ========================
+  // Integración con controles existentes
+  // ========================
+  function initIntegratedGame() {
+    console.log("✅ Juego integrado inicializado");
+    
+    // Limpiar enemigos existentes
+    clearEnemies();
+    
+    // Generar enemigos iniciales según el nivel
+    const enemyCount = currentLevel === "2-3" ? 0 : 3 + (parseInt(currentLevel[0]) * 2);
+    for (let i = 0; i < enemyCount; i++) {
+      spawnEnemy();
+    }
+    
+    // Configurar invencibilidad inicial
+    player.invincible = 120;
+    
+    // Integrar con el bucle principal del juego
+    if (window.integratedUpdate) {
+      window.originalUpdate = window.update;
+      window.update = function() {
+        window.originalUpdate();
+        updateGame();
+      };
+      
+      window.originalDraw = window.draw;
+      window.draw = function() {
+        window.originalDraw();
+        drawGame();
+      };
     }
   }
 
   // ========================
-  // Input
+  // Inicialización cuando el juego principal esté listo
   // ========================
-  window.addEventListener("keydown", (e) => {
-    if (e.code === "Space") {
-      player.jump();
-    }
-  });
+  if (window.gameState) {
+    // El juego principal ya está cargado
+    initIntegratedGame();
+  } else {
+    // Esperar a que el juego principal se cargue
+    const checkGameReady = setInterval(() => {
+      if (window.gameState && window.update && window.draw) {
+        clearInterval(checkGameReady);
+        initIntegratedGame();
+      }
+    }, 100);
+  }
 
-  // ========================
-  // Inicio del juego
-  // ========================
-  (async function init() {
-    await preloadAssets();
-    setInterval(spawnEnemy, 2500);
-    gameLoop();
-  })();
+  // Hacer funciones disponibles globalmente para integración
+  window.integratedUpdate = updateGame;
+  window.integratedDraw = drawGame;
+  window.spawnEnemy = spawnEnemy;
+  window.clearEnemies = clearEnemies;
+
 })();
