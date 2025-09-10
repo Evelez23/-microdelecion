@@ -477,7 +477,7 @@
           <div class="storybook-images">
             <img id="storyEnemy1" alt="Enemigo 1">
             <img id="storyEnemy2" alt="Enemigo 2">
-            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBmaWxsPSIjRkYxNDkzIiBkPSJNMzY1LjQgMjQ1LjljNDIuNi0zNy40IDQ1LjEtOTkuMiA1LjgtMTM4LjRzLTg3LjctNDUuNi0xMjcuOC0xMC4ybC0zMi4zIDI4LjctMzIuMy0yOC43Yy00MC4xLTM1LjQtMTAzLjQtMjAuNC0xMjcuOCAxMC4ycy0zNi44IDEwMSA1LjggMTM4LjRsMTc2LjEgMTU2LjFjNC40IDMuOSAxMC44IDMuOSAxNS4yIDBsMTc2LjEtMTU2LjF6Ii8+PC9zdmc+" alt="Corazón">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBmaWxsPSIjRkYxNDkzIiBkPSJNMzY1LjQgMjQ1LjljNDIuNi0zNy40IDQ1LjEtOTkuMyA1LjgtMTM4LjVzLTg3LjctNDUuNi0xMjcuOC0xMC4ybC0zMi4zIDI4LjctMzIuMy0yOC43Yy00MC4xLTM1LjQtMTAzLjQtMjAuNC0xMjcuOCAxMC4ycy0zNi44IDEwMSA1LjggMTM4LjRsMTc2LjEgMTU2LjFjNC40IDMuOSAxMC44IDMuOSAxNS4yIDBsMTc2LjEtMTU2LjF6Ii8+PC9zdmc+" alt="Corazón">
             <img id="storyUnicorn" alt="Unicornio">
           </div>
           
@@ -654,7 +654,7 @@
         maxHealth: 5,
         enraged: false,
         phase: 1,
-        attackCooldown: 0,
+        attackCooldown: 100,
         warningTimer: 0,
         fireballs: []
       };
@@ -1056,7 +1056,8 @@
           speed: 1 + Math.random() * 0.5, // Velocidad más lenta (1 a 1.5)
           damage: 1,
           moveRange: 100 + Math.random() * 50, // Rango de movimiento variado
-          startX: baseX // Posición inicial
+          startX: baseX, // Posición inicial
+          moveCooldown: 0 // Para controlar cambios de dirección
         });
       }
       
@@ -1136,6 +1137,18 @@
       window.boss.warningTimer = 0;
       window.boss.fireballs = [];
       
+      // Añadir corazones para poder invocar al unicornio
+      window.hearts = [];
+      for (let i = 0; i < 3; i++) {
+        window.hearts.push({
+          x: 250 + i * 200,
+          y: 300,
+          width: 30,
+          height: 30,
+          collected: false
+        });
+      }
+      
       // Configurar posición del oso (SIEMPRE en el lado izquierdo)
       window.oso.x = 100;
       window.oso.y = 380;
@@ -1154,7 +1167,6 @@
       window.friends = [];
       window.enemies = [];
       window.items = [];
-      window.hearts = [];
       window.projectiles = [];
       window.particles = [];
       
@@ -1162,7 +1174,7 @@
       updateBossHealth();
       
       // Mostrar indicación
-      showHint("¡Cuidado! El lobo lanzará bolas de fuego. Usa el poder del unicornio para atacar.", 5000);
+      showHint("¡Recolecta los corazones para invocar al unicornio y derrotar al lobo!", 5000);
     }
 
     function updateBossHealth() {
@@ -1214,34 +1226,36 @@
       
       // Actualizar enemigos (movimiento) - MEJORADO: Movimiento más lento y siempre hacia adelante
       for (let enemy of window.enemies) {
-        // Mover enemigos siempre hacia la izquierda (hacia el oso)
-        enemy.x += enemy.speed * enemy.direction;
-        
-        // Cambiar dirección si llegan al límite de su rango (solo si no es jefe)
-        if (!window.gameState.bossFight) {
-          if (Math.abs(enemy.x - enemy.startX) > enemy.moveRange) {
-            // Enemigos normales solo se mueven hacia la izquierda, pero si llegan al límite
-            // rebotan ligeramente pero mantienen dirección general hacia la izquierda
-            enemy.direction *= -0.5; // Rebote suave
-            setTimeout(() => {
-              enemy.direction = -1; // Volver a moverse hacia la izquierda después de un breve momento
-            }, 500);
-          }
+        // Reducir cooldown de movimiento si es necesario
+        if (enemy.moveCooldown > 0) {
+          enemy.moveCooldown--;
         }
         
-        // Limitar a los bordes de la pantalla
-        if (enemy.x < 50) {
-          enemy.x = 50;
-          enemy.direction = 0.5; // Rebote suave
-          setTimeout(() => {
-            enemy.direction = -1; // Volver a moverse hacia la izquierda
-          }, 500);
+        // Mover enemigos siempre hacia la izquierda (hacia el oso)
+        if (enemy.moveCooldown <= 0) {
+          enemy.x += enemy.speed * enemy.direction;
+        }
+        
+        // Cambiar dirección si llegan al límite izquierdo
+        if (enemy.x <= 50) {
+          enemy.direction = 1; // Cambiar a derecha temporalmente
+          enemy.moveCooldown = 60; // Esperar antes de volver a moverse hacia la izquierda
+        }
+        
+        // Volver a moverse hacia la izquierda después del cooldown
+        if (enemy.moveCooldown === 0 && enemy.direction > 0) {
+          enemy.direction = -1;
         }
         
         // Colisión con enemigos - MEJORADO: Solo si el oso no es invencible
         if (checkCollision(window.oso, enemy) && !window.oso.hugging && window.oso.invincible <= 0) {
           takeDamage(enemy.damage);
         }
+      }
+      
+      // Actualizar jefe si está en nivel de jefe
+      if (window.gameState.bossFight) {
+        updateBoss();
       }
       
       // Actualizar posición del oso
@@ -1272,6 +1286,48 @@
               break;
             }
           }
+          
+          // Comprobar colisión con el jefe
+          if (window.gameState.bossFight && window.boss.health > 0) {
+            if (Math.abs(proj.x - (window.boss.x + window.boss.width/2)) < proj.radius + window.boss.width/2 &&
+                Math.abs(proj.y - (window.boss.y + window.boss.height/2)) < proj.radius + window.boss.height/2) {
+              // Dañar al jefe
+              window.boss.health--;
+              window.projectiles.splice(i, 1);
+              window.gameState.score += 100;
+              createParticles(window.boss.x + window.boss.width/2, window.boss.y + window.boss.height/2, 20, '#FF69B4');
+              updateBossHealth();
+              
+              // Hacer enojar al jefe si tiene poca vida
+              if (window.boss.health <= 2 && !window.boss.enraged) {
+                window.boss.enraged = true;
+                window.boss.speed = 2;
+                showHint("¡El lobo se ha enfurecido! ¡Ten cuidado!", 3000);
+              }
+              
+              break;
+            }
+          }
+        }
+      }
+      
+      // Actualizar bolas de fuego del jefe
+      for (let i = window.boss.fireballs.length - 1; i >= 0; i--) {
+        const fireball = window.boss.fireballs[i];
+        fireball.x += fireball.vx;
+        
+        // Eliminar bolas de fuego fuera de pantalla
+        if (fireball.x < 0 || fireball.x > 800) {
+          window.boss.fireballs.splice(i, 1);
+          continue;
+        }
+        
+        // Comprobar colisión con el oso
+        if (Math.abs(fireball.x - (window.oso.x + window.oso.width/2)) < fireball.radius + window.oso.width/2 &&
+            Math.abs(fireball.y - (window.oso.y + window.oso.height/2)) < fireball.radius + window.oso.height/2 &&
+            window.oso.invincible <= 0) {
+          takeDamage(1);
+          window.boss.fireballs.splice(i, 1);
         }
       }
       
@@ -1292,6 +1348,58 @@
       
       // Actualizar UI
       updateUI();
+    }
+
+    function updateBoss() {
+      // Reducir cooldown de ataque
+      if (window.boss.attackCooldown > 0) {
+        window.boss.attackCooldown--;
+      }
+      
+      // Reducir timer de advertencia
+      if (window.boss.warningTimer > 0) {
+        window.boss.warningTimer--;
+        
+        // Ocultar advertencia cuando el timer llega a 0
+        if (window.boss.warningTimer === 0) {
+          const fireWarningElement = document.getElementById('fireWarning');
+          if (fireWarningElement) fireWarningElement.style.display = 'none';
+        }
+      }
+      
+      // Atacar si el cooldown está listo
+      if (window.boss.attackCooldown <= 0) {
+        // Mostrar advertencia de ataque
+        const fireWarningElement = document.getElementById('fireWarning');
+        if (fireWarningElement) fireWarningElement.style.display = 'block';
+        window.boss.warningTimer = 60;
+        
+        // Lanzar bola de fuego después de un breve retraso
+        setTimeout(() => {
+          if (window.gameState.bossFight && window.boss.health > 0) {
+            window.boss.fireballs.push({
+              x: window.boss.x,
+              y: window.boss.y + window.boss.height/2,
+              vx: -5, // Hacia la izquierda (hacia el oso)
+              vy: 0,
+              radius: 15,
+              damage: 1
+            });
+            
+            // Reproducir sonido de ataque
+            playSound("enemy");
+          }
+        }, 1000);
+        
+        // Reiniciar cooldown de ataque
+        window.boss.attackCooldown = 150 - (window.boss.enraged ? 50 : 0); // Más rápido si está enfurecido
+      }
+      
+      // Movimiento del jefe
+      if (window.boss.enraged) {
+        // Movimiento más agresivo cuando está enfurecido
+        window.boss.x += Math.sin(Date.now() / 200) * 0.5;
+      }
     }
 
     function updateOso() {
@@ -1537,6 +1645,18 @@
         }
       }
       
+      // Dibujar bolas de fuego del jefe
+      for (let fireball of window.boss.fireballs) {
+        if (sprites.fire && sprites.fire.complete) {
+          ctx.drawImage(sprites.fire, fireball.x - fireball.radius, fireball.y - fireball.radius, fireball.radius * 2, fireball.radius * 2);
+        } else {
+          ctx.fillStyle = '#FF4500';
+          ctx.beginPath();
+          ctx.arc(fireball.x, fireball.y, fireball.radius, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+      
       // Dibujar partículas
       for (let particle of window.particles) {
         ctx.globalAlpha = particle.life / particle.maxLife;
@@ -1558,18 +1678,6 @@
         } else {
           ctx.fillStyle = window.boss.enraged ? '#FF0000' : '#808080';
           ctx.fillRect(window.boss.x, window.boss.y, window.boss.width, window.boss.height);
-        }
-        
-        // Dibujar bolas de fuego del jefe
-        for (let fireball of window.boss.fireballs) {
-          if (sprites.fire && sprites.fire.complete) {
-            ctx.drawImage(sprites.fire, fireball.x - fireball.radius, fireball.y - fireball.radius, fireball.radius * 2, fireball.radius * 2);
-          } else {
-            ctx.fillStyle = '#FF4500';
-            ctx.beginPath();
-            ctx.arc(fireball.x, fireball.y, fireball.radius, 0, Math.PI * 2);
-            ctx.fill();
-          }
         }
       }
       
