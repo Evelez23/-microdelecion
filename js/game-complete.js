@@ -82,69 +82,186 @@
   }
 
   class Enemy {
-    constructor(x, y, type = 0) {
-      this.x = x;
-      this.y = y;
-      this.width = 50;
-      this.height = 50;
-      this.speedX = (Math.random() > 0.5 ? 1 : -1) * (2 + Math.random() * 2); // Velocidad y dirección aleatoria
-      this.type = type;
-      
-      // Asignar sprite según tipo
-      if (window.sprites) {
-        switch(type) {
-          case 0: this.sprite = window.sprites.enemy1; break;
-          case 1: this.sprite = window.sprites.enemy2; break;
-          case 2: this.sprite = window.sprites.enemy3; break;
-          default: this.sprite = window.sprites.enemy1;
-        }
-      } else {
-        this.sprite = null;
+  constructor(x, y, type = 0) {
+    this.x = x;
+    this.y = y;
+    this.width = 50;
+    this.height = 50;
+    this.speedX = (Math.random() > 0.5 ? 1 : -1) * (2 + Math.random() * 2);
+    this.type = type;
+    
+    // Asignar sprite según tipo
+    if (window.sprites) {
+      switch(type) {
+        case 0: this.sprite = window.sprites.enemy1; break;
+        case 1: this.sprite = window.sprites.enemy2; break;
+        case 2: this.sprite = window.sprites.enemy3; break;
+        default: this.sprite = window.sprites.enemy1;
       }
-      
-      this.moveRange = 150 + Math.random() * 100; // Rango de movimiento variado
-      this.startX = x; // Punto de referencia para el movimiento
+    } else {
+      this.sprite = null;
     }
+    
+    this.moveRange = 150 + Math.random() * 100;
+    this.startX = x;
+    this.moveCooldown = 0;
+  }
 
-    update() {
-      // Movimiento lateral completo
+  update() {
+    // Movimiento lateral
+    if (this.moveCooldown <= 0) {
       this.x += this.speedX;
       
       // Cambiar dirección si supera el rango de movimiento
       if (Math.abs(this.x - this.startX) > this.moveRange) {
         this.speedX *= -1;
-        this.startX = this.x; // Actualizar punto de referencia
+        this.moveCooldown = 30; // Pequeña pausa al cambiar dirección
       }
-      
-      // Mantener dentro de los límites de la pantalla
-      if (this.x < 20) {
-        this.x = 20;
-        this.speedX *= -1;
-      }
-      if (this.x > GAME_WIDTH - this.width - 20) {
-        this.x = GAME_WIDTH - this.width - 20;
-        this.speedX *= -1;
-      }
+    } else {
+      this.moveCooldown--;
     }
-
-    draw() {
-      if (this.sprite && this.sprite.complete) {
-        // Voltear sprite según dirección
-        ctx.save();
-        if (this.speedX < 0) {
-          ctx.scale(-1, 1);
-          ctx.drawImage(this.sprite, -this.x - this.width, this.y, this.width, this.height);
-        } else {
-          ctx.drawImage(this.sprite, this.x, this.y, this.width, this.height);
-        }
-        ctx.restore();
-      } else {
-        ctx.fillStyle = "purple";
-        ctx.fillRect(this.x, this.y, this.width, this.height);
-      }
+    
+    // Mantener dentro de los límites de la pantalla
+    if (this.x < 20) {
+      this.x = 20;
+      this.speedX *= -1;
+      this.moveCooldown = 30;
+    }
+    if (this.x > GAME_WIDTH - this.width - 20) {
+      this.x = GAME_WIDTH - this.width - 20;
+      this.speedX *= -1;
+      this.moveCooldown = 30;
     }
   }
 
+  draw() {
+    if (this.sprite && this.sprite.complete) {
+      // Voltear sprite según dirección
+      ctx.save();
+      if (this.speedX < 0) {
+        ctx.scale(-1, 1);
+        ctx.drawImage(this.sprite, -this.x - this.width, this.y, this.width, this.height);
+      } else {
+        ctx.drawImage(this.sprite, this.x, this.y, this.width, this.height);
+      }
+      ctx.restore();
+    } else {
+      ctx.fillStyle = "purple";
+      ctx.fillRect(this.x, this.y, this.width, this.height);
+    }
+  }
+}
+
+   // Añadir estas imágenes a la lista de sprites
+sprites.bossPhase1 = new Image();
+sprites.bossPhase2 = new Image();
+sprites.bossPhase3 = new Image();
+
+// Añadir estas URLs a imageUrls
+imageUrls.bossPhase1 = "https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/41296616cc8e88066d9db7c38be0939b9302996a/img/enemigos/lobo.svg";
+imageUrls.bossPhase2 = "https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/refs/heads/main/img/enemigos/loboferoz.png";
+imageUrls.bossPhase3 = "https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/refs/heads/main/img/enemigos/lobotriste.png";
+
+// Modificar la función updateBoss para manejar las fases
+function updateBoss() {
+  // Reducir cooldown de ataque
+  if (window.boss.attackCooldown > 0) {
+    window.boss.attackCooldown--;
+  }
+  
+  // Reducir timer de advertencia
+  if (window.boss.warningTimer > 0) {
+    window.boss.warningTimer--;
+    
+    // Ocultar advertencia cuando el timer llega a 0
+    if (window.boss.warningTimer === 0) {
+      const fireWarningElement = document.getElementById('fireWarning');
+      if (fireWarningElement) fireWarningElement.style.display = 'none';
+    }
+  }
+  
+  // Determinar la fase del jefe según su salud
+  if (window.boss.health >= 4) {
+    window.boss.phase = 1; // Lobo normal
+  } else if (window.boss.health >= 2) {
+    window.boss.phase = 2; // Lobo feroz
+    if (!window.boss.enraged) {
+      window.boss.enraged = true;
+      showHint("¡El lobo se ha enfurecido! ¡Ten cuidado!", 3000);
+    }
+  } else {
+    window.boss.phase = 3; // Lobo triste/débil
+  }
+  
+  // Atacar si el cooldown está listo
+  if (window.boss.attackCooldown <= 0) {
+    // Mostrar advertencia de ataque
+    const fireWarningElement = document.getElementById('fireWarning');
+    if (fireWarningElement) fireWarningElement.style.display = 'block';
+    window.boss.warningTimer = 60;
+    
+    // Lanzar bola de fuego después de un breve retraso
+    setTimeout(() => {
+      if (window.gameState.bossFight && window.boss.health > 0) {
+        window.boss.fireballs.push({
+          x: window.boss.x,
+          y: window.boss.y + window.boss.height/2,
+          vx: -5,
+          vy: 0,
+          radius: 15,
+          damage: 1
+        });
+        
+        // Reproducir sonido de ataque
+        playSound("enemy");
+      }
+    }, 1000);
+    
+    // Reiniciar cooldown de ataque (más rápido según la fase)
+    let cooldownTime = 150;
+    if (window.boss.phase === 2) cooldownTime = 100;
+    if (window.boss.phase === 3) cooldownTime = 120;
+    
+    window.boss.attackCooldown = cooldownTime;
+  }
+  
+  // Movimiento del jefe (solo en fases 1 y 2)
+  if (window.boss.phase < 3) {
+    window.boss.x += Math.sin(Date.now() / 200) * 0.5;
+  }
+}
+
+// Modificar la función draw para dibujar la fase correcta del jefe
+// Dibujar jefe si está activo
+if (window.gameState.bossFight) {
+  let bossSprite;
+  
+  switch (window.boss.phase) {
+    case 1:
+      bossSprite = sprites.bossPhase1;
+      break;
+    case 2:
+      bossSprite = sprites.bossPhase2;
+      break;
+    case 3:
+      bossSprite = sprites.bossPhase3;
+      break;
+    default:
+      bossSprite = sprites.bossPhase1;
+  }
+  
+  if (bossSprite && bossSprite.complete) {
+    // Jefe siempre mirando hacia la izquierda
+    ctx.save();
+    ctx.scale(-1, 1);
+    ctx.drawImage(bossSprite, -window.boss.x - window.boss.width, window.boss.y, window.boss.width, window.boss.height);
+    ctx.restore();
+  } else {
+    // Placeholder si el sprite no está cargado
+    ctx.fillStyle = window.boss.phase === 2 ? '#FF0000' : (window.boss.phase === 3 ? '#888888' : '#808080');
+    ctx.fillRect(window.boss.x, window.boss.y, window.boss.width, window.boss.height);
+  }
+}
   // ========================
   // Integración con el juego principal
   // ========================
@@ -256,3 +373,17 @@
   window.clearEnemies = clearEnemies;
 
 })();
+
+// Sonidos
+const sounds = {
+  background: new Audio(`${baseUrl}/sounds/background.mp3`),
+  jump: new Audio(`${baseUrl}/sounds/jump.mp3`),
+  collect: new Audio(`${baseUrl}/sounds/collect.mp3`),
+  hug: new Audio(`${baseUrl}/sounds/hug.mp3`),
+  hurt: new Audio(`${baseUrl}/sounds/hurt.mp3`),
+  enemy: new Audio(`${baseUrl}/sounds/enemy.mp3`),
+  powerup: new Audio(`${baseUrl}/sounds/powerup.mp3`),
+  shot: new Audio(`${baseUrl}/sounds/shot.mp3`),
+  bossBattle: new Audio(`${baseUrl}/sounds/para%20la%20batalla.mp3`),
+  intro: new Audio(`${baseUrl}/sounds/intro.mp3`)
+};
