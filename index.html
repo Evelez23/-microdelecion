@@ -1712,7 +1712,7 @@
           ctx.fillStyle = '#8B4513';
           ctx.fillRect(window.oso.x, window.oso.y, window.oso.width, window.oso.height);
         }
-      }
+      
       
       // Efecto de abrazo
       if (window.oso.hugging) {
@@ -1730,7 +1730,7 @@
         ctx.fillRect(window.oso.x, window.oso.y, window.oso.width, window.oso.height);
         ctx.globalAlpha = 1;
       }
-    }
+    
 
     function checkCollision(obj1, obj2) {
       return obj1.x < obj2.x + obj2.width &&
@@ -1766,7 +1766,7 @@
           life: 30,
           maxLife: 30
         });
-      }
+      
     }
 
     function updateUI() {
@@ -1872,7 +1872,24 @@
       }
       
       return null; // No hay más niveles
-    }
+      // Añade esta nueva función
+function flashScreen() {
+  const container = document.getElementById('gameContainer');
+  container.classList.add('flash-effect');
+  setTimeout(() => {
+    container.classList.remove('flash-effect');
+  }, 300);
+}
+      // Dentro de la clase Enemy, en la función update()
+if (this.type === "boss") {
+  if (this.health <= 3 && this.phase === 1) {
+    this.phase = 2;
+    this.sprite = window.sprites.wolfAngry;
+    this.speedX = -3; 
+    flashScreen(); // Aquí se llama a la función para el destello
+    playSound("boss");
+  }
+
   </script>
 </body>
 </html>
