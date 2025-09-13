@@ -1,0 +1,311 @@
+/* style.css - Estilos para Oso Abrazos Adventure */
+body {
+  margin: 0;
+  background: linear-gradient(to bottom, #87CEEB, #E0F7FA);
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+#gameContainer {
+  position: relative;
+  width: 800px;
+}
+
+#gameCanvas {
+  background: linear-gradient(to bottom, #a3e0a0, #8bc34a);
+  border: 5px solid #5a3921;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+#ui {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  color: #fff;
+  font-size: 18px;
+  text-shadow: 2px 2px 0 #000;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  border-radius: 10px;
+  display: flex;
+  gap: 20px;
+}
+
+#unicornPower {
+  display: none;
+  align-items: center;
+  gap: 10px;
+}
+
+.power-bar {
+  width: 100px;
+  height: 15px;
+  background-color: #555;
+  border: 2px solid #fff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.power-level {
+  height: 100%;
+  background: linear-gradient(to right, #EE82EE, #8A2BE2);
+  transition: width 0.3s ease-in-out;
+}
+
+#startScreen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  z-index: 20;
+}
+
+#startScreen h1 {
+  font-size: 48px;
+  color: #FFD700;
+  margin-bottom: 20px;
+  text-shadow: 3px 3px 0 #000;
+}
+
+#startScreen p {
+  font-size: 20px;
+  margin-bottom: 30px;
+  text-align: center;
+  max-width: 80%;
+}
+
+#startButton {
+  padding: 15px 30px;
+  font-size: 20px;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: 'Comic Sans MS', cursive;
+  box-shadow: 0 5px #2E7D32;
+  transition: all 0.1s;
+  margin-bottom: 20px;
+}
+
+#startButton:hover {
+  background: #66BB6A;
+}
+
+#startButton:active {
+  box-shadow: 0 2px #2E7D32;
+  transform: translateY(3px);
+}
+
+#controls {
+  margin-top: 20px;
+  font-size: 16px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.heart {
+  display: inline-block;
+  color: #FF5252;
+  margin: 0 2px;
+  font-size: 20px;
+}
+
+#loadingScreen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  z-index: 30;
+}
+
+.progress-bar {
+  width: 300px;
+  height: 20px;
+  background: #555;
+  border-radius: 10px;
+  margin: 20px 0;
+  overflow: hidden;
+}
+
+.progress {
+  height: 100%;
+  background: #4CAF50;
+  width: 0%;
+  transition: width 0.3s;
+}
+
+#hint {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.8);
+  padding: 10px 15px;
+  border-radius: 20px;
+  font-size: 14px;
+  color: #333;
+  display: none;
+  z-index: 25;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+#soundToggle {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  z-index: 100;
+  font-size: 20px;
+}
+
+/* Estilos para el texto de Game Over */
+#gameOverText {
+  text-align: center;
+  margin-top: 20px;
+  color: #FFD700;
+}
+
+#gameOverText h2 {
+  font-size: 36px;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 0 #000;
+}
+
+#gameOverText p {
+  font-size: 24px;
+  margin: 0;
+  text-shadow: 2px 2px 0 #000;
+}
+
+/* Responsive design para móviles */
+@media (max-width: 850px) {
+  #gameContainer {
+    width: 100%;
+    max-width: 800px;
+  }
+  
+  #gameCanvas {
+    width: 100%;
+    height: auto;
+    max-height: 500px;
+  }
+  
+  #ui {
+    font-size: 14px;
+    padding: 8px;
+    gap: 10px;
+  }
+  
+  #startScreen h1 {
+    font-size: 36px;
+  }
+  
+  #startScreen p {
+    font-size: 16px;
+  }
+  
+  #startButton {
+    padding: 12px 24px;
+    font-size: 18px;
+  }
+}
+
+/* Animaciones para elementos de juego */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Clases de utilidad */
+.hidden {
+  display: none !important;
+}
+
+.visible {
+  display: block !important;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.text-center {
+  text-align: center;
+}
+
+/* Efectos para elementos interactivos */
+.interactive {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.interactive:hover {
+  transform: scale(1.05);
+}
+
+.interactive:active {
+  transform: scale(0.95);
+}
+
+/* Estilos para particulas y efectos */
+.particle {
+  position: absolute;
+  pointer-events: none;
+}
+
+.effect-glow {
+  filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.5));
+}
+
+/* Modo oscuro (opcional) */
+@media (prefers-color-scheme: dark) {
+  #ui {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  #hint {
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+  }
+}
