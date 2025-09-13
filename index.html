@@ -9,10 +9,10 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
         }
         
         body {
-            font-family: 'Comic Sans MS', cursive, sans-serif;
             background: linear-gradient(to bottom, #6a11cb, #2575fc);
             color: white;
             display: flex;
@@ -21,6 +21,16 @@
             min-height: 100vh;
             padding: 20px;
             overflow-x: hidden;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            margin-top: 20px;
         }
         
         h1 {
@@ -34,14 +44,13 @@
         .subtitle {
             font-size: 1.3rem;
             margin-bottom: 25px;
-            max-width: 800px;
             text-align: center;
             line-height: 1.5;
         }
         
         .game-wrapper {
             position: relative;
-            width: 800px;
+            width: 100%;
             height: 500px;
             margin-bottom: 30px;
         }
@@ -321,7 +330,6 @@
             background: rgba(255, 255, 255, 0.1);
             padding: 15px;
             border-radius: 10px;
-            max-width: 600px;
             text-align: left;
         }
 
@@ -338,11 +346,28 @@
             margin-bottom: 8px;
         }
 
+        .fallback-shape {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Efecto de destello para el lobo */
+        .boss-flash {
+            animation: bossFlash 0.5s;
+        }
+
+        @keyframes bossFlash {
+            0% { filter: brightness(1); }
+            50% { filter: brightness(3); }
+            100% { filter: brightness(1); }
+        }
+
         @media (max-width: 850px) {
             .game-wrapper {
-                width: 100%;
-                height: auto;
-                aspect-ratio: 16/10;
+                height: 400px;
             }
             
             h1 {
@@ -351,7 +376,6 @@
             
             .subtitle {
                 font-size: 1rem;
-                padding: 0 15px;
             }
             
             #ui {
@@ -369,80 +393,82 @@
     <h1>🐻 Oso Abrazos - Aventura Completa</h1>
     <p class="subtitle">¡Ayuda al Oso Abrazos a recolectar corazones y derrotar al Lobo Feroz con el poder del Unicornio!</p>
     
-    <div class="game-wrapper">
-        <div id="gameContainer">
-            <canvas id="gameCanvas" width="800" height="500"></canvas>
+    <div class="container">
+        <div class="game-wrapper">
+            <div id="gameContainer">
+                <canvas id="gameCanvas" width="800" height="500"></canvas>
 
-            <!-- UI del juego -->
-            <div id="ui">
-                <div class="ui-item">⭐ Puntos: <span id="score">0</span></div>
-                <div class="ui-item">❤️ Vidas: <span id="lives">3</span></div>
-                <div class="ui-item">🗺️ Nivel: <span id="level">1-1</span></div>
-                <div id="unicornPower" class="ui-item" style="display: none;">
-                    <span>🦄 Poder:</span>
-                    <div class="power-bar">
-                        <div class="power-level" id="unicornPowerLevel"></div>
+                <!-- UI del juego -->
+                <div id="ui">
+                    <div class="ui-item">⭐ Puntos: <span id="score">0</span></div>
+                    <div class="ui-item">❤️ Vidas: <span id="lives">3</span></div>
+                    <div class="ui-item">🗺️ Nivel: <span id="level">1-1</span></div>
+                    <div id="unicornPower" class="ui-item" style="display: none;">
+                        <span>🦄 Poder:</span>
+                        <div class="power-bar">
+                            <div class="power-level" id="unicornPowerLevel"></div>
+                        </div>
+                    </div>
+                    <div id="heartsCollected" class="ui-item" style="display: none;">
+                        <span>💕 Corazones: <span id="heartCount">0</span>/3</span>
                     </div>
                 </div>
-                <div id="heartsCollected" class="ui-item" style="display: none;">
-                    <span>💕 Corazones: <span id="heartCount">0</span>/3</span>
+
+                <!-- Barra de salud del jefe -->
+                <div id="bossHealth" class="boss-health">
+                    <div class="boss-health-bar" id="bossHealthBar">
+                        <div class="boss-health-text">🐺 Lobo Feroz - Vida: <span id="bossHealthText">5/5</span></div>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Barra de salud del jefe -->
-            <div id="bossHealth" class="boss-health">
-                <div class="boss-health-bar" id="bossHealthBar">
-                    <div class="boss-health-text">🐺 Lobo Feroz - Vida: <span id="bossHealthText">5/5</span></div>
+                <!-- Advertencia de ataque -->
+                <div id="fireWarning" class="fire-warning">
+                    ⚠️ ¡CUIDADO! El lobo va a atacar con fuego ⚠️
                 </div>
-            </div>
 
-            <!-- Advertencia de ataque -->
-            <div id="fireWarning" class="fire-warning">
-                ⚠️ ¡CUIDADO! El lobo va a atacar con fuego ⚠️
-            </div>
+                <div id="levelIndicator" class="level-indicator">Nivel 1-1</div>
 
-            <div id="levelIndicator" class="level-indicator">Nivel 1-1</div>
-
-            <!-- Pantalla de inicio -->
-            <div id="startScreen">
-                <img id="coverImage" src="https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/oso/oso_portada.png" alt="Portada del Juego">
-                <button id="startButton">🎮 ¡Comenzar Aventura!</button>
-            </div>
-            
-            <!-- Pantalla de carga -->
-            <div id="loadingScreen" class="loading-screen">
-                <h2>Cargando recursos del juego...</h2>
-                <div class="progress-bar">
-                    <div class="progress" id="loadingProgress"></div>
+                <!-- Pantalla de inicio -->
+                <div id="startScreen">
+                    <img id="coverImage" src="https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/oso/oso_portada.png" alt="Portada del Juego" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjUwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjUwMCIgZmlsbD0iIzY2M2YwMCIvPgogIDx0ZXh0IHg9IjQwMCIgeT0iMjUwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5Pc28gQWJyYXpvcyBBZHZlbnR1cmU8L3RleHQ+Cjwvc3ZnPg=='">
+                    <button id="startButton">🎮 ¡Comenzar Aventura!</button>
                 </div>
-                <p id="loadingText">0%</p>
-            </div>
+                
+                <!-- Pantalla de carga -->
+                <div id="loadingScreen" class="loading-screen">
+                    <h2>Cargando recursos del juego...</h2>
+                    <div class="progress-bar">
+                        <div class="progress" id="loadingProgress"></div>
+                    </div>
+                    <p id="loadingText">0%</p>
+                </div>
 
-            <!-- Pantalla de victoria -->
-            <div id="victoryScreen" class="victory-animation">
-                <h2 class="victory-title">🎉 ¡VICTORIA! 🎉</h2>
-                <img id="victoryImage" class="victory-image" src="https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/Amigos/osoyuni.png" alt="Oso y Unicornio">
-                <p style="font-size: 1.5rem; margin: 10px 0;">¡Has derrotado al Lobo Feroz!</p>
-                <p style="font-size: 1.2rem; margin: 10px 0;">Puntuación final: <span id="finalScore">0</span></p>
-                <button id="restartButton" style="margin-top: 20px; padding: 12px 24px; font-size: 1.2rem; background: #4CAF50; color: white; border: none; border-radius: 50px; cursor: pointer;">🔄 Jugar de nuevo</button>
+                <!-- Pantalla de victoria -->
+                <div id="victoryScreen" class="victory-animation">
+                    <h2 class="victory-title">🎉 ¡VICTORIA! 🎉</h2>
+                    <img id="victoryImage" class="victory-image" src="https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/Amigos/osoyuni.png" alt="Oso y Unicornio" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2ZmZmYwMCIvPgogIDx0ZXh0IHg9IjE1MCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjAiIGZpbGw9ImJsYWNrIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7DgSBWaWN0b3JpYSE8L3RleHQ+Cjwvc3ZnPg=='">
+                    <p style="font-size: 1.5rem; margin: 10px 0;">¡Has derrotado al Lobo Feroz!</p>
+                    <p style="font-size: 1.2rem; margin: 10px 0;">Puntuación final: <span id="finalScore">0</span></p>
+                    <button id="restartButton" style="margin-top: 20px; padding: 12px 24px; font-size: 1.2rem; background: #4CAF50; color: white; border: none; border-radius: 50px; cursor: pointer;">🔄 Jugar de nuevo</button>
+                </div>
+                
+                <button id="soundToggle">🔊</button>
+                
+                <div id="hint">💡 Usa las flechas para moverte y la barra espaciadora para saltar</div>
             </div>
-            
-            <button id="soundToggle">🔊</button>
-            
-            <div id="hint">💡 Usa las flechas para moverte y la barra espaciadora para saltar</div>
         </div>
-    </div>
 
-    <div class="instructions">
-        <h3>🎮 Instrucciones:</h3>
-        <ul>
-            <li>➡️ Movimiento: Flechas izquierda/derecha</li>
-            <li>⬆️ Salto: Flecha arriba o barra espaciadora</li>
-            <li>🤗 Abrazar: Mantén presionada la tecla Z</li>
-            <li>🦄 Poder especial: Presiona X para activar el poder del unicornio (debes recolectar 3 corazones primero)</li>
-            <li>💕 Recolecta 3 corazones para invocar al unicornio</li>
-            <li>🐺 Derrota al lobo en el nivel final para ganar</li>
-        </ul>
+        <div class="instructions">
+            <h3>🎮 Instrucciones:</h3>
+            <ul>
+                <li>➡️ Movimiento: Flechas izquierda/derecha</li>
+                <li>⬆️ Salto: Flecha arriba o barra espaciadora</li>
+                <li>🤗 Abrazar: Mantén presionada la tecla Z</li>
+                <li>🦄 Poder especial: Presiona X para activar el poder del unicornio (debes recolectar 3 corazones primero)</li>
+                <li>💕 Recolecta 3 corazones para invocar al unicornio</li>
+                <li>🐺 Derrota al lobo en el nivel final para ganar</li>
+            </ul>
+        </div>
     </div>
 
     <script>
@@ -451,24 +477,55 @@
         const ctx = canvas.getContext('2d');
         const gameContainer = document.getElementById('gameContainer');
         
-        // URLs corregidas para imágenes
+        // URLs corregidas para imágenes con respaldo
         const imageUrls = {
-            bear: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/oso/oso_idle.svg',
-            bearJump: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/oso/oso_jump.svg',
-            bearHug: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/oso/oso_hug.svg',
-            wolf: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/enemigos/lobo.svg',
-            wolfAngry: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/enemigos/loboferoz.png',
-            wolfHurt: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/enemigos/lobotriste.png',
-            heart: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/oso/corazon.png',
-            unicorn: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/Amigos/unirshup.png',
-            bearWithUnicorn: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/Amigos/osoyuni.png',
-            background1: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/fondos/bosque1.jpg',
-            background2: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/fondos/bosque2.jpg',
-            background3: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/fondos/bosque3.jpg',
-            backgroundBoss: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/fondos/background%20final.jpeg'
+            bear: {
+                url: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/oso/oso_idle.svg',
+                fallback: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iODAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMjUiIGZpbGw9IiM4QjQ1MTMiLz4KICA8Y2lyY2xlIGN4PSIyMCIgY3k9IjI1IiByPSI1IiBmaWxsPSJ3aGl0ZSIvPgogIDxjaXJjbGUgY3g9IjQwIiBjeT0iMjUiIHI9IjUiIGZpbGw9IndoaXRlIi8+CiAgPGNpcmNsZSBjeD0iMjAiIGN5PSIyNSIgcj0iMiIgZmlsbD0iYmxhY2siLz4KICA8Y2lyY2xlIGN4PSI0MCIgY3k9IjI1IiByPSIyIiBmaWxsPSJibGFjayIvPgogIDxwYXRoIGQ9Ik0yMCA0MCBRMzAgNDUgNDAgNDAiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIvPgo8L3N2Zz4='
+            },
+            bearJump: {
+                url: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/oso/oso_jump.svg',
+                fallback: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iODAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMjUiIGZpbGw9IiM4QjQ1MTMiLz4KICA8Y2lyY2xlIGN4PSIyMCIgY3k9IjI1IiByPSI1IiBmaWxsPSJ3aGl0ZSIvPgogIDxjaXJjbGUgY3g9IjQwIiBjeT0iMjUiIHI9IjUiIGZpbGw9IndoaXRlIi8+CiAgPGNpcmNsZSBjeD0iMjAiIGN5PSIyNSIgcj0iMiIgZmlsbD0iYmxhY2siLz4KICA8Y2lyY2xlIGN4PSI0MCIgY3k9IjI1IiByPSIyIiBmaWxsPSJibGFjayIvPgogIDxwYXRoIGQ9Ik0xNSA0NSBRMzAgNTAgNDUgNDUiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIvPgo8L3N2Zz4='
+            },
+            bearHug: {
+                url: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/oso/oso_hug.svg',
+                fallback: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iODAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMjUiIGZpbGw9IiM4QjQ1MTMiLz4KICA8Y2lyY2xlIGN4PSIyMCIgY3k9IjI1IiByPSI1IiBmaWxsPSJ3aGl0ZSIvPgogIDxjaXJjbGUgY3g9IjQwIiBjeT0iMjUiIHI9IjUiIGZpbGw9IndoaXRlIi8+CiAgPGNpcmNsZSBjeD0iMjAiIGN5PSIyNSIgcj0iMiIgZmlsbD0iYmxhY2siLz4KICA8Y2lyY2xlIGN4PSI0MCIgY3k9IjI1IiByPSIyIiBmaWxsPSJibGFjayIvPgogIDxwYXRoIGQ9Ik0xMCA0MCBRMzAgNTAgNTAgNDAiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMyIgZmlsbD0ibm9uZSIvPgogIDxwYXRoIGQ9Ik0xNSA0MCBROTMwIDM1IDQ1IDQwIiBzdHJva2U9IiNGRjY5QjQiIHN0cm9rZS13aWR0aD0iNCIgZmlsbD0ibm9uZSIvPgo8L3N2Zz4='
+            },
+            wolf: {
+                url: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/enemigos/lobo.svg',
+                fallback: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHBhdGggZD0iTTEwIDQwIEMxMCAyNSwgMjAgMTUsIDQwIDE1IEM2MCAxNSwgNzAgMjUsIDcwIDQwIiBzdHJva2U9IiM4MDgwODAiIHN0cm9rZS13aWR0aD0iNCIgZmlsbD0iI0E4QTZBNiIvPgogIDxjaXJjbGUgY3g9IjI1IiBjeT0iMjUiIHI9IjUiIGZpbGw9IndoaXRlIi8+CiAgPGNpcmNsZSBjeD0iNTUiIGN5PSIyNSIgcj0iNSIgZmlsbD0id2hpdGUiLz4KICA8Y2lyY2xlIGN4PSIyNSIgY3k9IjI1IiByPSIyIiBmaWxsPSJibGFjayIvPgogIDxjaXJjbGUgY3g9IjU1IiBjeT0iMjUiIHI9IjIiIGZpbGw9ImJsYWNrIi8+CiAgPHBhdGggZD0iTTMwIDQwIFE0MCA0NSA1MCA0MCIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJub25lIi8+Cjwvc3ZnPg=='
+            },
+            wolfAngry: {
+                url: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/enemigos/loboferoz.png',
+                fallback: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHBhdGggZD0iTTEwIDQwIEMxMCAyNSwgMjAgMTUsIDQwIDE1IEM2MCAxNSwgNzAgMjUsIDcwIDQwIiBzdHJva2U9IiNGRjAwMDAiIHN0cm9rZS13aWR0aD0iNCIgZmlsbD0iI0ZGNjYwMCIvPgogIDxjaXJjbGUgY3g9IjI1IiBjeT0iMjUiIHI9IjUiIGZpbGw9IndoaXRlIi8+CiAgPGNpcmNsZSBjeD0iNTUiIGN5PSIyNSIgcj0iNSIgZmlsbD0id2hpdGUiLz4KICA8Y2lyY2xlIGN4PSIyNSIgY3k9IjI1IiByPSIyIiBmaWxsPSJibGFjayIvPgogIDxjaXJjbGUgY3g9IjU1IiBjeT0iMjUiIHI9IjIiIGZpbGw9ImJsYWNrIi8+CiAgPHBhdGggZD0iTTIwIDQ1IFE0MCA1NSA2MCA0NSIgc3Ryb2tlPSIjRkYwMDAwIiBzdHJva2Utd2lkdGg9IjMiIGZpbGw9Im5vbmUiLz4KICA8cGF0aCBkPSJNMzAgMzUgTDIwIDI1IiBzdHJva2U9IiNGRjAwMDAiIHN0cm9rZS13aWR0aD0iMyIgZmlsbD0ibm9uZSIvPgogIDxwYXRoIGQ9Ik01MCAzNSBMNjAgMjUiIHN0cm9rZT0iI0ZGMDAwMCIgc3Ryb2tlLXdpZHRoPSIzIiBmaWxsPSJub25lIi8+Cjwvc3ZnPg=='
+            },
+            wolfHurt: {
+                url: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/enemigos/lobotriste.png',
+                fallback: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHBhdGggZD0iTTEwIDQwIEMxMCAyNSwgMjAgMTUsIDQwIDE1IEM2MCAxNSwgNzAgMjUsIDcwIDQwIiBzdHJva2U9IiM4MDgwODAiIHN0cm9rZS13aWR0aD0iNCIgZmlsbD0iIzlCOUI5QiIvPgogIDxjaXJjbGUgY3g9IjI1IiBjeT0iMjUiIHI9IjUiIGZpbGw9IndoaXRlIi8+CiAgPGNpcmNsZSBjeD0iNTUiIGN5PSIyNSIgcj0iNSIgZmlsbD0id2hpdGUiLz4KICA8Y2lyY2xlIGN4PSIyNSIgY3k9IjI1IiByPSIyIiBmaWxsPSJibGFjayIvPgogIDxjaXJjbGUgY3g9IjU1IiBjeT0iMjUiIHI9IjIiIGZpbGw9ImJsYWNrIi8+CiAgPHBhdGggZD0iTTI1IDQ1IFE0MCAzNSA1NSA0NSIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLXdpZHRoPSIzIiBmaWxsPSJub25lIi8+Cjwvc3ZnPg=='
+            },
+            heart: {
+                url: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/oso/corazon.png',
+                fallback: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAiIGhlaWdodD0iMzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHBhdGggZD0iTTE1IDUgQzEwIC01LCAwIDIsIDAgMTAgQzAgMTUsIDUgMjAsIDE1IDI4IEMyNSAyMCwgMzAgMTUsIDMwIDEwIEMzMCAyLCAyMCAtNSwgMTUgNSBaIiBmaWxsPSIjRkY2OUI0Ii8+Cjwvc3ZnPg=='
+            },
+            unicorn: {
+                url: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/Amigos/unirshup.png',
+                fallback: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPGNpcmNsZSBjeD0iMjUiIGN5PSIyNSIgcj0iMjAiIGZpbGw9IndoaXRlIi8+CiAgPGNpcmNsZSBjeD0iMTUiIGN5PSIyMCIgcj0iNCIgZmlsbD0iYmxhY2siLz4KICA8Y2lyY2xlIGN4PSIzNSIgY3k9IjIwIiByPSI0IiBmaWxsPSJibGFjayIvPgogIDxwYXRoIGQ9Ik0xMCAzNSBRMjUgNDAgNDAgMzUiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIvPgogIDxwYXRoIGQ9Ik0yNSAxMCBMMjUgLTUiIHN0cm9rZT0iI0ZGMEEGRiIgc3Ryb2tlLXdpZHRoPSIzIiBmaWxsPSJub25lIi8+CiAgPGNpcmNsZSBjeD0iMjUiIGN5PSItNSIgcj0iNSIgZmlsbD0iI0ZGMEEGRiIvPgo8L3N2Zz4='
+            },
+            bearWithUnicorn: {
+                url: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/Amigos/osoyuni.png',
+                fallback: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzIiIGhlaWdodD0iOTYiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPGNpcmNsZSBjeD0iMzYiIGN5PSIzNiIgcj0iMjUiIGZpbGw9IiM4QjQ1MTMiLz4KICA8Y2lyY2xlIGN4PSIyNCIgY3k9IjMwIiByPSI1IiBmaWxsPSJ3aGl0ZSIvPgogIDxjaXJjbGUgY3g9IjQ4IiBjeT0iMzAiIHI9IjUiIGZpbGw9IndoaXRlIi8+CiAgPGNpcmNsZSBjeD0iMjQiIGN5PSIzMCIgcj0iMiIgZmlsbD0iYmxhY2siLz4KICA8Y2lyY2xlIGN4PSI0OCIgY3k9IjMwIiByPSIyIiBmaWxsPSJibGFjayIvPgogIDxwYXRoIGQ9Ik0yNCA0MiBRMzYgNDggNDggNDIiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIvPgogIDxwYXRoIGQ9Ik0zNiAxMCBMMzYgLTUiIHN0cm9rZT0iI0ZGMEEGRiIgc3Ryb2tlLXdpZHRoPSIzIiBmaWxsPSJub25lIi8+CiAgPGNpcmNsZSBjeD0iMzYiIGN5PSItNSIgcj0iNSIgZmlsbD0iI0ZGMEEGRiIvPgo8L3N2Zz4='
+            },
+            background1: {
+                url: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/fondos/bosque1.jpg',
+                fallback: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjUwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZGllbnQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6Izg3Q0VFQjtzdG9wLW9wYWNpdHk6MSIgLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojRTBGN0ZBO3N0b3Atb3BhY2l0eToxIiAvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CiAgPHJlY3Qgd2lkdGg9IjgwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9InVybCgjZ3JhZGllbnQpIi8+CiAgPHJlY3QgeT0iNDAwIiB3aWR0aD0iODAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzVDN0EzMCIvPgogIDxyZWN0IHg9IjIwMCIgeT0iMzAwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjOEQ2RTYzIi8+CiAgPHJlY3QgeD0iNTAwIiB5PSIyNTAiIHdpZHRoPSIxMDAiIGhlaWdodD0iMjAiIGZpbGw9IiM4RDZFNjMiLz4KPC9zdmc+'
+            },
+            backgroundBoss: {
+                url: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/fondos/background%20final.jpeg',
+                fallback: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjUwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZGllbnQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6IzBjMTQ0NTtzdG9wLW9wYWNpdHk6MSIgLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMWEyMzc5ZTtzdG9wLW9wYWNpdHk6MSIgLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iNTAwIiBmaWxsPSJ1cmwoI2dyYWRpZW50KSIvPgogIDxjaXJjbGUgY3g9IjcwMCIgY3k9IjgwIiByPSI0MCIgZmlsbD0iI2Y1ZjVmNSIvPgogIDxjaXJjbGUgY3g9IjY5MCIgY3k9IjcwIiByPSIzNSIgZmlsbD0iIzBjMTQ0NSIvPgogIDxyZWN0IHk9IjQwMCIgd2lkdGg9IjgwMCIgaGVpZ2h0PSIxMDAiIGZpbGw9IiM0QjJGMDEiLz4KICA8cmVjdCB4PSIyMDAiIHk9IjMwMCIgd2lkdGg9IjQwMCIgaGVpZ2h0PSIyMCIgZmlsbD0iIzhENkU2MyIvPgo8L3N2Zz4='
+            }
         };
 
-        // URLs corregidas para sonidos
+        // URLs para sonidos
         const soundUrls = {
             background: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/sounds/background.mp3.mp3',
             jump: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/sounds/jump.mp3.mp3',
@@ -500,6 +557,7 @@
         let loadedResources = 0;
         let totalResources = Object.keys(imageUrls).length + Object.keys(soundUrls).length;
         let sounds = {};
+        let images = {};
 
         // Inicializar el juego
         function init() {
@@ -535,19 +593,24 @@
         // Cargar recursos
         function loadResources() {
             // Cargar imágenes
-            for (const [name, url] of Object.entries(imageUrls)) {
+            for (const [name, data] of Object.entries(imageUrls)) {
                 const img = new Image();
                 img.onload = () => {
                     loadedResources++;
                     updateLoadingProgress();
+                    images[name] = img;
                 };
                 img.onerror = () => {
-                    console.error(`Error al cargar la imagen: ${url}`);
-                    loadedResources++;
-                    updateLoadingProgress();
+                    console.log(`Usando imagen de respaldo para: ${name}`);
+                    const fallbackImg = new Image();
+                    fallbackImg.onload = () => {
+                        loadedResources++;
+                        updateLoadingProgress();
+                        images[name] = fallbackImg;
+                    };
+                    fallbackImg.src = data.fallback;
                 };
-                img.src = url;
-                imageUrls[name] = img;
+                img.src = data.url;
             }
             
             // Cargar sonidos
@@ -556,15 +619,15 @@
                 audio.addEventListener('canplaythrough', () => {
                     loadedResources++;
                     updateLoadingProgress();
+                    sounds[name] = audio;
                 });
                 audio.addEventListener('error', () => {
-                    console.error(`Error al cargar el sonido: ${url}`);
+                    console.error(`Error al cargar el sonido: ${name}`);
                     loadedResources++;
                     updateLoadingProgress();
                 });
                 audio.src = url;
                 audio.preload = 'auto';
-                sounds[name] = audio;
             }
         }
         
@@ -612,7 +675,7 @@
                 speed: 5,
                 jumpForce: 15,
                 grounded: false,
-                image: imageUrls.bear,
+                image: images.bear,
                 isJumping: false,
                 isHugging: false
             };
@@ -634,7 +697,7 @@
             // Configurar niveles
             if (level === 1) {
                 // Nivel 1
-                background = imageUrls.background1;
+                background = images.background1;
                 
                 if (subLevel === 1) {
                     // Nivel 1-1
@@ -666,7 +729,7 @@
                 }
             } else if (level === 2) {
                 // Nivel 2
-                background = imageUrls.backgroundBoss;
+                background = images.backgroundBoss;
                 
                 if (subLevel === 1) {
                     // Nivel 2-1
@@ -735,7 +798,7 @@
                 speed: type === 'boss' ? 2 : 1,
                 direction: 1,
                 attackCooldown: 0,
-                image: type === 'boss' ? imageUrls.wolf : imageUrls.wolf
+                image: type === 'boss' ? images.wolf : images.wolf
             };
             
             if (type === 'boss') {
@@ -750,7 +813,7 @@
         function activateUnicorn() {
             unicornActive = true;
             unicornPower = 100;
-            player.image = imageUrls.bearWithUnicorn;
+            player.image = images.bearWithUnicorn;
             player.width = 72; // 20% más grande
             player.height = 96; // 20% más grande
             playSound('powerup');
@@ -929,7 +992,7 @@
                 unicornPower -= 0.2;
                 if (unicornPower <= 0) {
                     unicornActive = false;
-                    player.image = imageUrls.bear;
+                    player.image = images.bear;
                     player.width = 60;
                     player.height = 80;
                 }
@@ -939,7 +1002,7 @@
         
         // Dibujar jugador
         function drawPlayer() {
-            if (player.image.complete) {
+            if (player.image && player.image.complete) {
                 ctx.drawImage(player.image, player.x, player.y, player.width, player.height);
             } else {
                 // Dibujar placeholder si la imagen no está cargada
@@ -979,7 +1042,7 @@
                         if (bossFlashTimer >= 30) {
                             bossIsFlashing = false;
                             bossFlashTimer = 0;
-                            enemy.image = imageUrls.wolf;
+                            enemy.image = images.wolf;
                         }
                     }
                 } else {
@@ -997,7 +1060,7 @@
         // Dibujar enemigos
         function drawEnemies() {
             for (const enemy of enemies) {
-                if (enemy.image.complete) {
+                if (enemy.image && enemy.image.complete) {
                     ctx.drawImage(enemy.image, enemy.x, enemy.y, enemy.width, enemy.height);
                 } else {
                     // Dibujar placeholder si la imagen no está cargada
@@ -1032,8 +1095,8 @@
         function drawHearts() {
             for (const heart of hearts) {
                 if (!heart.collected) {
-                    if (imageUrls.heart.complete) {
-                        ctx.drawImage(imageUrls.heart, heart.x, heart.y, heart.width, heart.height);
+                    if (images.heart && images.heart.complete) {
+                        ctx.drawImage(images.heart, heart.x, heart.y, heart.width, heart.height);
                     } else {
                         // Dibujar placeholder si la imagen no está cargada
                         ctx.fillStyle = '#FF69B4';
@@ -1104,11 +1167,11 @@
                             
                             // Efecto de destello
                             bossIsFlashing = true;
-                            enemy.image = imageUrls.wolfHurt;
+                            enemy.image = images.wolfHurt;
                             
                             // Cambiar a forma enfurecida
-                            if (bossHealth <= 3 && enemy.image !== imageUrls.wolfAngry) {
-                                enemy.image = imageUrls.wolfAngry;
+                            if (bossHealth <= 3 && enemy.image !== images.wolfAngry) {
+                                enemy.image = images.wolfAngry;
                                 enemy.speed = 3;
                                 
                                 // Efecto de destello grande
