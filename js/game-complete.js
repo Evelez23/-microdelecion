@@ -8,11 +8,11 @@
 (function () {
   // Solo ejecutar si el canvas existe
   if (!document.getElementById("gameCanvas")) return;
-
+  
   const canvas = document.getElementById("gameCanvas");
   const ctx = canvas.getContext("2d");
 
-  // =======================
+  // ========================
   // Configuración general
   // ========================
   const GAME_WIDTH = canvas.width;
@@ -24,7 +24,7 @@
   let lives = window.gameState ? window.gameState.lives : 3;
   let isGameOver = false;
 
-  // =======================
+  // ========================
   // Clases mejoradas para integración
   // ========================
   class Player {
@@ -42,300 +42,306 @@
     }
 
     update() {
-      if (this.invincible > 0) {
-        this.invincible--;
-      }
-      this.speedY += this.gravity;
       this.y += this.speedY;
+      if (!this.grounded) this.speedY += this.gravity;
 
-      // Colisión con el suelo
-      if (this.y + this.height > GAME_HEIGHT) {
-        this.y = GAME_HEIGHT - this.height;
+      if (this.y + this.height >= GAME_HEIGHT - 20) {
+        this.y = GAME_HEIGHT - 20 - this.height;
         this.speedY = 0;
         this.grounded = true;
       }
-    }
-
-    draw() {
-      if (this.sprite) {
-        ctx.drawImage(this.sprite, this.x, this.y, this.width, this.height);
-      }
+      
+      // Reducir tiempo de invencibilidad
+      if (this.invincible > 0) this.invincible--;
     }
 
     jump() {
       if (this.grounded) {
         this.speedY = this.jumpPower;
         this.grounded = false;
-        playSound("jump");
+        if (window.playSound) window.playSound("jump");
       }
     }
 
-    takeDamage() {
-      if (this.invincible <= 0) {
-        lives--;
-        this.invincible = 120; // 2 segundos de invencibilidad (60 fps)
-        playSound("hurt");
+    draw() {
+      if (this.sprite && this.sprite.complete) {
+        ctx.drawImage(this.sprite, this.x, this.y, this.width, this.height);
+      } else {
+        ctx.fillStyle = "brown";
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+      }
+      
+      // Efecto de invencibilidad (parpadeo)
+      if (this.invincible > 0 && this.invincible % 10 < 5) {
+        ctx.globalAlpha = 0.5;
+        ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+        ctx.globalAlpha = 1;
       }
     }
   }
 
   class Enemy {
-    constructor(x, y, type) {
-      this.x = x;
-      this.y = y;
-      this.width = 50;
-      this.height = 50;
-      this.type = type;
-      this.speedX = -2;
-      this.health = 1;
-      this.sprite = window.sprites.enemy;
-
-      if (this.type === "boss") {
-        this.width = 120;
-        this.height = 120;
-        this.health = 5; // Más vida para el jefe
-        this.sprite = window.sprites.wolf;
-        this.phase = 1;
-        this.attackCooldown = 0;
-      } else if (this.type === "bird") {
-        this.width = 60;
-        this.height = 60;
-        this.speedX = -3;
-        this.sprite = window.sprites.bird;
+  constructor(x, y, type = 0) {
+    this.x = x;
+    this.y = y;
+    this.width = 50;
+    this.height = 50;
+    this.speedX = (Math.random() > 0.5 ? 1 : -1) * (2 + Math.random() * 2);
+    this.type = type;
+    
+    // Asignar sprite según tipo
+    if (window.sprites) {
+      switch(type) {
+        case 0: this.sprite = window.sprites.enemy1; break;
+        case 1: this.sprite = window.sprites.enemy2; break;
+        case 2: this.sprite = window.sprites.enemy3; break;
+        default: this.sprite = window.sprites.enemy1;
       }
+    } else {
+      this.sprite = null;
     }
+    
+    this.moveRange = 150 + Math.random() * 100;
+    this.startX = x;
+    this.moveCooldown = 0;
+  }
 
-    update() {
+  update() {
+    // Movimiento lateral
+    if (this.moveCooldown <= 0) {
       this.x += this.speedX;
-
-      if (this.type === "boss") {
-        if (this.health <= 3 && this.phase === 1) {
-          this.phase = 2;
-          this.sprite = window.sprites.wolfAngry;
-          this.speedX = -3; // Se mueve más rápido
-          flashScreen();
-          playSound("boss");
-        }
-        this.attackCooldown--;
-        if (this.attackCooldown <= 0) {
-          this.attackCooldown = 90; // Ataca cada 1.5 segundos
-          if (Math.random() < 0.5) {
-            spawnEnemy(this.x, this.y + this.height, "fireball");
-          }
-        }
+      
+      // Cambiar dirección si supera el rango de movimiento
+      if (Math.abs(this.x - this.startX) > this.moveRange) {
+        this.speedX *= -1;
+        this.moveCooldown = 30; // Pequeña pausa al cambiar dirección
       }
+    } else {
+      this.moveCooldown--;
     }
+    
+    // Mantener dentro de los límites de la pantalla
+    if (this.x < 20) {
+      this.x = 20;
+      this.speedX *= -1;
+      this.moveCooldown = 30;
+    }
+    if (this.x > GAME_WIDTH - this.width - 20) {
+      this.x = GAME_WIDTH - this.width - 20;
+      this.speedX *= -1;
+      this.moveCooldown = 30;
+    }
+  }
 
-    draw() {
-      if (this.sprite) {
+  draw() {
+    if (this.sprite && this.sprite.complete) {
+      // Voltear sprite según dirección
+      ctx.save();
+      if (this.speedX < 0) {
+        ctx.scale(-1, 1);
+        ctx.drawImage(this.sprite, -this.x - this.width, this.y, this.width, this.height);
+      } else {
         ctx.drawImage(this.sprite, this.x, this.y, this.width, this.height);
       }
+      ctx.restore();
+    } else {
+      ctx.fillStyle = "purple";
+      ctx.fillRect(this.x, this.y, this.width, this.height);
     }
   }
+}
 
-  class Item {
-    constructor(x, y, type) {
-      this.x = x;
-      this.y = y;
-      this.type = type;
-      this.width = 30;
-      this.height = 30;
-      this.sprite = window.sprites.heart;
-      if (type === "powerup") {
-        this.sprite = window.sprites.powerup;
-      } else if (type === "coin") {
-        this.sprite = window.sprites.coin;
-      }
-    }
-    draw() {
-      if (this.sprite) {
-        ctx.drawImage(this.sprite, this.x, this.y, this.width, this.height);
-      }
+   // Añadir estas imágenes a la lista de sprites
+sprites.bossPhase1 = new Image();
+sprites.bossPhase2 = new Image();
+sprites.bossPhase3 = new Image();
+
+// Añadir estas URLs a imageUrls
+imageUrls.bossPhase1 = "https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/41296616cc8e88066d9db7c38be0939b9302996a/img/enemigos/lobo.svg";
+imageUrls.bossPhase2 = "https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/refs/heads/main/img/enemigos/loboferoz.png";
+imageUrls.bossPhase3 = "https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/refs/heads/main/img/enemigos/lobotriste.png";
+
+// Modificar la función updateBoss para manejar las fases
+function updateBoss() {
+  // Reducir cooldown de ataque
+  if (window.boss.attackCooldown > 0) {
+    window.boss.attackCooldown--;
+  }
+  
+  // Reducir timer de advertencia
+  if (window.boss.warningTimer > 0) {
+    window.boss.warningTimer--;
+    
+    // Ocultar advertencia cuando el timer llega a 0
+    if (window.boss.warningTimer === 0) {
+      const fireWarningElement = document.getElementById('fireWarning');
+      if (fireWarningElement) fireWarningElement.style.display = 'none';
     }
   }
-
-  class Projectile {
-    constructor(x, y, type) {
-      this.x = x;
-      this.y = y;
-      this.speedX = 5;
-      this.width = 20;
-      this.height = 20;
-      this.type = type;
-      this.sprite = window.sprites.shot;
+  
+  // Determinar la fase del jefe según su salud
+  if (window.boss.health >= 4) {
+    window.boss.phase = 1; // Lobo normal
+  } else if (window.boss.health >= 2) {
+    window.boss.phase = 2; // Lobo feroz
+    if (!window.boss.enraged) {
+      window.boss.enraged = true;
+      showHint("¡El lobo se ha enfurecido! ¡Ten cuidado!", 3000);
     }
-    update() {
-      this.x += this.speedX;
-    }
-    draw() {
-      if (this.sprite) {
-        ctx.drawImage(this.sprite, this.x, this.y, this.width, this.height);
-      }
-    }
+  } else {
+    window.boss.phase = 3; // Lobo triste/débil
   }
-
-  // =======================
-  // Variables del juego
-  // ========================
-  let player = new Player();
-  let enemies = [];
-  let items = [];
-  let projectiles = [];
-
-  // =======================
-  // Funciones de control
-  // ========================
-
-  function playSound(soundKey) {
-    const sound = sounds[soundKey];
-    if (sound) {
-      sound.currentTime = 0;
-      sound.play();
-    }
-  }
-
-  function flashScreen() {
-    const container = document.getElementById('gameContainer');
-    container.classList.add('flash-effect');
+  
+  // Atacar si el cooldown está listo
+  if (window.boss.attackCooldown <= 0) {
+    // Mostrar advertencia de ataque
+    const fireWarningElement = document.getElementById('fireWarning');
+    if (fireWarningElement) fireWarningElement.style.display = 'block';
+    window.boss.warningTimer = 60;
+    
+    // Lanzar bola de fuego después de un breve retraso
     setTimeout(() => {
-      container.classList.remove('flash-effect');
-    }, 300);
+      if (window.gameState.bossFight && window.boss.health > 0) {
+        window.boss.fireballs.push({
+          x: window.boss.x,
+          y: window.boss.y + window.boss.height/2,
+          vx: -5,
+          vy: 0,
+          radius: 15,
+          damage: 1
+        });
+        
+        // Reproducir sonido de ataque
+        playSound("enemy");
+      }
+    }, 1000);
+    
+    // Reiniciar cooldown de ataque (más rápido según la fase)
+    let cooldownTime = 150;
+    if (window.boss.phase === 2) cooldownTime = 100;
+    if (window.boss.phase === 3) cooldownTime = 120;
+    
+    window.boss.attackCooldown = cooldownTime;
+  }
+  
+  // Movimiento del jefe (solo en fases 1 y 2)
+  if (window.boss.phase < 3) {
+    window.boss.x += Math.sin(Date.now() / 200) * 0.5;
+  }
+}
+
+// Modificar la función draw para dibujar la fase correcta del jefe
+// Dibujar jefe si está activo
+if (window.gameState.bossFight) {
+  let bossSprite;
+  
+  switch (window.boss.phase) {
+    case 1:
+      bossSprite = sprites.bossPhase1;
+      break;
+    case 2:
+      bossSprite = sprites.bossPhase2;
+      break;
+    case 3:
+      bossSprite = sprites.bossPhase3;
+      break;
+    default:
+      bossSprite = sprites.bossPhase1;
+  }
+  
+  if (bossSprite && bossSprite.complete) {
+    // Jefe siempre mirando hacia la izquierda
+    ctx.save();
+    ctx.scale(-1, 1);
+    ctx.drawImage(bossSprite, -window.boss.x - window.boss.width, window.boss.y, window.boss.width, window.boss.height);
+    ctx.restore();
+  } else {
+    // Placeholder si el sprite no está cargado
+    ctx.fillStyle = window.boss.phase === 2 ? '#FF0000' : (window.boss.phase === 3 ? '#888888' : '#808080');
+    ctx.fillRect(window.boss.x, window.boss.y, window.boss.width, window.boss.height);
+  }
+}
+  // ========================
+  // Integración con el juego principal
+  // ========================
+  const player = new Player();
+  let enemies = [];
+
+  function spawnEnemy() {
+    const type = Math.floor(Math.random() * 3);
+    const y = GAME_HEIGHT - 70;
+    const x = 100 + Math.random() * (GAME_WIDTH - 200); // Posición aleatoria
+    enemies.push(new Enemy(x, y, type));
   }
 
   function updateGame() {
     if (isGameOver) return;
-
-    // Actualizar jugador
+    
     player.update();
+    enemies.forEach(e => e.update());
 
-    // Actualizar enemigos
-    enemies.forEach((enemy, index) => {
-      enemy.update();
-      // Colisión con jugador
-      if (checkCollision(player, enemy)) {
-        player.takeDamage();
-        if (enemy.type !== "boss") {
-          enemies.splice(index, 1);
-        }
-      }
-    });
-
-    // Actualizar items
-    items.forEach((item, index) => {
-      if (checkCollision(player, item)) {
-        if (item.type === "heart") {
-          lives++;
-        } else if (item.type === "coin") {
-          score += 10;
-        } else if (item.type === "powerup" && !window.oso.hasUnicorn) {
-          window.gameState.heartsCollected += 3; // Corazones para invocar
-          playSound("powerup");
-        }
-        items.splice(index, 1);
-        playSound("collect");
-      }
-    });
-
-    // Actualizar proyectiles
-    projectiles.forEach((p, pIndex) => {
-      p.update();
-      if (p.x > GAME_WIDTH) {
-        projectiles.splice(pIndex, 1);
-      }
-      // Colisión con enemigos
-      enemies.forEach((enemy, eIndex) => {
-        if (checkCollision(p, enemy)) {
-          enemy.health--;
-          projectiles.splice(pIndex, 1);
-          if (enemy.health <= 0) {
-            enemies.splice(eIndex, 1);
-            score += 50;
+    // Detectar colisiones solo si el jugador no es invencible
+    if (player.invincible <= 0) {
+      for (let i = enemies.length - 1; i >= 0; i--) {
+        const e = enemies[i];
+        if (
+          player.x < e.x + e.width &&
+          player.x + player.width > e.x &&
+          player.y < e.y + e.height &&
+          player.height + player.y > e.y
+        ) {
+          // Reducir vidas y hacer invencible temporalmente
+          if (window.gameState) window.gameState.lives--;
+          if (window.playSound) window.playSound("hurt");
+          player.invincible = 120; // 2 segundos de invencibilidad
+          
+          if (window.gameState && window.gameState.lives <= 0) {
+            isGameOver = true;
+            if (window.gameOver) window.gameOver();
           }
+          break;
         }
-      });
-    });
-
-    // Filtra los enemigos que están fuera de pantalla
-    enemies = enemies.filter(enemy => enemy.x + enemy.width > 0);
-  }
-
-  function drawGame() {
-    if (isGameOver) return;
-    ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
-
-    // Dibujar jugador y otros elementos
-    player.draw();
-    enemies.forEach(enemy => enemy.draw());
-    items.forEach(item => item.draw());
-    projectiles.forEach(p => p.draw());
-
-    // Actualizar UI del juego principal
-    if (window.updateGameUI) {
-      window.updateGameUI(lives, score);
+      }
     }
   }
 
-  function checkCollision(obj1, obj2) {
-    return obj1.x < obj2.x + obj2.width &&
-      obj1.x + obj1.width > obj2.x &&
-      obj1.y < obj2.y + obj2.height &&
-      obj1.y + obj1.height > obj2.y;
-  }
-
-  function spawnEnemy(x, y, type) {
-    enemies.push(new Enemy(x, y, type));
+  function drawGame() {
+    // Esta función se integra con el bucle principal del juego
+    player.draw();
+    enemies.forEach(e => e.draw());
   }
 
   function clearEnemies() {
     enemies = [];
-    projectiles = [];
   }
 
-  // =======================
-  // Integración con el juego principal
   // ========================
-
+  // Integración con controles existentes
+  // ========================
   function initIntegratedGame() {
-    if (window.gameState) {
-      window.integratedGame = {
-        update: updateGame,
-        draw: drawGame,
-        spawnEnemy: spawnEnemy,
-        clearEnemies: clearEnemies,
-        getPlayer: () => player,
-        getEnemies: () => enemies,
-        getProjectiles: () => projectiles,
-        spawnProjectile: (x, y, type) => projectiles.push(new Projectile(x, y, type))
-      };
-
-      // Control del jugador con teclas
-      document.addEventListener("keydown", (e) => {
-        if (!window.gameState.gameStarted) return;
-        if (e.code === "Space" && player.grounded) {
-          player.jump();
-        }
-        if (e.code === "KeyP" && window.oso.hasUnicorn) {
-          const unicorn = window.unicorn;
-          if (!unicorn.active) {
-            unicorn.active = true;
-            unicorn.power = 100;
-            playSound("powerup");
-            
-            // Transformación del oso al 20% más grande
-            window.oso.sprite = window.sprites.osoyuni;
-            window.oso.width = 96; // 80 * 1.2
-            window.oso.height = 96; // 80 * 1.2
-          }
-        }
-      });
-
-      // Modificar el loop de juego principal para llamar a nuestras funciones
+    console.log("✅ Juego integrado inicializado");
+    
+    // Limpiar enemigos existentes
+    clearEnemies();
+    
+    // Generar enemigos iniciales según el nivel
+    const enemyCount = currentLevel === "2-3" ? 0 : 3 + (parseInt(currentLevel[0]) * 2);
+    for (let i = 0; i < enemyCount; i++) {
+      spawnEnemy();
+    }
+    
+    // Configurar invencibilidad inicial
+    player.invincible = 120;
+    
+    // Integrar con el bucle principal del juego
+    if (window.integratedUpdate) {
       window.originalUpdate = window.update;
       window.update = function() {
         window.originalUpdate();
         updateGame();
       };
-
+      
       window.originalDraw = window.draw;
       window.draw = function() {
         window.originalDraw();
@@ -344,7 +350,7 @@
     }
   }
 
-  // =======================
+  // ========================
   // Inicialización cuando el juego principal esté listo
   // ========================
   if (window.gameState) {
@@ -378,5 +384,6 @@ const sounds = {
   enemy: new Audio(`${baseUrl}/sounds/enemy.mp3`),
   powerup: new Audio(`${baseUrl}/sounds/powerup.mp3`),
   shot: new Audio(`${baseUrl}/sounds/shot.mp3`),
-  boss: new Audio(`${baseUrl}/sounds/para%20la%20batalla.mp3`),
+  bossBattle: new Audio(`${baseUrl}/sounds/para%20la%20batalla.mp3`),
+  intro: new Audio(`${baseUrl}/sounds/intro.mp3`)
 };
