@@ -64,7 +64,7 @@
             border: 5px solid #FFD700;
             border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+            box-shadow: 极 0 30px rgba(0, 0, 0, 0.6);
         }
         
         #gameCanvas {
@@ -156,7 +156,7 @@
             color: #8B4513;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 极);
             transition: all 0.3s;
             z-index: 21;
         }
@@ -207,7 +207,7 @@
             width: 400px;
             height: 25px;
             background: #333;
-            border-radius: 12px;
+           极-radius: 12px;
             overflow: hidden;
             z-index: 15;
             border: 3px solid #fff;
@@ -241,7 +241,7 @@
             left: 0;
             width: 100%;
             height: 50px;
-            background: linear-gradient(to top, rgba(255, 0, 0, 0.3), transparent);
+            background: linear-gradient(to top, rgba(255, 0, 极, 0.3), transparent);
             z-index: 14;
             display: none;
             animation: warningPulse 0.5s infinite;
@@ -261,7 +261,7 @@
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
+            width: 极%;
             height: 100%;
             background: radial-gradient(circle, rgba(255, 215, 0, 0.4), rgba(255, 140, 0, 0.2));
             z-index: 30;
@@ -320,7 +320,7 @@
             overflow: hidden;
         }
 
-        .progress {
+极 .progress {
             height: 100%;
             background: #4CAF50;
             width: 0%;
@@ -386,7 +386,7 @@
         .action-button {
             position: absolute;
             width: 50px;
-            height: 50px;
+            height: 50极;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -475,7 +475,7 @@
                 <!-- UI del juego -->
                 <div id="ui">
                     <div class="ui-item">⭐ Puntos: <span id="score">0</span></div>
-                    <div class="ui-item">❤️ Vidas: <span id="lives">3</span></div>
+                    <div class="ui-item">❤️ Vidas: <span极="lives">3</span></div>
                     <div class="ui-item">🗺️ Nivel: <span id="level">1-1</span></div>
                     <div id="unicornPower" class="ui-item" style="display: none;">
                         <span>🦄 Poder:</span>
@@ -511,7 +511,7 @@
                 <!-- Pantalla de carga -->
                 <div id="loadingScreen" class="loading-screen">
                     <h2>Cargando recursos del juego...</h2>
-                    <div class="progress-bar">
+                    <div class极="progress-bar">
                         <div class="progress" id="loadingProgress"></div>
                     </div>
                     <p id="loadingText">0%</p>
@@ -532,21 +532,21 @@
             </div>
         </div>
 
+        <!-- Controles tipo PlayStation -->
         <div class="playstation-controls">
-    <div class="d-pad">
-        <div class="d-pad-button d-pad-up" id="upBtn">↑</div>
-        <div class="d-pad-button d-pad-down" id="downBtn">↓</div>
-        <div class="d-pad-button d-pad-left" id="leftBtn">←</div>
-        <div class="d-pad-button d-pad-right" id="rightBtn">→</div>
-    </div>
-    
-    <div class="action-buttons">
-        <div class="action-button action-button-x" id="jumpBtn">SALTAR</div>
-        <div class="action-button action-button-circle" id="hugBtn">ABRAZAR</div>
-        <div class="action-button action-button-square" id="unicornBtn">UNICORNIO</div>
-        <div class="action-button action-button-triangle" id="actionBtn">ACCIÓN</div>
-    </div>
-</div>
+            <div class="d-pad">
+                <div class="d-pad-button d-pad-up" id="upBtn">↑</div>
+                <div class="d-pad-button d-pad-down" id="downBtn">↓</div>
+                <div class="d-pad-button d-pad-left" id="leftBtn">←</div>
+                <div class="d-pad-button d-pad-right" id="rightBtn">→</div>
+            </div>
+            
+            <div class="action-buttons">
+                <div class="action-button action-button-x" id="jumpBtn">SALTAR</div>
+                <div class="action-button action-button-circle" id="hugBtn">ABRAZAR</div>
+                <div class="action-button action-button-square" id="unicornBtn">UNICORNIO</div>
+                <div class="action-button action-button-triangle" id="actionBtn">DISPARAR</div>
+            </div>
         </div>
     </div>
 
@@ -569,7 +569,9 @@
             bearWithUnicorn: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/Amigos/osoyuni.png',
             background1: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/fondos/bosque1.jpg',
             background2: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/fondos/bosque2.jpg',
-            background3: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/fondos/bosque3.jpg',
+            background3: '极://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/fondos/bosque3.jpg',
+            background4: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/fondos/bosque4.jpg',
+            background5: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/fondos/background_1_2.jpeg',
             backgroundBoss: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/fondos/background%20final.jpeg',
             enemy1: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/enemigos/Enemigos-01.svg',
             enemy2: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/enemigos/Enemigos-02.svg',
@@ -589,13 +591,14 @@
             hug: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/sounds/hug.mp3.mp3',
             hurt: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/sounds/hurt.mp3.mp3',
             enemy: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/sounds/enemy.mp3.mp3',
-            powerup: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/sounds/powerup.mp3.mp3',
+            powerup: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/sounds/powerup.mp3极',
             bossBattle: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/sounds/para%20la%20batalla.mp3',
-            victory: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/sounds/power-up-game-sound-effect-359227.mp3'
+            victory: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/sounds/power-up-game-sound-effect-359227.mp3',
+            shoot: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/sounds/shot.mp3.mp3'
         };
 
         // Variables de juego
-        let player, enemies = [], hearts = [], platforms = [], friends = [], items = [], background;
+        let player, enemies = [], hearts = [], platforms = [], friends = [], items = [], projectiles = [], background;
         let keys = {};
         let score = 0;
         let lives = 3;
@@ -614,6 +617,7 @@
         let totalResources = Object.keys(imageUrls).length + Object.keys(soundUrls).length;
         let sounds = {};
         let images = {};
+        let shootCooldown = 0;
 
         // Inicializar el juego
         function init() {
@@ -640,6 +644,11 @@
                     }, 500);
                     playSound('hug');
                     checkHug();
+                }
+                
+                // Disparar con la tecla 'C'
+                if ((e.key === 'c' || e.key === 'C') && unicornActive && shootCooldown <= 0) {
+                    shootHeart();
                 }
             });
             
@@ -691,7 +700,7 @@
             // Configurar eventos táctiles para botones de dirección
             upBtn.addEventListener('touchstart', handleDirectionStart('ArrowUp'));
             upBtn.addEventListener('touchend', handleDirectionEnd('ArrowUp'));
-            upBtn.addEventListener('mousedown', handleDirectionStart('ArrowUp'));
+            upBtn.addEventListener('mousedown', handle极Start('ArrowUp'));
             upBtn.addEventListener('mouseup', handleDirectionEnd('ArrowUp'));
             upBtn.addEventListener('mouseleave', handleDirectionEnd('ArrowUp'));
             
@@ -765,6 +774,20 @@
                 e.preventDefault();
                 if (heartsCollected >= 3 && !unicornActive) {
                     activateUnicorn();
+                }
+            });
+            
+            actionBtn.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                if (unicornActive && shootCooldown <= 0) {
+                    shootHeart();
+                }
+            });
+            
+            actionBtn.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                if (unicornActive && shootCooldown <= 0) {
+                    shootHeart();
                 }
             });
         }
@@ -844,7 +867,7 @@
         
         // Actualizar barra de progreso
         function updateLoadingProgress() {
-            const progress = (loadedResources / totalResources) * 100;
+            const progress = (loadedResources / totalResources极) * 100;
             document.getElementById('loadingProgress').style.width = `${progress}%`;
             document.getElementById('loadingText').textContent = `${Math.round(progress)}%`;
             
@@ -874,6 +897,7 @@
             unicornActive = false;
             currentLevel = 1;
             currentSubLevel = 1;
+            projectiles = [];
             
             // Crear jugador
             player = {
@@ -888,7 +912,9 @@
                 grounded: false,
                 image: images.bear,
                 isJumping: false,
-                isHugging: false
+                isHugging: false,
+                direction: 1, // 1 = derecha, -1 = izquierda
+                invincible: 0 // Tiempo de invencibilidad después de recibir daño
             };
             
             // Configurar nivel
@@ -906,14 +932,13 @@
             platforms = [];
             friends = [];
             items = [];
+            projectiles = [];
             
             // Configurar niveles
             if (level === 1) {
-                // Nivel 1
-                background = images.background1;
-                
                 if (subLevel === 1) {
                     // Nivel 1-1 - 3 corazones para poder avanzar
+                    background = images.background1;
                     createPlatform(0, 400, 800, 100);
                     createPlatform(200, 300, 100, 20);
                     createPlatform(500, 250, 100, 20);
@@ -935,6 +960,7 @@
                     document.getElementById('bossHealth').style.display = 'none';
                 } else if (subLevel === 2) {
                     // Nivel 1-2
+                    background = images.background2;
                     createPlatform(0, 400, 800, 100);
                     createPlatform(100, 300, 100, 20);
                     createPlatform(300, 250, 100, 20);
@@ -953,13 +979,34 @@
                     
                     // Actualizar UI
                     document.getElementById('levelIndicator').textContent = 'Nivel 1-2: Encuentro con el lobo';
+                } else if (subLevel === 3) {
+                    // Nivel 1-3
+                    background = images.background3;
+                    createPlatform(0, 400, 800, 100);
+                    createPlatform(150, 300, 100, 20);
+                    createPlatform(350, 250, 100, 20);
+                    createPlatform(550, 300, 100, 20);
+                    
+                    // Crear enemigos
+                    createEnemy(300, 330, 'normal');
+                    createEnemy(500, 330, 'normal');
+                    
+                    // Crear amigos
+                    createFriend(200, 330, 'squirrel');
+                    createFriend(400, 330, 'rabbit');
+                    createFriend(600, 330, 'bird');
+                    
+                    // Crear corazones
+                    createHeart(250, 250);
+                    createHeart(450, 200);
+                    
+                    // Actualizar UI
+                    document.getElementById('levelIndicator').textContent = 'Nivel 1-3: Cueva Misteriosa';
                 }
             } else if (level === 2) {
-                // Nivel 2
-                background = images.backgroundBoss;
-                
                 if (subLevel === 1) {
                     // Nivel 2-1
+                    background = images.background4;
                     createPlatform(0, 400, 800, 100);
                     createPlatform(150, 300, 100, 20);
                     createPlatform(350, 250, 100, 20);
@@ -980,9 +1027,28 @@
                     createFriend(650, 330, 'bird');
                     
                     // Actualizar UI
-                    document.getElementById('levelIndicator').textContent = 'Nivel 2-1: Preparación para la batalla';
+                    document.getElementById('levelIndicator').textContent = 'Nivel 2-1: Montañas Altas';
                 } else if (subLevel === 2) {
-                    // Nivel 2-2: Batalla con el lobo
+                    // Nivel 2-2
+                    background = images.background5;
+                    createPlatform(0, 400, 800, 100);
+                    createPlatform(200, 300, 400, 20);
+                    createPlatform(600, 300, 100, 20);
+                    
+                    // Crear enemigos
+                    createEnemy(300, 330, 'normal');
+                    createEnemy(500, 330, 'normal');
+                    createEnemy(650, 330, 'normal');
+                    
+                    // Crear amigos
+                    createFriend(250, 330, 'rabbit');
+                    createFriend(450, 330, 'bird');
+                    
+                    // Actualizar UI
+                    document.getElementById('levelIndicator').textContent = 'Nivel 2-2: Cascada Brillante';
+                } else if (subLevel === 3) {
+                    // Nivel 2-3: Batalla con el lobo
+                    background = images.backgroundBoss;
                     createPlatform(0, 400, 800, 100);
                     createPlatform(200, 300, 400, 20);
                     
@@ -998,7 +1064,7 @@
                     updateBossHealth();
                     
                     // Actualizar UI
-                    document.getElementById('levelIndicator').textContent = 'Nivel 2-2: Batalla con el lobo';
+                    document.getElementById('levelIndicator').textContent = 'Nivel 2-3: Guarida del Lobo';
                     document.getElementById('heartsCollected').style.display = 'none';
                     document.getElementById('unicornPower').style.display = 'block';
                 }
@@ -1088,15 +1154,48 @@
             unicornActive = true;
             unicornPower = 100;
             player.image = images.bearWithUnicorn;
-            player.width = 72; // 30% más grande
-            player.height = 96; // 30% más grande
+            player.width = 72; // 20% más grande
+            player.height = 96; // 20% más grande
             playSound('powerup');
             
             // Mostrar mensaje
-            showHint('¡Poder de unicornio activado! Ahora puedes derrotar al lobo', 3000);
+            showHint('¡Poder de unicornio activado! Ahora puedes disparar corazones', 3000);
             
             // Actualizar UI
             updateUnicornPower();
+        }
+        
+        // Disparar corazón
+        function shootHeart() {
+            if (unicornActive && unicornPower >= 10 && shootCooldown <= 0) {
+                playSound('shoot');
+                
+                // Crear proyectil (corazón)
+                projectiles.push({
+                    x: player.x + player.width/2,
+                    y: player.y + player.height/2,
+                    width: 20,
+                    height: 20,
+                    speed: 10,
+                    direction: player.direction,
+                    active: true
+                });
+                
+                // Reducir poder del unicornio
+                unicornPower -= 10;
+                updateUnicornPower();
+                
+                // Establecer cooldown
+                shootCooldown = 20;
+                
+                // Si el poder se agota, desactivar unicornio
+                if (unicornPower <= 0) {
+                    unicornActive = false;
+                    player.image = images.bear;
+                    player.width = 60;
+                    player.height = 80;
+                }
+            }
         }
         
         // Comprobar abrazos
@@ -1141,7 +1240,7 @@
         }
         
         // Actualizar poder del unicornio
-        function updateUnicornPower() {
+        function updateUnicorn极() {
             const powerLevel = document.getElementById('unicornPowerLevel');
             powerLevel.style.width = `${unicornPower}%`;
         }
@@ -1178,7 +1277,7 @@
         
         // Mostrar pista
         function showHint(text, duration) {
-            const hint = document.getElementById('hint');
+            const hint = document.getElementById('h极');
             hint.textContent = text;
             hint.style.opacity = '1';
             
@@ -1241,6 +1340,10 @@
             updateItems();
             drawItems();
             
+            // Actualizar y dibujar proyectiles
+            updateProjectiles();
+            drawProjectiles();
+            
             // Comprobar colisiones
             checkCollisions();
             
@@ -1258,10 +1361,12 @@
             
             if (keys['ArrowLeft']) {
                 player.velocityX = -player.speed;
+                player.direction = -1;
             }
             
             if (keys['ArrowRight']) {
                 player.velocityX = player.speed;
+                player.direction = 1;
             }
             
             // Gravedad
@@ -1302,7 +1407,7 @@
             
             // Actualizar poder del unicornio
             if (unicornActive) {
-                unicornPower -= 0.2;
+                unicornPower -= 0.1;
                 if (unicornPower <= 0) {
                     unicornActive = false;
                     player.image = images.bear;
@@ -1311,17 +1416,42 @@
                 }
                 updateUnicornPower();
             }
+            
+            // Actualizar cooldown de disparo
+            if (shootCooldown > 0) {
+                shootCooldown--;
+            }
+            
+            // Actualizar invencibilidad
+            if (player.invincible > 0) {
+                player.invincible--;
+            }
         }
         
         // Dibujar jugador
         function drawPlayer() {
+            // Dibujar con efecto de parpadeo si es invencible
+            if (player.invincible > 0 && player.invincible % 10 < 5) {
+                ctx.globalAlpha = 0.5;
+            }
+            
             if (player.image && player.image.complete) {
-                ctx.drawImage(player.image, player.x, player.y, player.width, player.height);
+                // Voltear imagen según la dirección
+                if (player.direction === -1) {
+                    ctx.save();
+                    ctx.scale(-1, 1);
+                    ctx.drawImage(player.image, -player.x - player.width, player.y, player.width, player.height);
+                    ctx.restore();
+                } else {
+                    ctx.drawImage(player.image, player.x, player.y, player.width, player.height);
+                }
             } else {
                 // Dibujar placeholder si la imagen no está cargada
                 ctx.fillStyle = '#8B4513';
                 ctx.fillRect(player.x, player.y, player.width, player.height);
             }
+            
+            ctx.globalAlpha = 1;
         }
         
         // Actualizar enemigos
@@ -1374,7 +1504,15 @@
         function drawEnemies() {
             for (const enemy of enemies) {
                 if (enemy.image && enemy.image.complete) {
-                    ctx.drawImage(enemy.image, enemy.x, enemy.y, enemy.width, enemy.height);
+                    // Voltear imagen según la dirección
+                    if (enemy.direction === -1) {
+                        ctx.save();
+                        ctx.scale(-1, 1);
+                        ctx.drawImage(enemy.image, -enemy.x - enemy.width, enemy.y, enemy.width, enemy.height);
+                        ctx.restore();
+                    } else {
+                        ctx.drawImage(enemy.image, enemy.x, enemy.y, enemy.width, enemy.height);
+                    }
                 } else {
                     // Dibujar placeholder si la imagen no está cargada
                     ctx.fillStyle = '#FF0000';
@@ -1465,6 +1603,84 @@
             }
         }
         
+        // Actualizar proyectiles
+        function updateProjectiles() {
+            for (let i = projectiles.length - 1; i >= 0; i--) {
+                const projectile = projectiles[i];
+                
+                // Mover proyectil
+                projectile.x += projectile.speed * projectile.direction;
+                
+                // Eliminar proyectiles que salen de la pantalla
+                if (projectile.x < -50 || projectile.x > canvas.width + 50) {
+                    projectiles.splice(i, 1);
+                    continue;
+                }
+                
+                // Comprobar colisión con enemigos
+                for (let j = enemies.length - 1; j >= 0; j--) {
+                    const enemy = enemies[j];
+                    
+                    if (
+                        projectile.x < enemy.x + enemy.width &&
+                        projectile.x + projectile.width > enemy.x &&
+                        projectile.y < enemy.y + enemy.height &&
+                        projectile.y + projectile.height > enemy.y
+                    ) {
+                        // El proyectil golpea al enemigo
+                        playSound('enemy');
+                        enemy.health--;
+                        
+                        if (enemy.type === 'boss') {
+                            bossHealth = enemy.health;
+                            updateBossHealth();
+                            
+                            // Efecto de destello
+                            bossIsFlashing = true;
+                            enemy.image = images.wolfHurt;
+                            
+                            // Cambiar a forma enfurecida
+                            if (bossHealth <= 3 && enemy.image !== images.wolfAngry) {
+                                enemy.image = images.wolfAngry;
+                                enemy.speed = 3;
+                                
+                                // Efecto de destello grande
+                                gameContainer.classList.add('boss-flash');
+                                setTimeout(() => {
+                                    gameContainer.classList.remove('boss-flash');
+                                }, 500);
+                            }
+                        }
+                        
+                        if (enemy.health <= 0) {
+                            // Eliminar enemigo
+                            enemies.splice(j, 1);
+                            score += enemy.type === 'boss' ? 500 : 200;
+                        }
+                        
+                        // Eliminar proyectil
+                        projectiles.splice(i, 1);
+                        break;
+                    }
+                }
+            }
+        }
+        
+        // Dibujar proyectiles
+        function drawProjectiles() {
+            for (const projectile of projectiles) {
+                if (images.heart && images.heart.complete) {
+                    ctx.drawImage(images.heart, projectile.x - projectile.width/2, projectile.y - projectile.height/2, projectile.width, projectile.height);
+                } else {
+                    // Dibujar placeholder si la imagen no está cargada
+                    ctx.fillStyle = '#FF69B4';
+                    ctx.beginPath();
+                    ctx.arc(projectile.x, projectile.y, projectile.width/2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+        }
+        
         // Dibujar plataformas
         function drawPlatforms() {
             for (const platform of platforms) {
@@ -1511,54 +1727,17 @@
                 }
             }
             
-            // Colisión con enemigos
+            // Colisión con enemigos - SOLO si el jugador no es invencible
             for (const enemy of enemies) {
                 if (
+                    player.invincible <= 0 &&
                     player.x < enemy.x + enemy.width &&
                     player.x + player.width > enemy.x &&
                     player.y < enemy.y + enemy.height &&
                     player.y + player.height > enemy.y
                 ) {
-                    // El jugador está atacando con el poder del unicornio
-                    if (unicornActive) {
-                        playSound('enemy');
-                        enemy.health--;
-                        
-                        if (enemy.type === 'boss') {
-                            bossHealth = enemy.health;
-                            updateBossHealth();
-                            
-                            // Efecto de destello
-                            bossIsFlashing = true;
-                            enemy.image = images.wolfHurt;
-                            
-                            // Cambiar a forma enfurecida
-                            if (bossHealth <= 3 && enemy.image !== images.wolfAngry) {
-                                enemy.image = images.wolfAngry;
-                                enemy.speed = 3;
-                                
-                                // Efecto de destello grande
-                                gameContainer.classList.add('boss-flash');
-                                setTimeout(() => {
-                                    gameContainer.classList.remove('boss-flash');
-                                }, 500);
-                            }
-                        }
-                        
-                        if (enemy.health <= 0) {
-                            // Eliminar enemigo
-                            const index = enemies.indexOf(enemy);
-                            if (index > -1) {
-                                enemies.splice(index, 1);
-                            }
-                            
-                            score += enemy.type === 'boss' ? 500 : 200;
-                            updateUI();
-                        }
-                    } else {
-                        // El jugador es golpeado
-                        playerLoseLife();
-                    }
+                    // El jugador es golpeado
+                    playerLoseLife();
                 }
             }
         }
@@ -1567,6 +1746,10 @@
         function playerLoseLife() {
             lives--;
             playSound('hurt');
+            
+            // Hacer al jugador invencible por un tiempo
+            player.invincible = 120;
+            
             updateUI();
             
             if (lives <= 0) {
@@ -1583,55 +1766,89 @@
         
         // Comprobar si se completó el nivel
         function checkLevelCompletion() {
+            let levelCompleted = false;
+            
             // Completar nivel 1-1: recolectar 3 corazones y abrazar a todos los amigos
-            if (currentLevel === 1 && currentSubLevel === 1 && heartsCollected >= 3) {
+            if (currentLevel === 1 && currentSubLevel === 1) {
                 let allHugged = true;
                 for (const friend of friends) {
                     if (!friend.hugged) allHugged = false;
                 }
                 
                 if (allHugged && friends.length > 0) {
-                    nextLevel();
+                    levelCompleted = true;
                 }
             }
-            
             // Completar nivel 1-2: derrotar al lobo y abrazar a todos los amigos
-            if (currentLevel === 1 && currentSubLevel === 2 && enemies.length === 0) {
+            else if (currentLevel === 1 && currentSubLevel === 2) {
                 let allHugged = true;
                 for (const friend of friends) {
                     if (!friend.hugged) allHugged = false;
                 }
                 
-                if (allHugged && friends.length > 0) {
-                    nextLevel();
+                if (enemies.length === 0 && allHugged && friends.length > 0) {
+                    levelCompleted = true;
                 }
             }
-            
+            // Completar nivel 1-3: derrotar a todos los enemigos y abrazar a todos los amigos
+            else if (currentLevel === 1 && currentSubLevel === 3) {
+                let allHugged = true;
+                for (const friend of friends) {
+                    if (!friend.hugged) allHugged = false;
+                }
+                
+                if (enemies.length === 0 && allHugged && friends.length > 0) {
+                    levelCompleted = true;
+                }
+            }
             // Completar nivel 2-1: recolectar 3 corazones y abrazar a todos los amigos
-            if (currentLevel === 2 && currentSubLevel === 1 && heartsCollected >= 3) {
+            else if (currentLevel === 2 && currentSubLevel === 1) {
                 let allHugged = true;
                 for (const friend of friends) {
                     if (!friend.hugged) allHugged = false;
                 }
                 
-                if (allHugged && friends.length > 0) {
-                    nextLevel();
+                if (heartsCollected >= 3 && allHugged && friends.length > 0) {
+                    levelCompleted = true;
+                }
+            }
+            // Completar nivel 2-2: derrotar a todos los enemigos y abrazar a todos los amigos
+            else if (currentLevel === 2 && currentSubLevel === 2) {
+                let allHugged = true;
+                for (const friend of friends) {
+                    if (!friend.hugged) allHugged = false;
+                }
+                
+                if (enemies.length === 0 && allHugged && friends.length > 0) {
+                    levelCompleted = true;
+                }
+            }
+            // Completar nivel 2-3: derrotar al lobo jefe
+            else if (currentLevel === 2 && currentSubLevel === 3) {
+                if (enemies.length === 0) {
+                    levelCompleted = true;
                 }
             }
             
-            // Completar nivel 2-2: derrotar al lobo jefe
-            if (currentLevel === 2 && currentSubLevel === 2 && enemies.length === 0) {
-                victory();
+            if (levelCompleted) {
+                setTimeout(() => {
+                    nextLevel();
+                }, 1000);
             }
         }
         
         // Pasar al siguiente nivel
         function nextLevel() {
-            if (currentSubLevel < 2) {
+            if (currentLevel === 1 && currentSubLevel < 3) {
                 currentSubLevel++;
-            } else {
-                currentLevel++;
+            } else if (currentLevel === 2 && currentSubLevel < 3) {
+                currentSubLevel++;
+            } else if (currentLevel === 1 && currentSubLevel === 3) {
+                currentLevel = 2;
                 currentSubLevel = 1;
+            } else if (currentLevel === 2 && currentSubLevel === 3) {
+                victory();
+                return;
             }
             
             setupLevel(currentLevel, currentSubLevel);
