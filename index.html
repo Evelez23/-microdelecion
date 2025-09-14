@@ -430,7 +430,7 @@
 
                 <!-- Pantalla de inicio -->
                 <div id="startScreen">
-                    <img id="coverImage" src="https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/oso/oso_portada.png" alt="Portada del Juego" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjUwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjUwMCIgZmlsbD0iIzY2M2YwMCIvPgogIDx0ZXh0IHg9IjQwMCIgeT0iMjUwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5Pc28gQWJyYXpvcyBBZHZlbnR1cmU8L3RleHQ+Cjwvc3ZnPg=='">
+                    <img id="coverImage" src="https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/oso/oso_portada.png" alt="Portada del Juego">
                     <button id="startButton">🎮 ¡Comenzar Aventura!</button>
                 </div>
                 
@@ -446,7 +446,7 @@
                 <!-- Pantalla de victoria -->
                 <div id="victoryScreen" class="victory-animation">
                     <h2 class="victory-title">🎉 ¡VICTORIA! 🎉</h2>
-                    <img id="victoryImage" class="victory-image" src="https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/Amigos/osoyuni.png" alt="Oso y Unicornio" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2ZmZmYwMCIvPgogIDx0ZXh0IHg9IjE1MCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjAiIGZpbGw9ImJsYWNrIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7DgSBWaWN0b3JpYSE8L3RleHQ+Cjwvc3ZnPg=='">
+                    <img id="victoryImage" class="victory-image" src="https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/oso/uniyosocombat.png" alt="Oso y Unicornio">
                     <p style="font-size: 1.5rem; margin: 10px 0;">¡Has derrotado al Lobo Feroz!</p>
                     <p style="font-size: 1.2rem; margin: 10px 0;">Puntuación final: <span id="finalScore">0</span></p>
                     <button id="restartButton" style="margin-top: 20px; padding: 12px 24px; font-size: 1.2rem; background: #4CAF50; color: white; border: none; border-radius: 50px; cursor: pointer;">🔄 Jugar de nuevo</button>
@@ -477,52 +477,29 @@
         const ctx = canvas.getContext('2d');
         const gameContainer = document.getElementById('gameContainer');
         
-        // URLs corregidas para imágenes con respaldo
+        // URLs corregidas para imágenes según tu estructura de repositorio
         const imageUrls = {
-            bear: {
-                url: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/oso/oso_idle.svg',
-                fallback: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iODAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMjUiIGZpbGw9IiM4QjQ1MTMiLz4KICA8Y2lyY2xlIGN4PSIyMCIgY3k9IjI1IiByPSI1IiBmaWxsPSJ3aGl0ZSIvPgogIDxjaXJjbGUgY3g9IjQwIiBjeT0iMjUiIHI9IjUiIGZpbGw9IndoaXRlIi8+CiAgPGNpcmNsZSBjeD0iMjAiIGN5PSIyNSIgcj0iMiIgZmlsbD0iYmxhY2siLz4KICA8Y2lyY2xlIGN4PSI0MCIgY3k9IjI1IiByPSIyIiBmaWxsPSJibGFjayIvPgogIDxwYXRoIGQ9Ik0yMCA0MCBRMzAgNDUgNDAgNDAiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIvPgo8L3N2Zz4='
-            },
-            bearJump: {
-                url: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/oso/oso_jump.svg',
-                fallback: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iODAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMjUiIGZpbGw9IiM4QjQ1MTMiLz4KICA8Y2lyY2xlIGN4PSIyMCIgY3k9IjI1IiByPSI1IiBmaWxsPSJ3aGl0ZSIvPgogIDxjaXJjbGUgY3g9IjQwIiBjeT0iMjUiIHI9IjUiIGZpbGw9IndoaXRlIi8+CiAgPGNpcmNsZSBjeD0iMjAiIGN5PSIyNSIgcj0iMiIgZmlsbD0iYmxhY2siLz4KICA8Y2lyY2xlIGN4PSI0MCIgY3k9IjI1IiByPSIyIiBmaWxsPSJibGFjayIvPgogIDxwYXRoIGQ9Ik0xNSA0NSBRMzAgNTAgNDUgNDUiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIvPgo8L3N2Zz4='
-            },
-            bearHug: {
-                url: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/oso/oso_hug.svg',
-                fallback: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iODAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMjUiIGZpbGw9IiM4QjQ1MTMiLz4KICA8Y2lyY2xlIGN4PSIyMCIgY3k9IjI1IiByPSI1IiBmaWxsPSJ3aGl0ZSIvPgogIDxjaXJjbGUgY3g9IjQwIiBjeT0iMjUiIHI9IjUiIGZpbGw9IndoaXRlIi8+CiAgPGNpcmNsZSBjeD0iMjAiIGN5PSIyNSIgcj0iMiIgZmlsbD0iYmxhY2siLz4KICA8Y2lyY2xlIGN4PSI0MCIgY3k9IjI1IiByPSIyIiBmaWxsPSJibGFjayIvPgogIDxwYXRoIGQ9Ik0xMCA0MCBRMzAgNTAgNTAgNDAiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMyIgZmlsbD0ibm9uZSIvPgogIDxwYXRoIGQ9Ik0xNSA0MCBROTMwIDM1IDQ1IDQwIiBzdHJva2U9IiNGRjY5QjQiIHN0cm9rZS13aWR0aD0iNCIgZmlsbD0ibm9uZSIvPgo8L3N2Zz4='
-            },
-            wolf: {
-                url: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/enemigos/lobo.svg',
-                fallback: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHBhdGggZD0iTTEwIDQwIEMxMCAyNSwgMjAgMTUsIDQwIDE1IEM2MCAxNSwgNzAgMjUsIDcwIDQwIiBzdHJva2U9IiM4MDgwODAiIHN0cm9rZS13aWR0aD0iNCIgZmlsbD0iI0E4QTZBNiIvPgogIDxjaXJjbGUgY3g9IjI1IiBjeT0iMjUiIHI9IjUiIGZpbGw9IndoaXRlIi8+CiAgPGNpcmNsZSBjeD0iNTUiIGN5PSIyNSIgcj0iNSIgZmlsbD0id2hpdGUiLz4KICA8Y2lyY2xlIGN4PSIyNSIgY3k9IjI1IiByPSIyIiBmaWxsPSJibGFjayIvPgogIDxjaXJjbGUgY3g9IjU1IiBjeT0iMjUiIHI9IjIiIGZpbGw9ImJsYWNrIi8+CiAgPHBhdGggZD0iTTMwIDQwIFE0MCA0NSA1MCA0MCIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJub25lIi8+Cjwvc3ZnPg=='
-            },
-            wolfAngry: {
-                url: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/enemigos/loboferoz.png',
-                fallback: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHBhdGggZD0iTTEwIDQwIEMxMCAyNSwgMjAgMTUsIDQwIDE1IEM2MCAxNSwgNzAgMjUsIDcwIDQwIiBzdHJva2U9IiNGRjAwMDAiIHN0cm9rZS13aWR0aD0iNCIgZmlsbD0iI0ZGNjYwMCIvPgogIDxjaXJjbGUgY3g9IjI1IiBjeT0iMjUiIHI9IjUiIGZpbGw9IndoaXRlIi8+CiAgPGNpcmNsZSBjeD0iNTUiIGN5PSIyNSIgcj0iNSIgZmlsbD0id2hpdGUiLz4KICA8Y2lyY2xlIGN4PSIyNSIgY3k9IjI1IiByPSIyIiBmaWxsPSJibGFjayIvPgogIDxjaXJjbGUgY3g9IjU1IiBjeT0iMjUiIHI9IjIiIGZpbGw9ImJsYWNrIi8+CiAgPHBhdGggZD0iTTIwIDQ1IFE0MCA1NSA2MCA0NSIgc3Ryb2tlPSIjRkYwMDAwIiBzdHJva2Utd2lkdGg9IjMiIGZpbGw9Im5vbmUiLz4KICA8cGF0aCBkPSJNMzAgMzUgTDIwIDI1IiBzdHJva2U9IiNGRjAwMDAiIHN0cm9rZS13aWR0aD0iMyIgZmlsbD0ibm9uZSIvPgogIDxwYXRoIGQ9Ik01MCAzNSBMNjAgMjUiIHN0cm9rZT0iI0ZGMDAwMCIgc3Ryb2tlLXdpZHRoPSIzIiBmaWxsPSJub25lIi8+Cjwvc3ZnPg=='
-            },
-            wolfHurt: {
-                url: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/enemigos/lobotriste.png',
-                fallback: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHBhdGggZD0iTTEwIDQwIEMxMCAyNSwgMjAgMTUsIDQwIDE1IEM2MCAxNSwgNzAgMjUsIDcwIDQwIiBzdHJva2U9IiM4MDgwODAiIHN0cm9rZS13aWR0aD0iNCIgZmlsbD0iIzlCOUI5QiIvPgogIDxjaXJjbGUgY3g9IjI1IiBjeT0iMjUiIHI9IjUiIGZpbGw9IndoaXRlIi8+CiAgPGNpcmNsZSBjeD0iNTUiIGN5PSIyNSIgcj0iNSIgZmlsbD0id2hpdGUiLz4KICA8Y2lyY2xlIGN4PSIyNSIgY3k9IjI1IiByPSIyIiBmaWxsPSJibGFjayIvPgogIDxjaXJjbGUgY3g9IjU1IiBjeT0iMjUiIHI9IjIiIGZpbGw9ImJsYWNrIi8+CiAgPHBhdGggZD0iTTI1IDQ1IFE0MCAzNSA1NSA0NSIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLXdpZHRoPSIzIiBmaWxsPSJub25lIi8+Cjwvc3ZnPg=='
-            },
-            heart: {
-                url: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/oso/corazon.png',
-                fallback: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAiIGhlaWdodD0iMzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHBhdGggZD0iTTE1IDUgQzEwIC01LCAwIDIsIDAgMTAgQzAgMTUsIDUgMjAsIDE1IDI4IEMyNSAyMCwgMzAgMTUsIDMwIDEwIEMzMCAyLCAyMCAtNSwgMTUgNSBaIiBmaWxsPSIjRkY2OUI0Ii8+Cjwvc3ZnPg=='
-            },
-            unicorn: {
-                url: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/Amigos/unirshup.png',
-                fallback: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPGNpcmNsZSBjeD0iMjUiIGN5PSIyNSIgcj0iMjAiIGZpbGw9IndoaXRlIi8+CiAgPGNpcmNsZSBjeD0iMTUiIGN5PSIyMCIgcj0iNCIgZmlsbD0iYmxhY2siLz4KICA8Y2lyY2xlIGN4PSIzNSIgY3k9IjIwIiByPSI0IiBmaWxsPSJibGFjayIvPgogIDxwYXRoIGQ9Ik0xMCAzNSBRMjUgNDAgNDAgMzUiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIvPgogIDxwYXRoIGQ9Ik0yNSAxMCBMMjUgLTUiIHN0cm9rZT0iI0ZGMEEGRiIgc3Ryb2tlLXdpZHRoPSIzIiBmaWxsPSJub25lIi8+CiAgPGNpcmNsZSBjeD0iMjUiIGN5PSItNSIgcj0iNSIgZmlsbD0iI0ZGMEEGRiIvPgo8L3N2Zz4='
-            },
-            bearWithUnicorn: {
-                url: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/Amigos/osoyuni.png',
-                fallback: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzIiIGhlaWdodD0iOTYiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPGNpcmNsZSBjeD0iMzYiIGN5PSIzNiIgcj0iMjUiIGZpbGw9IiM4QjQ1MTMiLz4KICA8Y2lyY2xlIGN4PSIyNCIgY3k9IjMwIiByPSI1IiBmaWxsPSJ3aGl0ZSIvPgogIDxjaXJjbGUgY3g9IjQ4IiBjeT0iMzAiIHI9IjUiIGZpbGw9IndoaXRlIi8+CiAgPGNpcmNsZSBjeD0iMjQiIGN5PSIzMCIgcj0iMiIgZmlsbD0iYmxhY2siLz4KICA8Y2lyY2xlIGN4PSI0OCIgY3k9IjMwIiByPSIyIiBmaWxsPSJibGFjayIvPgogIDxwYXRoIGQ9Ik0yNCA0MiBRMzYgNDggNDggNDIiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIvPgogIDxwYXRoIGQ9Ik0zNiAxMCBMMzYgLTUiIHN0cm9rZT0iI0ZGMEEGRiIgc3Ryb2tlLXdpZHRoPSIzIiBmaWxsPSJub25lIi8+CiAgPGNpcmNsZSBjeD0iMzYiIGN5PSItNSIgcj0iNSIgZmlsbD0iI0ZGMEEGRiIvPgo8L3N2Zz4='
-            },
-            background1: {
-                url: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/fondos/bosque1.jpg',
-                fallback: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjUwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZGllbnQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6Izg3Q0VFQjtzdG9wLW9wYWNpdHk6MSIgLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojRTBGN0ZBO3N0b3Atb3BhY2l0eToxIiAvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CiAgPHJlY3Qgd2lkdGg9IjgwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9InVybCgjZ3JhZGllbnQpIi8+CiAgPHJlY3QgeT0iNDAwIiB3aWR0aD0iODAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzVDN0EzMCIvPgogIDxyZWN0IHg9IjIwMCIgeT0iMzAwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjOEQ2RTYzIi8+CiAgPHJlY3QgeD0iNTAwIiB5PSIyNTAiIHdpZHRoPSIxMDAiIGhlaWdodD0iMjAiIGZpbGw9IiM4RDZFNjMiLz4KPC9zdmc+'
-            },
-            backgroundBoss: {
-                url: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/fondos/background%20final.jpeg',
-                fallback: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjUwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZGllbnQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6IzBjMTQ0NTtzdG9wLW9wYWNpdHk6MSIgLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMWEyMzc5ZTtzdG9wLW9wYWNpdHk6MSIgLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iNTAwIiBmaWxsPSJ1cmwoI2dyYWRpZW50KSIvPgogIDxjaXJjbGUgY3g9IjcwMCIgY3k9IjgwIiByPSI0MCIgZmlsbD0iI2Y1ZjVmNSIvPgogIDxjaXJjbGUgY3g9IjY5MCIgY3k9IjcwIiByPSIzNSIgZmlsbD0iIzBjMTQ0NSIvPgogIDxyZWN0IHk9IjQwMCIgd2lkdGg9IjgwMCIgaGVpZ2h0PSIxMDAiIGZpbGw9IiM0QjJGMDEiLz4KICA8cmVjdCB4PSIyMDAiIHk9IjMwMCIgd2lkdGg9IjQwMCIgaGVpZ2h0PSIyMCIgZmlsbD0iIzhENkU2MyIvPgo8L3N2Zz4='
-            }
+            bear: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/oso/oso_idle.svg',
+            bearJump: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/oso/oso_jump.svg',
+            bearHug: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/oso/oso_hugging.svg',
+            wolf: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/enemigos/lobo.svg',
+            wolfAngry: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/enemigos/loboferoz.png',
+            wolfHurt: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/enemigos/lobotriste.png',
+            heart: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/Amigos/lovepower.png',
+            unicorn: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/Amigos/unirshup.png',
+            bearWithUnicorn: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/Amigos/osoyuni.png',
+            background1: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/fondos/bosque1.jpg',
+            background2: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/fondos/bosque2.jpg',
+            background3: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/fondos/bosque3.jpg',
+            backgroundBoss: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/fondos/background%20final.jpeg',
+            enemy1: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/enemigos/Enemigos-01.svg',
+            enemy2: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/enemigos/Enemigos-02.svg',
+            enemy3: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/enemigos/Enemigos-03.svg',
+            fireball: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/enemigos/fire.png',
+            squirrel: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/Amigos/ardilla.png',
+            rabbit: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/Amigos/conejo.png',
+            bird: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/Amigos/pajarito.png',
+            honey: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/Amigos/miel.png'
         };
 
         // URLs para sonidos
@@ -539,7 +516,7 @@
         };
 
         // Variables de juego
-        let player, enemies = [], hearts = [], platforms = [], background;
+        let player, enemies = [], hearts = [], platforms = [], friends = [], items = [], background;
         let keys = {};
         let score = 0;
         let lives = 3;
@@ -575,6 +552,16 @@
                 if ((e.key === 'x' || e.key === 'X') && heartsCollected >= 3 && !unicornActive) {
                     activateUnicorn();
                 }
+                
+                // Abrazar con la tecla 'Z'
+                if ((e.key === 'z' || e.key === 'Z') && player && player.grounded) {
+                    player.isHugging = true;
+                    setTimeout(() => {
+                        if (player) player.isHugging = false;
+                    }, 500);
+                    playSound('hug');
+                    checkHug();
+                }
             });
             
             window.addEventListener('keyup', (e) => {
@@ -593,7 +580,7 @@
         // Cargar recursos
         function loadResources() {
             // Cargar imágenes
-            for (const [name, data] of Object.entries(imageUrls)) {
+            for (const [name, url] of Object.entries(imageUrls)) {
                 const img = new Image();
                 img.onload = () => {
                     loadedResources++;
@@ -601,16 +588,13 @@
                     images[name] = img;
                 };
                 img.onerror = () => {
-                    console.log(`Usando imagen de respaldo para: ${name}`);
-                    const fallbackImg = new Image();
-                    fallbackImg.onload = () => {
-                        loadedResources++;
-                        updateLoadingProgress();
-                        images[name] = fallbackImg;
-                    };
-                    fallbackImg.src = data.fallback;
+                    console.error(`Error al cargar la imagen: ${name}`);
+                    loadedResources++;
+                    updateLoadingProgress();
+                    // Crear una imagen de respaldo básica
+                    images[name] = createFallbackImage(name);
                 };
-                img.src = data.url;
+                img.src = url;
             }
             
             // Cargar sonidos
@@ -629,6 +613,41 @@
                 audio.src = url;
                 audio.preload = 'auto';
             }
+        }
+        
+        // Crear imagen de respaldo
+        function createFallbackImage(name) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 50;
+            canvas.height = 50;
+            const ctx = canvas.getContext('2d');
+            
+            // Dibujar forma básica según el tipo de imagen
+            if (name.includes('bear')) {
+                ctx.fillStyle = '#8B4513';
+                ctx.beginPath();
+                ctx.arc(25, 25, 20, 0, Math.PI * 2);
+                ctx.fill();
+            } else if (name.includes('wolf')) {
+                ctx.fillStyle = '#808080';
+                ctx.beginPath();
+                ctx.arc(25, 25, 20, 0, Math.PI * 2);
+                ctx.fill();
+            } else if (name.includes('heart')) {
+                ctx.fillStyle = '#FF69B4';
+                ctx.beginPath();
+                ctx.moveTo(25, 5);
+                ctx.bezierCurveTo(45, 5, 45, 45, 25, 45);
+                ctx.bezierCurveTo(5, 45, 5, 5, 25, 5);
+                ctx.fill();
+            } else {
+                ctx.fillStyle = '#3498db';
+                ctx.fillRect(0, 0, 50, 50);
+            }
+            
+            const img = new Image();
+            img.src = canvas.toDataURL();
+            return img;
         }
         
         // Actualizar barra de progreso
@@ -693,6 +712,8 @@
             enemies = [];
             hearts = [];
             platforms = [];
+            friends = [];
+            items = [];
             
             // Configurar niveles
             if (level === 1) {
@@ -709,6 +730,10 @@
                     createHeart(250, 250);
                     createHeart(550, 200);
                     
+                    // Crear amigos
+                    createFriend(350, 330, 'squirrel');
+                    createFriend(450, 330, 'rabbit');
+                    
                     // Actualizar UI
                     document.getElementById('levelIndicator').textContent = 'Nivel 1-1: Introducción';
                     document.getElementById('heartsCollected').style.display = 'block';
@@ -723,6 +748,13 @@
                     
                     // Crear enemigos
                     createEnemy(400, 330, 'normal');
+                    
+                    // Crear amigos
+                    createFriend(200, 330, 'bird');
+                    createFriend(500, 330, 'squirrel');
+                    
+                    // Crear miel
+                    createItem(350, 250, 'honey');
                     
                     // Actualizar UI
                     document.getElementById('levelIndicator').textContent = 'Nivel 1-2: Encuentro con el lobo';
@@ -742,6 +774,10 @@
                     createHeart(200, 250);
                     createHeart(400, 200);
                     createHeart(600, 250);
+                    
+                    // Crear enemigos
+                    createEnemy(300, 330, 'normal');
+                    createEnemy(500, 330, 'normal');
                     
                     // Actualizar UI
                     document.getElementById('levelIndicator').textContent = 'Nivel 2-1: Preparación para la batalla';
@@ -783,7 +819,45 @@
                 x, y,
                 width: 30,
                 height: 30,
-                collected: false
+                collected: false,
+                type: 'heart'
+            });
+        }
+        
+        // Crear amigo
+        function createFriend(x, y, type) {
+            let image;
+            switch(type) {
+                case 'squirrel':
+                    image = images.squirrel;
+                    break;
+                case 'rabbit':
+                    image = images.rabbit;
+                    break;
+                case 'bird':
+                    image = images.bird;
+                    break;
+            }
+            
+            friends.push({
+                x, y,
+                width: 50,
+                height: 50,
+                type,
+                image,
+                hugged: false
+            });
+        }
+        
+        // Crear item
+        function createItem(x, y, type) {
+            items.push({
+                x, y,
+                width: 30,
+                height: 30,
+                type,
+                collected: false,
+                image: type === 'honey' ? images.honey : images.heart
             });
         }
         
@@ -798,7 +872,7 @@
                 speed: type === 'boss' ? 2 : 1,
                 direction: 1,
                 attackCooldown: 0,
-                image: type === 'boss' ? images.wolf : images.wolf
+                image: type === 'boss' ? images.wolf : images['enemy' + Math.floor(Math.random() * 3 + 1)]
             };
             
             if (type === 'boss') {
@@ -823,6 +897,24 @@
             
             // Actualizar UI
             updateUnicornPower();
+        }
+        
+        // Comprobar abrazos
+        function checkHug() {
+            for (const friend of friends) {
+                if (
+                    !friend.hugged &&
+                    player.x < friend.x + friend.width &&
+                    player.x + player.width > friend.x &&
+                    player.y < friend.y + friend.height &&
+                    player.y + player.height > friend.y
+                ) {
+                    friend.hugged = true;
+                    score += 50;
+                    playSound('collect');
+                    updateUI();
+                }
+            }
         }
         
         // Actualizar UI
@@ -927,6 +1019,14 @@
             // Actualizar y dibujar corazones
             updateHearts();
             drawHearts();
+            
+            // Actualizar y dibujar amigos
+            updateFriends();
+            drawFriends();
+            
+            // Actualizar y dibujar items
+            updateItems();
+            drawItems();
             
             // Comprobar colisiones
             checkCollisions();
@@ -1118,6 +1218,40 @@
             }
         }
         
+        // Actualizar amigos
+        function updateFriends() {
+            for (const friend of friends) {
+                // Animación de flotación
+                friend.y += Math.sin(Date.now() / 500) * 0.5;
+            }
+        }
+        
+        // Dibujar amigos
+        function drawFriends() {
+            for (const friend of friends) {
+                if (!friend.hugged && friend.image && friend.image.complete) {
+                    ctx.drawImage(friend.image, friend.x, friend.y, friend.width, friend.height);
+                }
+            }
+        }
+        
+        // Actualizar items
+        function updateItems() {
+            for (const item of items) {
+                // Animación de flotación
+                item.y += Math.sin(Date.now() / 500) * 0.5;
+            }
+        }
+        
+        // Dibujar items
+        function drawItems() {
+            for (const item of items) {
+                if (!item.collected && item.image && item.image.complete) {
+                    ctx.drawImage(item.image, item.x, item.y, item.width, item.height);
+                }
+            }
+        }
+        
         // Dibujar plataformas
         function drawPlatforms() {
             for (const platform of platforms) {
@@ -1143,6 +1277,22 @@
                     heart.collected = true;
                     heartsCollected++;
                     score += 100;
+                    playSound('collect');
+                    updateUI();
+                }
+            }
+            
+            // Colisión con items
+            for (const item of items) {
+                if (
+                    !item.collected &&
+                    player.x < item.x + item.width &&
+                    player.x + player.width > item.x &&
+                    player.y < item.y + item.height &&
+                    player.y + player.height > item.y
+                ) {
+                    item.collected = true;
+                    score += 50;
                     playSound('collect');
                     updateUI();
                 }
