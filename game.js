@@ -3,7 +3,59 @@ const baseUrl = "https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main";
 
 // Configuración de recursos
 const RESOURCES = {
-  sprites: {
+ const loadImage = (key, url) => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      sprites[key] = img;
+      resolve();
+    };
+    img.onerror = () => {
+      console.error("Error cargando imagen:", url);
+      // Crear una imagen de placeholder en caso de error
+      sprites[key] = createPlaceholderImage(key);
+      resolve();
+    };
+    img.src = url;
+  });
+};
+
+const createPlaceholderImage = (type) => {
+  const canvas = document.createElement('canvas');
+  canvas.width = 100;
+  canvas.height = 100;
+  const ctx = canvas.getContext('2d');
+  
+  // Fondos de color según el tipo de imagen
+  if (type.includes('background') || type.includes('fondo')) {
+    ctx.fillStyle = '#87CEEB';
+    ctx.fillRect(0, 0, 100, 100);
+    ctx.fillStyle = '#90EE90';
+    ctx.fillRect(0, 70, 100, 30);
+  } else if (type.includes('oso')) {
+    ctx.fillStyle = '#8B4513';
+    ctx.beginPath();
+    ctx.arc(50, 50, 40, 0, Math.PI * 2);
+    ctx.fill();
+  } else if (type.includes('lobo')) {
+    ctx.fillStyle = '#808080';
+    ctx.beginPath();
+    ctx.arc(50, 50, 40, 0, Math.PI * 2);
+    ctx.fill();
+  } else {
+    ctx.fillStyle = '#FF6B6B';
+    ctx.fillRect(0, 0, 100, 100);
+  }
+  
+  ctx.fillStyle = '#000';
+  ctx.font = '12px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText(type, 50, 50);
+  
+  const img = new Image();
+  img.src = canvas.toDataURL();
+  return img;
+}; sprites: {
     idle: `${baseUrl}/img/oso/oso_idle.svg`,
     walk: `${baseUrl}/img/oso/oso_walk.svg`,
     jump: `${baseUrl}/img/oso/oso_jump.svg`,
@@ -108,9 +160,24 @@ function init() {
   setupEventListeners();
   
   // Mostrar pantalla inicial
-  showStartScreen();
+  function showStartScreen() {
+  document.getElementById('startScreen').style.display = 'flex';
+  
+  // Usar placeholder si la imagen no está cargada
+  const coverImage = document.getElementById('coverImage');
+  if (sprites.portada && sprites.portada.src) {
+    coverImage.src = sprites.portada.src;
+  } else {
+    coverImage.src = "https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/oso/oso_portada.png";
+  }
+  
+  // Reproducir música de introducción si está disponible
+  if (sounds.intro) {
+    sounds.intro.loop = true;
+    sounds.intro.volume = 0.7;
+    sounds.intro.play().catch(e => console.log("Audio bloqueado hasta interacción del usuario"));
+  }
 }
-
 function resizeCanvas() {
   const container = document.getElementById('gameContainer');
   canvas.width = container.clientWidth;
