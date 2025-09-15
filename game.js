@@ -206,7 +206,25 @@ function setupEventListeners() {
   // Controles táctiles para móviles
   setupTouchControls();
 }
-
+function showStartScreen() {
+  document.getElementById('startScreen').style.display = 'flex';
+  
+  // Usar la función segura para obtener la imagen
+  const coverImage = document.getElementById('coverImage');
+  const portadaSprite = safeGetSprite('portada');
+  coverImage.src = portadaSprite.src;
+  
+  // Solo intentar reproducir si el sonido está cargado
+  if (sounds.intro && typeof sounds.intro.play === 'function') {
+    try {
+      sounds.intro.loop = true;
+      sounds.intro.volume = 0.7;
+      sounds.intro.play();
+    } catch (e) {
+      console.log("Error reproduciendo audio:", e);
+    }
+  }
+}
 // ============= GESTIÓN DE RECURSOS =============
 async function loadResources() {
   gameState = GAME_STATES.LOADING;
@@ -864,4 +882,34 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', init);
 } else {
   init();
+}
+// Función de respaldo para cuando las imágenes no cargan
+function safeGetSprite(key) {
+  if (sprites[key] && sprites[key].src) {
+    return sprites[key];
+  }
+  
+  // Crear un placeholder según el tipo de imagen
+  const canvas = document.createElement('canvas');
+  canvas.width = 100;
+  canvas.height = 100;
+  const ctx = canvas.getContext('2d');
+  
+  if (key.includes('portada')) {
+    ctx.fillStyle = '#8B4513';
+    ctx.fillRect(0, 0, 100, 100);
+    ctx.fillStyle = 'white';
+    ctx.font = '12px Arial';
+    ctx.fillText('Portada Oso', 10, 50);
+  } else {
+    ctx.fillStyle = '#FF6B6B';
+    ctx.fillRect(0, 0, 100, 100);
+    ctx.fillStyle = 'white';
+    ctx.font = '10px Arial';
+    ctx.fillText(key, 5, 50);
+  }
+  
+  const img = new Image();
+  img.src = canvas.toDataURL();
+  return img;
 }
