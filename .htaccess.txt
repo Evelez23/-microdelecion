@@ -1,0 +1,4 @@
+<FilesMatch "\.(css|js)$">
+    Header set Content-Type "text/css"
+    Header set Content-Type "application/javascript"
+</FilesMatch>
