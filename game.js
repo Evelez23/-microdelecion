@@ -1,972 +1,409 @@
+// game.js - Versión corregida
+console.log("Iniciando juego Oso Abrazos...");
+
 // ============= CONFIGURACIÓN Y VARIABLES GLOBALES =============
 const baseUrl = "https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main";
-// SOLUCIÓN DE EMERGENCIA - Ejecutar esto primero
-console.log("Cargando solución de emergencia...");
 
-// Crear sprites básicos para evitar errores
-window.sprites = window.sprites || {};
-window.sounds = window.sounds || {};
-
-// Crear un sprite de portada de emergencia
-const emergencyCover = new Image();
-emergencyCover.onload = function() {
-    window.sprites.portada = emergencyCover;
-    console.log("Portada de emergencia cargada");
-};
-emergencyCover.src = 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/oso/oso_portada.png';
-
-// Reemplazar la función showStartScreen con una versión a prueba de errores
-window.showStartScreen = function() {
-    console.log("Mostrando pantalla de inicio (modo emergencia)");
-    const startScreen = document.getElementById('startScreen');
-    const coverImage = document.getElementById('coverImage');
-    
-    if (startScreen) startScreen.style.display = 'flex';
-    
-    // Usar imagen de emergencia si está disponible
-    if (coverImage) {
-        if (window.sprites.portada && window.sprites.portada.src) {
-            coverImage.src = window.sprites.portada.src;
-        } else {
-            // Imagen de respaldo directa desde GitHub
-            coverImage.src = 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/oso/oso_portada.png';
-        }
-    }
-    
-    // Solo intentar reproducir si el sonido está cargado
-    if (window.sounds.intro && typeof window.sounds.intro.play === 'function') {
-        try {
-            window.sounds.intro.loop = true;
-            window.sounds.intro.volume = 0.7;
-            window.sounds.intro.play();
-        } catch (e) {
-            console.log("Error reproduciendo audio:", e);
-        }
-    }
+// Sprites
+const sprites = {
+  idle: new Image(),
+  walk: new Image(),
+  jump: new Image(),
+  run: new Image(),
+  crouch: new Image(),
+  hug: new Image(),
+  cover: new Image(),
+  squirrel: new Image(),
+  rabbit: new Image(),
+  bird: new Image(),
+  enemy1: new Image(),
+  enemy2: new Image(),
+  enemy3: new Image(),
+  // Fondos de nivel
+  background_1_1: new Image(),
+  background_1_2: new Image(),
+  background_1_3: new Image(),
+  background_2_1: new Image(),
+  background_2_2: new Image(),
+  background_2_3: new Image(),
+  // Jefe y elementos especiales
+  bossPhase1: new Image(),
+  bossPhase2: new Image(),
+  bossPhase3: new Image(),
+  heart: new Image(),
+  fire: new Image(),
+  unicorn: new Image(),
+  honey: new Image(),
+  osoyuni: new Image()
 };
 
-// Reemplazar la función init para usar nuestra versión segura
-window.init = function() {
-    console.log("Inicializando en modo seguro");
-    // Llamar a showStartScreen después de un breve retraso
-    setTimeout(window.showStartScreen, 100);
+// URLs de las imágenes (CORREGIDAS)
+const imageUrls = {
+  idle: `${baseUrl}/img/oso/oso_idle.svg`,
+  walk: `${baseUrl}/img/oso/oso_walk.svg`,
+  jump: `${baseUrl}/img/oso/oso_jump.svg`,
+  run: `${baseUrl}/img/oso/oso_run.svg`,
+  crouch: `${baseUrl}/img/oso/oso_sit.svg`,
+  hug: `${baseUrl}/img/oso/oso_hugging.svg`,
+  cover: `${baseUrl}/img/oso/oso_portada.png`,
+  squirrel: `${baseUrl}/img/Amigos/ardilla.png`,
+  rabbit: `${baseUrl}/img/Amigos/conejo.png`,
+  bird: `${baseUrl}/img/Amigos/pajarito.png`,
+  enemy1: `${baseUrl}/img/enemigos/Enemigos-01.svg`,
+  enemy2: `${baseUrl}/img/enemigos/Enemigos-02.svg`,
+  enemy3: `${baseUrl}/img/enemigos/Enemigos-03.svg`,
+  // Fondos de nivel
+  background_1_1: `${baseUrl}/img/fondos/bosque1.jpg`,
+  background_1_2: `${baseUrl}/img/fondos/bosque2.jpg`,
+  background_1_3: `${baseUrl}/img/fondos/bosque3.jpg`,
+  background_2_1: `${baseUrl}/img/fondos/bosque4.jpg`,
+  background_2_2: `${baseUrl}/img/fondos/background_1_2.jpeg`,
+  background_2_3: `${baseUrl}/img/fondos/background%20final.jpeg`,
+  // Jefe y elementos especiales
+  bossPhase1: "https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/41296616cc8e88066d9db7c38be0939b9302996a/img/enemigos/lobo.svg",
+  bossPhase2: "https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/refs/heads/main/img/enemigos/loboferoz.png",
+  bossPhase3: "https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/refs/heads/main/img/enemigos/lobotriste.png",
+  heart: `${baseUrl}/img/Amigos/lovepower.png`,
+  fire: `${baseUrl}/img/enemigos/fire.png`,
+  unicorn: `${baseUrl}/img/Amigos/unirshup.png`,
+  honey: `${baseUrl}/img/Amigos/miel.png`,
+  osoyuni: `${baseUrl}/img/Amigos/osoyuni.png`
 };
 
-// Iniciar cuando el DOM esté listo
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', window.init);
-} else {
-    window.init();
+// Sonidos (CORREGIDOS)
+const sounds = {
+  background: new Audio(`${baseUrl}/sounds/background.mp3.mp3`),
+  jump: new Audio(`${baseUrl}/sounds/jump.mp3.mp3`),
+  collect: new Audio(`${baseUrl}/sounds/collect.mp3.mp3`),
+  hug: new Audio(`${baseUrl}/sounds/hug.mp3.mp3`),
+  hurt: new Audio(`${baseUrl}/sounds/hurt.mp3.mp3`),
+  enemy: new Audio(`${baseUrl}/sounds/enemy.mp3.mp3`),
+  powerup: new Audio(`${baseUrl}/sounds/powerup.mp3.mp3`),
+  shot: new Audio(`${baseUrl}/sounds/shot.mp3.mp3`),
+  bossBattle: new Audio(`${baseUrl}/sounds/para%20la%20batalla.mp3`),
+  intro: new Audio(`${baseUrl}/sounds/intro.mp3`)
+};
+
+// Configurar sonidos
+for (let key in sounds) {
+  if (sounds[key]) {
+    sounds[key].volume = 0.6;
+    sounds[key].preload = 'auto';
+  }
 }
-// Configuración de recursos
-const RESOURCES = {
- const loadImage = (key, url) => {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => {
-      sprites[key] = img;
-      resolve();
-    };
-    img.onerror = () => {
-      console.error("Error cargando imagen:", url);
-      // Crear una imagen de placeholder en caso de error
-      sprites[key] = createPlaceholderImage(key);
-      resolve();
-    };
-    img.src = url;
-  });
-};
+if (sounds.background) sounds.background.loop = true;
 
-const createPlaceholderImage = (type) => {
-  const canvas = document.createElement('canvas');
-  canvas.width = 100;
-  canvas.height = 100;
-  const ctx = canvas.getContext('2d');
-  
-  // Fondos de color según el tipo de imagen
-  if (type.includes('background') || type.includes('fondo')) {
-    ctx.fillStyle = '#87CEEB';
-    ctx.fillRect(0, 0, 100, 100);
-    ctx.fillStyle = '#90EE90';
-    ctx.fillRect(0, 70, 100, 30);
-  } else if (type.includes('oso')) {
-    ctx.fillStyle = '#8B4513';
-    ctx.beginPath();
-    ctx.arc(50, 50, 40, 0, Math.PI * 2);
-    ctx.fill();
-  } else if (type.includes('lobo')) {
-    ctx.fillStyle = '#808080';
-    ctx.beginPath();
-    ctx.arc(50, 50, 40, 0, Math.PI * 2);
-    ctx.fill();
-  } else {
-    ctx.fillStyle = '#FF6B6B';
-    ctx.fillRect(0, 0, 100, 100);
-  }
-  
-  ctx.fillStyle = '#000';
-  ctx.font = '12px Arial';
-  ctx.textAlign = 'center';
-  ctx.fillText(type, 50, 50);
-  
-  const img = new Image();
-  img.src = canvas.toDataURL();
-  return img;
-}; sprites: {
-    idle: `${baseUrl}/img/oso/oso_idle.svg`,
-    walk: `${baseUrl}/img/oso/oso_walk.svg`,
-    jump: `${baseUrl}/img/oso/oso_jump.svg`,
-    run: `${baseUrl}/img/oso/oso_run.svg`,
-    hug: `${baseUrl}/img/oso/oso_hugging.svg`,
-    sit: `${baseUrl}/img/oso/oso_sit.svg`,
-    back: `${baseUrl}/img/oso/oso_back.svg`,
-    portada: `${baseUrl}/img/oso/oso_portada.png`,
-    celebration: `${baseUrl}/img/oso/celebracion.png`,
-    heart: `${baseUrl}/img/oso/corazon.png`,
-    uniyosocombat: `${baseUrl}/img/oso/uniyosocombat.png`,
-    osoyuni: `${baseUrl}/img/Amigos/osoyuni.png`,
-    
-    // Enemigos
-    lobo: `${baseUrl}/img/enemigos/lobo.svg`,
-    loboferoz: `${baseUrl}/img/enemigos/loboferoz.png`,
-    lobotriste: `${baseUrl}/img/enemigos/lobotriste.png`,
-    fire: `${baseUrl}/img/enemigos/fire.png`,
-    
-    // Amigos
-    ardilla: `${baseUrl}/img/Amigos/ardilla.png`,
-    conejo: `${baseUrl}/img/Amigos/conejo.png`,
-    pajarito: `${baseUrl}/img/Amigos/pajarito.png`,
-    unien4patas: `${baseUrl}/img/Amigos/unien4patas.png`,
-    unirshup: `${baseUrl}/img/Amigos/unirshup.png`,
-    unirun: `${baseUrl}/img/Amigos/unirun.png`,
-    lovepower: `${baseUrl}/img/Amigos/lovepower.png`,
-    miel: `${baseUrl}/img/Amigos/miel.png`,
-    
-    // Fondos
-    portada: `${baseUrl}/img/oso/oso_portada.png`,
-    fondo1_1: `${baseUrl}/img/fondos/background_1_1.jpeg`,
-    fondo1_2: `${baseUrl}/img/fondos/background_1_2.jpeg`,
-    fondo1_3: `${baseUrl}/img/fondos/background_1_3.jpeg`,
-    fondo2_1: `${baseUrl}/img/fondos/background_2_1.jpeg`,
-    fondo2_2: `${baseUrl}/img/fondos/background_2_2.jpeg`,
-    fondo2_3: `${baseUrl}/img/fondos/background_2_3.jpeg`,
-    bosque1: `${baseUrl}/img/fondos/bosque1.jpg`,
-    bosque2: `${baseUrl}/img/fondos/bosque2.jpg`,
-    bosque3: `${baseUrl}/img/fondos/bosque3.jpg`,
-    bosque4: `${baseUrl}/img/fondos/bosque4.jpg`,
-    background_final: `${baseUrl}/img/fondos/background%20final.jpeg`
-  },
-  sounds: {
-    intro: `${baseUrl}/sounds/intro.mp3`,
-    background: `${baseUrl}/sounds/background.mp3.mp3`,
-    collect: `${baseUrl}/sounds/collect.mp3.mp3`,
-    enemy: `${baseUrl}/sounds/enemy.mp3.mp3`,
-    hug: `${baseUrl}/sounds/hug.mp3.mp3`,
-    hurt: `${baseUrl}/sounds/hurt.mp3.mp3`,
-    jump: `${baseUrl}/sounds/jump.mp3.mp3`,
-    batalla: `${baseUrl}/sounds/para%20la%20batalla.mp3`,
-    powerup: `${baseUrl}/sounds/powerup.mp3.mp3`,
-    shot: `${baseUrl}/sounds/shot.mp3.mp3`
-  }
-};
-
-// Estados del juego
-const GAME_STATES = {
-  MENU: 0,
-  LOADING: 1,
-  PLAYING: 2,
-  PAUSED: 3,
-  VICTORY: 4,
-  GAME_OVER: 5
-};
-
-// Variables globales
-let canvas, ctx;
-let gameState = GAME_STATES.MENU;
-let currentLevel = 1;
-let subLevel = 1;
-let score = 0;
-let lives = 3;
-let player, enemies = [], friends = [], collectibles = [], platforms = [], projectiles = [];
-let backgroundImages = {};
-let sounds = {};
-let sprites = {};
-let unicornPower = 0;
-let heartsCollected = 0;
-let boss = null;
-let bossHealth = 5;
-let isBossEnraged = false;
-let bossAttackTimer = 0;
-let bossAttackInterval = 3000; // 3 segundos
-let lastTime = 0;
-let loadingProgress = 0;
-let totalResources = 0;
+// Variables para el estado de carga
+let totalResources = Object.keys(imageUrls).length;
 let loadedResources = 0;
-let backgroundMusic = null;
+let failedResources = 0;
 
-// ============= INICIALIZACIÓN =============
-function init() {
-  canvas = document.getElementById('gameCanvas');
-  ctx = canvas.getContext('2d');
+// Esperar a que se cargue la página
+window.addEventListener('load', function() {
+  console.log("🎮 Inicializando juego Oso Abrazos...");
   
-  // Ajustar tamaño del canvas
-  resizeCanvas();
-  window.addEventListener('resize', resizeCanvas);
+  // Inicializar variables globales
+  window.gameState = {
+    gameStarted: false,
+    currentLevel: "1-1",
+    score: 0,
+    lives: 3,
+    heartsCollected: 0,
+    soundEnabled: true,
+    bossFight: false
+  };
   
-  // Configurar eventos
-  setupEventListeners();
+  window.oso = {
+    x: 100, 
+    y: 380,
+    width: 80, 
+    height: 80,
+    vx: 0, 
+    vy: 0,
+    speed: 5,
+    jumpForce: 15,
+    gravity: 0.7,
+    grounded: false,
+    hugging: false,
+    hugCooldown: 0,
+    direction: 1,
+    action: "idle",
+    hasUnicorn: false,
+    invincible: 60
+  };
   
-  // Mostrar pantalla inicial
-  function showStartScreen() {
-  document.getElementById('startScreen').style.display = 'flex';
+  window.boss = {
+    x: 600, 
+    y: 350,
+    width: 120, 
+    height: 120,
+    health: 5,
+    maxHealth: 5,
+    enraged: false,
+    phase: 1,
+    attackCooldown: 100,
+    warningTimer: 0,
+    fireballs: []
+  };
   
-  // Usar placeholder si la imagen no está cargada
+  window.unicorn = {
+    active: false,
+    power: 0,
+    cooldown: 0
+  };
+  
+  window.platforms = [];
+  window.friends = [];
+  window.enemies = [];
+  window.items = [];
+  window.hearts = [];
+  window.projectiles = [];
+  window.particles = [];
+  window.keys = {};
+  
+  // Definir niveles
+  window.LEVELS = {
+    "1-1": { name: "Bosque Inicial", friends: 3, enemies: 2, items: 2, hasBoss: false },
+    "1-2": { name: "Claro Soleado", friends: 4, enemies: 3, items: 3, hasBoss: false },
+    "1-3": { name: "Cueva Misteriosa", friends: 5, enemies: 4, items: 4, hasBoss: false },
+    "2-1": { name: "Montañas Altas", friends: 4, enemies: 5, items: 3, hasBoss: false },
+    "2-2": { name: "Cascada Brillante", friends: 5, enemies: 5, items: 4, hasBoss: false },
+    "2-3": { name: "Guarida del Lobo", friends: 0, enemies: 0, items: 0, hasBoss: true }
+  };
+  
+  // Obtener referencias a elementos del DOM
+  const gameCanvas = document.getElementById('gameCanvas');
+  const startScreen = document.getElementById('startScreen');
+  const startButton = document.getElementById('startButton');
+  const victoryScreen = document.getElementById('victoryScreen');
+  const nextLevelBtn = document.getElementById('nextLevelBtn');
+  const storybook = document.getElementById('storybook');
+  const startGameBtn = document.getElementById('startGame');
+  const backToMenuBtn = document.getElementById('backToMenu');
+  const soundToggle = document.getElementById('soundToggle');
+  const hintElement = document.getElementById('hint');
+  const loadingScreen = document.getElementById('loadingScreen');
+  const loadingProgress = document.getElementById('loadingProgress');
+  const loadingText = document.getElementById('loadingText');
+  const loadingDetails = document.getElementById('loadingDetails');
   const coverImage = document.getElementById('coverImage');
-  if (sprites.portada && sprites.portada.src) {
-    coverImage.src = sprites.portada.src;
-  } else {
-    coverImage.src = "https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/oso/oso_portada.png";
+  
+  // Configurar canvas
+  if (gameCanvas) {
+    window.gameCtx = gameCanvas.getContext('2d');
   }
   
-  // Reproducir música de introducción si está disponible
-  if (sounds.intro) {
-    sounds.intro.loop = true;
-    sounds.intro.volume = 0.7;
-    sounds.intro.play().catch(e => console.log("Audio bloqueado hasta interacción del usuario"));
-  }
-}
-function resizeCanvas() {
-  const container = document.getElementById('gameContainer');
-  canvas.width = container.clientWidth;
-  canvas.height = container.clientHeight;
-  
-  // Redibujar si estamos en el juego
-  if (gameState === GAME_STATES.PLAYING) {
-    draw();
-  }
-}
-
-function setupEventListeners() {
-  // Botón de inicio
-  document.getElementById('startButton').addEventListener('click', startGame);
-  
-  // Botón de sonido
-  document.getElementById('soundToggle').addEventListener('click', toggleSound);
-  
-  // Botones de victoria
-  document.getElementById('nextLevelBtn').addEventListener('click', restartGame);
-  
-  // Controles de teclado
-  document.addEventListener('keydown', handleKeyDown);
-  document.addEventListener('keyup', handleKeyUp);
-  
-  // Controles táctiles para móviles
-  setupTouchControls();
-}
-function showStartScreen() {
-  document.getElementById('startScreen').style.display = 'flex';
-  
-  // Usar la función segura para obtener la imagen
-  const coverImage = document.getElementById('coverImage');
-  const portadaSprite = safeGetSprite('portada');
-  coverImage.src = portadaSprite.src;
-  
-  // Solo intentar reproducir si el sonido está cargado
-  if (sounds.intro && typeof sounds.intro.play === 'function') {
-    try {
-      sounds.intro.loop = true;
-      sounds.intro.volume = 0.7;
-      sounds.intro.play();
-    } catch (e) {
-      console.log("Error reproduciendo audio:", e);
-    }
-  }
-}
-// ============= GESTIÓN DE RECURSOS =============
-async function loadResources() {
-  gameState = GAME_STATES.LOADING;
-  document.getElementById('loadingScreen').style.display = 'flex';
-  
-  // Calcular recursos totales
-  totalResources = Object.keys(RESOURCES.sprites).length + Object.keys(RESOURCES.sounds).length;
-  
-  try {
-    // Cargar sprites
-    for (const [key, url] of Object.entries(RESOURCES.sprites)) {
-      await loadImage(key, url);
-      updateLoadingProgress();
-    }
-    
-    // Cargar sonidos
-    for (const [key, url] of Object.entries(RESOURCES.sounds)) {
-      await loadSound(key, url);
-      updateLoadingProgress();
-    }
-    
-    // Configurar la imagen de victoria
-    document.getElementById('victoryImage').src = sprites.uniyosocombat.src;
-    
-    // Ocultar pantalla de carga
-    document.getElementById('loadingScreen').style.display = 'none';
-    
-    // Iniciar juego
-    initGame();
-    
-  } catch (error) {
-    console.error("Error cargando recursos:", error);
-    document.getElementById('loadingDetails').innerHTML = 
-      `<div class="error-message">Error cargando recursos: ${error.message}</div>`;
-  }
-}
-
-function loadImage(key, url) {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => {
-      sprites[key] = img;
-      resolve();
-    };
-    img.onerror = () => reject(new Error(`Error cargando imagen: ${url}`));
-    img.src = url;
-  });
-}
-
-function loadSound(key, url) {
-  return new Promise((resolve, reject) => {
-    const audio = new Audio();
-    audio.addEventListener('canplaythrough', () => {
-      sounds[key] = audio;
-      resolve();
+  // Configurar botones
+  if (startButton) {
+    startButton.addEventListener('click', function() {
+      showStorybook();
     });
-    audio.onerror = () => reject(new Error(`Error cargando sonido: ${url}`));
-    audio.src = url;
-  });
+  }
+  
+  if (startGameBtn) {
+    startGameBtn.addEventListener('click', startGame);
+  }
+  
+  if (backToMenuBtn) {
+    backToMenuBtn.addEventListener('click', backToMenu);
+  }
+  
+  if (nextLevelBtn) {
+    nextLevelBtn.addEventListener('click', nextLevel);
+  }
+  
+  if (soundToggle) {
+    soundToggle.addEventListener('click', toggleSound);
+  }
+  
+  // Precargar recursos
+  loadResources();
+  
+  console.log("✅ Juego inicializado correctamente");
+});
+
+// ============= FUNCIONES DE INTERFAZ =============
+function showStorybook() {
+  const startScreen = document.getElementById('startScreen');
+  const storybook = document.getElementById('storybook');
+  
+  if (startScreen) startScreen.style.display = 'none';
+  if (storybook) storybook.style.display = 'flex';
 }
 
-function updateLoadingProgress() {
-  loadedResources++;
-  loadingProgress = Math.floor((loadedResources / totalResources) * 100);
-  document.getElementById('loadingProgress').style.width = `${loadingProgress}%`;
-  document.getElementById('loadingText').textContent = `${loadingProgress}%`;
+function backToMenu() {
+  const storybook = document.getElementById('storybook');
+  const startScreen = document.getElementById('startScreen');
   
-  const details = document.getElementById('loadingDetails');
-  if (loadingProgress % 10 === 0) {
-    const messages = [
-      "Cargando recursos gráficos...",
-      "Preparando personajes...",
-      "Cargando efectos de sonido...",
-      "Generando niveles...",
-      "¡Casi listo para la aventura!"
-    ];
-    details.textContent = messages[Math.floor(Math.random() * messages.length)];
-  }
-}
-
-// ============= PANTALLAS DEL JUEGO =============
-function showStartScreen() {
-  document.getElementById('startScreen').style.display = 'flex';
-  document.getElementById('coverImage').src = sprites.portada.src;
-  
-  // Reproducir música de introducción si está disponible
-  if (sounds.intro) {
-    sounds.intro.loop = true;
-    sounds.intro.volume = 0.7;
-    sounds.intro.play().catch(e => console.log("Audio bloqueado hasta interacción del usuario"));
-  }
+  if (storybook) storybook.style.display = 'none';
+  if (startScreen) startScreen.style.display = 'flex';
 }
 
 function startGame() {
-  document.getElementById('startScreen').style.display = 'none';
+  const storybook = document.getElementById('storybook');
+  if (storybook) storybook.style.display = 'none';
   
-  // Detener música de introducción si está sonando
-  if (sounds.intro) {
-    sounds.intro.pause();
-    sounds.intro.currentTime = 0;
+  window.gameState.gameStarted = true;
+  window.gameState.score = 0;
+  window.gameState.lives = 3;
+  window.gameState.heartsCollected = 0;
+  
+  // Iniciar música de fondo si está habilitada
+  if (window.gameState.soundEnabled && sounds.background) {
+    sounds.background.play().catch(e => console.log("Audio autoplay prevented: ", e));
   }
   
-  // Cargar recursos
-  loadResources();
-}
-
-function showVictoryScreen() {
-  gameState = GAME_STATES.VICTORY;
-  document.getElementById('victoryScreen').style.display = 'flex';
-  document.getElementById('finalScore').textContent = score;
-  document.getElementById('finalHearts').textContent = heartsCollected;
-  
-  // Reproducir sonido de victoria si está disponible
-  if (sounds.powerup) {
-    sounds.powerup.currentTime = 0;
-    sounds.powerup.play();
-  }
-}
-
-// ============= LÓGICA PRINCIPAL DEL JUEGO =============
-function initGame() {
-  gameState = GAME_STATES.PLAYING;
-  
-  // Inicializar jugador
-  player = {
-    x: 100,
-    y: canvas.height - 150,
-    width: 80,
-    height: 100,
-    speed: 5,
-    jumpForce: 15,
-    velocityY: 0,
-    isJumping: false,
-    isOnGround: false,
-    facing: 'right',
-    state: 'idle',
-    sprite: sprites.idle,
-    frame: 0,
-    frameCounter: 0
-  };
-  
-  // Configurar nivel
-  setupLevel(currentLevel, subLevel);
-  
-  // Iniciar música de fondo
-  if (sounds.background) {
-    backgroundMusic = sounds.background;
-    backgroundMusic.loop = true;
-    backgroundMusic.volume = 0.6;
-    backgroundMusic.play().catch(e => console.log("Audio bloqueado hasta interacción del usuario"));
-  }
+  // Configurar nivel inicial
+  setupLevel("1-1");
   
   // Iniciar bucle del juego
-  requestAnimationFrame(gameLoop);
+  if (!window.gameLoopRunning) {
+    window.gameLoopRunning = true;
+    gameLoop();
+  }
 }
 
-function setupLevel(level, subLevel) {
-  // Reiniciar arrays
-  enemies = [];
-  friends = [];
-  collectibles = [];
-  platforms = [];
-  projectiles = [];
-  boss = null;
-  bossHealth = 5;
-  isBossEnraged = false;
+function nextLevel() {
+  const victoryScreen = document.getElementById('victoryScreen');
+  if (victoryScreen) victoryScreen.style.display = 'none';
   
-  // Actualizar indicador de nivel
-  const levelText = `Nivel ${level}-${subLevel}`;
-  document.getElementById('level').textContent = levelText;
-  document.getElementById('levelIndicator').textContent = levelText;
+  const nextLevelKey = getNextLevel(window.gameState.currentLevel);
   
-  // Configurar nivel según el número
-  if (level === 1) {
-    // Niveles 1-1, 1-2, 1-3
-    setupLevel1(subLevel);
-  } else if (level === 2) {
-    // Niveles 2-1, 2-2, 2-3 (batalla con el lobo)
-    setupLevel2(subLevel);
-    
-    // Cambiar música en el nivel 2-3
-    if (subLevel === 3 && sounds.batalla && backgroundMusic) {
-      backgroundMusic.pause();
-      backgroundMusic = sounds.batalla;
-      backgroundMusic.loop = true;
-      backgroundMusic.volume = 0.7;
-      backgroundMusic.play();
+  if (nextLevelKey) {
+    setupLevel(nextLevelKey);
+  } else {
+    // Reiniciar juego si no hay más niveles
+    startGame();
+  }
+}
+
+function toggleSound() {
+  window.gameState.soundEnabled = !window.gameState.soundEnabled;
+  const soundToggle = document.getElementById('soundToggle');
+  
+  if (soundToggle) {
+    soundToggle.textContent = window.gameState.soundEnabled ? "🔊" : "🔇";
+  }
+  
+  if (window.gameState.soundEnabled && sounds.background) {
+    sounds.background.play().catch(e => console.log("Audio autoplay prevented: ", e));
+  } else if (sounds.background) {
+    sounds.background.pause();
+  }
+}
+
+function showHint(text, duration) {
+  const hintElement = document.getElementById('hint');
+  if (!hintElement) return;
+  
+  hintElement.textContent = text;
+  hintElement.style.opacity = '1';
+  
+  setTimeout(() => {
+    hintElement.style.opacity = '0';
+  }, duration);
+}
+
+function playSound(soundName) {
+  if (window.gameState.soundEnabled && sounds[soundName]) {
+    try {
+      const sound = new Audio(sounds[soundName].src);
+      sound.volume = sounds[soundName].volume;
+      sound.play().catch(e => console.log("Sound error: ", e));
+    } catch (e) {
+      console.log("Error reproduciendo sonido: ", e);
     }
   }
-  
-  // Mostrar barra de salud del jefe en niveles de jefe
-  if ((level === 2 && subLevel === 3) || level === 3) {
-    document.getElementById('bossHealth').style.display = 'block';
-    updateBossHealth();
-  } else {
-    document.getElementById('bossHealth').style.display = 'none';
-  }
-  
-  // Mostrar poder del unicornio si está disponible
-  if (unicornPower > 0) {
-    document.getElementById('unicornPower').style.display = 'block';
-    document.getElementById('unicornPowerLevel').style.width = `${unicornPower}%`;
-  }
-  
-  // Mostrar contador de corazones si se han recolectado
-  if (heartsCollected > 0) {
-    document.getElementById('heartsCollected').style.display = 'block';
-    document.getElementById('heartCount').textContent = heartsCollected;
-  }
 }
 
-function setupLevel1(subLevel) {
-  // Configuración para los niveles 1-1, 1-2, 1-3
-  // (Implementar según la lógica de tu juego)
+// ============= FUNCIONES DE CARGA =============
+function loadResources() {
+  const loadingScreen = document.getElementById('loadingScreen');
+  const loadingProgress = document.getElementById('loadingProgress');
+  const loadingText = document.getElementById('loadingText');
+  const loadingDetails = document.getElementById('loadingDetails');
+  const startScreen = document.getElementById('startScreen');
+  const coverImage = document.getElementById('coverImage');
   
-  // Plataformas básicas
-  platforms = [
-    {x: 0, y: canvas.height - 50, width: canvas.width, height: 50},
-    {x: 200, y: canvas.height - 150, width: 100, height: 20},
-    {x: 400, y: canvas.height - 200, width: 100, height: 20},
-    {x: 600, y: canvas.height - 250, width: 100, height: 20}
-  ];
+  // Cargar imagen de portada directamente primero
+  if (coverImage) {
+    coverImage.src = "https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/oso/oso_portada.png";
+  }
   
-  // Amigos (animales del bosque)
-  friends = [
-    {x: 250, y: canvas.height - 170, width: 50, height: 50, type: 'ardilla', hugged: false},
-    {x: 450, y: canvas.height - 220, width: 50, height: 50, type: 'conejo', hugged: false},
-    {x: 650, y: canvas.height - 270, width: 50, height: 50, type: 'pajarito', hugged: false}
-  ];
-  
-  // Coleccionables (miel)
-  collectibles = [
-    {x: 300, y: canvas.height - 200, width: 30, height: 30, type: 'miel', collected: false},
-    {x: 500, y: canvas.height - 250, width: 30, height: 30, type: 'miel', collected: false}
-  ];
-  
-  // Enemigos básicos
-  enemies = [
-    {x: 350, y: canvas.height - 80, width: 60, height: 60, type: 'basic', speed: 2, direction: 1},
-    {x: 550, y: canvas.height - 80, width: 60, height: 60, type: 'basic', speed: 2, direction: -1}
-  ];
-}
-
-function setupLevel2(subLevel) {
-  // Configuración para los niveles 2-1, 2-2, 2-3
-  // (Implementar según la lógica de tu juego)
-  
-  // Plataformas para nivel de batalla
-  platforms = [
-    {x: 0, y: canvas.height - 50, width: canvas.width, height: 50}
-  ];
-  
-  if (subLevel === 3) {
-    // Nivel de batalla con el lobo
-    boss = {
-      x: canvas.width - 150,
-      y: canvas.height - 150,
-      width: 120,
-      height: 120,
-      type: 'lobo',
-      state: 'idle',
-      attackTimer: 0,
-      attackCooldown: 120,
-      fireBalls: []
+  for (let key in imageUrls) {
+    sprites[key].onload = () => {
+      loadedResources++;
+      const progress = Math.floor((loadedResources / totalResources) * 100);
+      if (loadingProgress) loadingProgress.style.width = `${progress}%`;
+      if (loadingText) loadingText.textContent = `${progress}%`;
+      
+      if (loadedResources === totalResources) {
+        setTimeout(() => {
+          if (loadingScreen) loadingScreen.style.display = "none";
+          if (startScreen) startScreen.style.display = "flex";
+        }, 500);
+      }
     };
     
-    // Mostrar advertencia de fuego
-    document.getElementById('fireWarning').style.display = 'block';
-    
-    // Ocultar advertencia después de 3 segundos
-    setTimeout(() => {
-      document.getElementById('fireWarning').style.display = 'none';
-    }, 3000);
-  } else {
-    // Niveles 2-1 y 2-2
-    enemies = [
-      {x: 300, y: canvas.height - 80, width: 70, height: 70, type: 'advanced', speed: 3, direction: 1},
-      {x: 500, y: canvas.height - 80, width: 70, height: 70, type: 'advanced', speed: 3, direction: -1}
-    ];
-    
-    // Coleccionables (corazones)
-    collectibles = [
-      {x: 200, y: canvas.height - 200, width: 40, height: 40, type: 'heart', collected: false},
-      {x: 400, y: canvas.height - 200, width: 40, height: 40, type: 'heart', collected: false},
-      {x: 600, y: canvas.height - 200, width: 40, height: 40, type: 'heart', collected: false}
-    ];
-  }
-}
-
-function gameLoop(timestamp) {
-  // Calcular delta time
-  const deltaTime = timestamp - lastTime;
-  lastTime = timestamp;
-  
-  // Actualizar y dibujar el juego
-  if (gameState === GAME_STATES.PLAYING) {
-    update(deltaTime);
-    draw();
-  }
-  
-  // Continuar el bucle
-  requestAnimationFrame(gameLoop);
-}
-
-function update(deltaTime) {
-  // Actualizar jugador
-  updatePlayer();
-  
-  // Actualizar enemigos
-  updateEnemies();
-  
-  // Actualizar proyectiles
-  updateProjectiles();
-  
-  // Actualizar jefe (si existe)
-  if (boss) {
-    updateBoss(deltaTime);
-  }
-  
-  // Verificar colisiones
-  checkCollisions();
-  
-  // Verificar condiciones de victoria/derrota
-  checkGameConditions();
-}
-
-function draw() {
-  // Limpiar canvas
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  
-  // Dibujar fondo según el nivel
-  drawBackground();
-  
-  // Dibujar plataformas
-  drawPlatforms();
-  
-  // Dibujar coleccionables
-  drawCollectibles();
-  
-  // Dibujar amigos
-  drawFriends();
-  
-  // Dibujar enemigos
-  drawEnemies();
-  
-  // Dibujar proyectiles
-  drawProjectiles();
-  
-  // Dibujar jefe
-  if (boss) {
-    drawBoss();
-  }
-  
-  // Dibujar jugador
-  drawPlayer();
-  
-  // Dibujar efectos especiales
-  drawSpecialEffects();
-}
-
-// ============= ACTUALIZACIÓN DE ENTIDADES =============
-function updatePlayer() {
-  // (Implementar lógica de movimiento y física del jugador)
-}
-
-function updateEnemies() {
-  // (Implementar lógica de movimiento de enemigos)
-}
-
-function updateProjectiles() {
-  // (Implementar lógica de movimiento de proyectiles)
-}
-
-function updateBoss(deltaTime) {
-  // Lógica específica del jefe (lobo)
-  if (!boss) return;
-  
-  boss.attackTimer += deltaTime;
-  
-  // Ataque del jefe cada cierto tiempo
-  if (boss.attackTimer > boss.attackCooldown) {
-    bossAttack();
-    boss.attackTimer = 0;
-    
-    // Reducir el tiempo entre ataques si está enfurecido
-    if (isBossEnraged && boss.attackCooldown > 60) {
-      boss.attackCooldown -= 10;
-    }
-  }
-  
-  // Mover bolas de fuego
-  for (let i = boss.fireBalls.length - 1; i >= 0; i--) {
-    const fireBall = boss.fireBalls[i];
-    fireBall.x += fireBall.speedX;
-    fireBall.y += fireBall.speedY;
-    
-    // Eliminar bolas de fuego que salen de la pantalla
-    if (fireBall.x < -50 || fireBall.x > canvas.width + 50 ||
-        fireBall.y < -50 || fireBall.y > canvas.height + 50) {
-      boss.fireBalls.splice(i, 1);
-    }
-  }
-}
-
-function bossAttack() {
-  if (!boss) return;
-  
-  // Crear una nueva bola de fuego
-  const angle = Math.atan2(player.y - boss.y, player.x - boss.x);
-  const speed = 5;
-  
-  boss.fireBalls.push({
-    x: boss.x + boss.width / 2,
-    y: boss.y + boss.height / 2,
-    radius: 20,
-    speedX: Math.cos(angle) * speed,
-    speedY: Math.sin(angle) * speed,
-    type: 'fire'
-  });
-  
-  // Reproducir sonido de ataque si está disponible
-  if (sounds.shot) {
-    sounds.shot.currentTime = 0;
-    sounds.shot.play();
-  }
-}
-
-// ============= DIBUJADO DE ENTIDADES =============
-function drawBackground() {
-  // Dibujar fondo según el nivel actual
-  let bgImage;
-  
-  if (currentLevel === 1) {
-    if (subLevel === 1) bgImage = sprites.fondo1_1;
-    else if (subLevel === 2) bgImage = sprites.fondo1_2;
-    else bgImage = sprites.fondo1_3;
-  } else if (currentLevel === 2) {
-    if (subLevel === 1) bgImage = sprites.fondo2_1;
-    else if (subLevel === 2) bgImage = sprites.fondo2_2;
-    else bgImage = sprites.fondo2_3;
-  }
-  
-  if (bgImage) {
-    ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
-  } else {
-    // Fondo por defecto
-    ctx.fillStyle = '#87CEEB';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-  }
-}
-
-function drawPlayer() {
-  // (Implementar dibujado del jugador con sprites)
-}
-
-function drawBoss() {
-  if (!boss) return;
-  
-  // Determinar qué sprite usar según el estado del jefe
-  let bossSprite;
-  if (isBossEnraged) {
-    bossSprite = sprites.loboferoz;
-    
-    // Aplicar efecto visual de enfurecimiento
-    ctx.save();
-    if (Math.floor(boss.attackTimer / 200) % 2 === 0) {
-      ctx.filter = 'brightness(1.5)';
-    }
-  } else if (bossHealth <= 2) {
-    bossSprite = sprites.lobotriste;
-  } else {
-    bossSprite = sprites.lobo;
-  }
-  
-  // Dibujar el jefe
-  if (bossSprite) {
-    ctx.drawImage(bossSprite, boss.x, boss.y, boss.width, boss.height);
-  }
-  
-  // Dibujar bolas de fuego
-  for (const fireBall of boss.fireBalls) {
-    if (sprites.fire) {
-      ctx.drawImage(
-        sprites.fire, 
-        fireBall.x - fireBall.radius, 
-        fireBall.y - fireBall.radius,
-        fireBall.radius * 2,
-        fireBall.radius * 2
-      );
-    } else {
-      // Dibujar círculo de fuego si no hay sprite
-      ctx.fillStyle = 'orange';
-      ctx.beginPath();
-      ctx.arc(fireBall.x, fireBall.y, fireBall.radius, 0, Math.PI * 2);
-      ctx.fill();
+    sprites[key].onerror = () => {
+      loadedResources++;
+      failedResources++;
       
-      ctx.fillStyle = 'yellow';
-      ctx.beginPath();
-      ctx.arc(fireBall.x, fireBall.y, fireBall.radius * 0.7, 0, Math.PI * 2);
-      ctx.fill();
-    }
-  }
-  
-  if (isBossEnraged) {
-    ctx.restore();
-  }
-}
-
-function drawSpecialEffects() {
-  // (Implementar efectos especiales como destellos)
-}
-
-// ============= COLISIONES Y FÍSICA =============
-function checkCollisions() {
-  // (Implementar detección de colisiones)
-}
-
-// ============= MANEJO DE EVENTOS =============
-function handleKeyDown(e) {
-  // (Implementar controles de teclado)
-}
-
-function handleKeyUp(e) {
-  // (Implementar liberación de teclas)
-}
-
-function setupTouchControls() {
-  // (Implementar controles táctiles para dispositivos móviles)
-}
-
-// ============= EFECTOS ESPECIALES =============
-function flashEffect(target) {
-  // Aplicar efecto de destello
-  target.classList.add('flash-effect');
-  
-  // Remover la clase después de la animación
-  setTimeout(() => {
-    target.classList.remove('flash-effect');
-  }, 500);
-}
-
-function transformToUnicorn() {
-  // Cambiar al sprite de oso + unicornio
-  player.sprite = sprites.osoyuni;
-  player.width *= 1.2;
-  player.height *= 1.2;
-  
-  // Aplicar efecto visual de transformación
-  const playerElement = document.getElementById('gameContainer');
-  playerElement.classList.add('unicorn-transformation');
-  
-  // Reproducir sonido de transformación si está disponible
-  if (sounds.powerup) {
-    sounds.powerup.currentTime = 0;
-    sounds.powerup.play();
-  }
-  
-  // Aumentar poder del unicornio
-  unicornPower = 100;
-  document.getElementById('unicornPower').style.display = 'block';
-  document.getElementById('unicornPowerLevel').style.width = '100%';
-}
-
-function updateBossHealth() {
-  const healthBar = document.getElementById('bossHealthBar');
-  const healthText = document.getElementById('bossHealthText');
-  
-  if (healthBar && healthText) {
-    const percentage = (bossHealth / 5) * 100;
-    healthBar.style.width = `${percentage}%`;
-    healthText.textContent = `${bossHealth}/5`;
-    
-    // Cambiar a modo enfurecido si la salud es baja
-    if (bossHealth <= 2 && !isBossEnraged) {
-      isBossEnraged = true;
-      healthBar.classList.add('boss-enraged');
+      const progress = Math.floor((loadedResources / totalResources) * 100);
+      if (loadingProgress) loadingProgress.style.width = `${progress}%`;
+      if (loadingText) loadingText.textContent = `${progress}%`;
       
-      // Efecto de destello en el lobo
-      flashEffect(document.getElementById('bossHealth'));
-    }
+      if (loadingDetails) {
+        loadingDetails.innerHTML += `<p class="error-message">Error cargando: ${key} - <a href="${imageUrls[key]}" target="_blank">Ver URL</a></p>`;
+      }
+      
+      if (loadedResources === totalResources) {
+        if (loadingScreen) loadingScreen.style.display = "none";
+        if (startScreen) startScreen.style.display = "flex";
+        
+        // Mostrar advertencia si hay errores
+        if (failedResources > 0) {
+          alert(`⚠️ Algunos recursos no se pudieron cargar (${failedResources}/${totalResources}). El juego puede no verse correctamente.`);
+        }
+      }
+    };
+    
+    sprites[key].src = imageUrls[key];
   }
 }
 
-// ============= UTILIDADES =============
-function toggleSound() {
-  const soundButton = document.getElementById('soundToggle');
-  const isMuted = soundButton.textContent === '🔇';
+// ============= FUNCIONES PRINCIPALES DEL JUEGO =============
+function setupLevel(levelKey) {
+  console.log(`🎯 Configurando nivel: ${levelKey}`);
   
-  if (isMuted) {
-    // Activar sonido
-    soundButton.textContent = '🔊';
-    Howler.mute(false);
-    
-    if (backgroundMusic) {
-      backgroundMusic.muted = false;
-    }
-    
-    // Reactivar todos los sonidos
-    for (const sound of Object.values(sounds)) {
-      sound.muted = false;
-    }
-  } else {
-    // Silenciar sonido
-    soundButton.textContent = '🔇';
-    Howler.mute(true);
-    
-    if (backgroundMusic) {
-      backgroundMusic.muted = true;
-    }
-    
-    // Silenciar todos los sonidos
-    for (const sound of Object.values(sounds)) {
-      sound.muted = true;
-    }
-  }
-}
-
-function checkGameConditions() {
-  // Verificar victoria
-  if (bossHealth <= 0) {
-    showVictoryScreen();
+  const level = window.LEVELS[levelKey];
+  if (!level) {
+    console.error("❌ Nivel no encontrado:", levelKey);
     return;
   }
   
-  // Verificar derrota
-  if (lives <= 0) {
-    gameState = GAME_STATES.GAME_OVER;
-    // Mostrar pantalla de game over
-  }
-}
-
-function restartGame() {
-  // Reiniciar variables del juego
-  currentLevel = 1;
-  subLevel = 1;
-  score = 0;
-  lives = 3;
-  unicornPower = 0;
-  heartsCollected = 0;
+  window.gameState.currentLevel = levelKey;
+  window.gameState.bossFight = level.hasBoss;
   
   // Actualizar UI
-  document.getElementById('score').textContent = score;
-  document.getElementById('lives').textContent = '❤️❤️❤️';
-  document.getElementById('unicornPower').style.display = 'none';
-  document.getElementById('heartsCollected').style.display = 'none';
-  document.getElementById('victoryScreen').style.display = 'none';
+  const levelElement = document.getElementById('level');
+  if (levelElement) {
+    levelElement.textContent = `${levelKey} - ${level.name}`;
+  }
   
-  // Reiniciar juego
-  initGame();
+  const levelIndicator = document.getElementById('levelIndicator');
+  if (levelIndicator) {
+    levelIndicator.textContent = `Nivel ${levelKey}`;
+  }
+  
+  if (level.hasBoss) {
+    setupBossLevel();
+  } else {
+    setupNormalLevel(level);
+  }
 }
 
+// ... (resto de las funciones del juego)
+
 // ============= INICIAR JUEGO =============
-// Iniciar cuando el DOM esté listo
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', init);
-} else {
-  init();
-}
-// Función de respaldo para cuando las imágenes no cargan
-function safeGetSprite(key) {
-  if (sprites[key] && sprites[key].src) {
-    return sprites[key];
-  }
-  
-  // Crear un placeholder según el tipo de imagen
-  const canvas = document.createElement('canvas');
-  canvas.width = 100;
-  canvas.height = 100;
-  const ctx = canvas.getContext('2d');
-  
-  if (key.includes('portada')) {
-    ctx.fillStyle = '#8B4513';
-    ctx.fillRect(0, 0, 100, 100);
-    ctx.fillStyle = 'white';
-    ctx.font = '12px Arial';
-    ctx.fillText('Portada Oso', 10, 50);
-  } else {
-    ctx.fillStyle = '#FF6B6B';
-    ctx.fillRect(0, 0, 100, 100);
-    ctx.fillStyle = 'white';
-    ctx.font = '10px Arial';
-    ctx.fillText(key, 5, 50);
-  }
-  
-  const img = new Image();
-  img.src = canvas.toDataURL();
-  return img;
-}
+console.log("Juego Oso Abrazos cargado correctamente");
