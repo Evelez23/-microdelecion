@@ -402,7 +402,228 @@ function setupLevel(levelKey) {
     setupNormalLevel(level);
   }
 }
+function setupNormalLevel(level) {
+  console.log("🌲 Configurando nivel normal");
+  
+  // Ocultar elementos de jefe
+  const bossHealthElement = document.getElementById('bossHealth');
+  const fireWarningElement = document.getElementById('fireWarning');
+  const heartsCollectedElement = document.getElementById('heartsCollected');
+  const unicornPowerElement = document.getElementById('unicornPower');
+  
+  if (bossHealthElement) bossHealthElement.style.display = 'none';
+  if (fireWarningElement) fireWarningElement.style.display = 'none';
+  if (heartsCollectedElement) heartsCollectedElement.style.display = 'none';
+  if (unicornPowerElement) unicornPowerElement.style.display = 'none';
+  
+  // Configurar plataformas básicas
+  window.platforms = [
+    { x: 0, y: 450, width: 800, height: 50 },
+    { x: 200, y: 350, width: 100, height: 20 },
+    { x: 400, y: 300, width: 100, height: 20 },
+    { x: 600, y: 350, width: 100, height: 20 }
+  ];
+  
+  // Configurar amigos
+  window.friends = [];
+  for (let i = 0; i < level.friends; i++) {
+    const friendType = i % 3;
+    let sprite;
+    let friendName;
+    
+    switch (friendType) {
+      case 0:
+        sprite = sprites.squirrel;
+        friendName = "ardilla";
+        break;
+      case 1:
+        sprite = sprites.rabbit;
+        friendName = "conejo";
+        break;
+      case 2:
+        sprite = sprites.bird;
+        friendName = "pájaro";
+        break;
+    }
+    
+    window.friends.push({
+      x: 150 + i * 150,
+      y: 380,
+      width: 50,
+      height: 50,
+      sprite: sprite,
+      type: friendType,
+      name: friendName,
+      hugged: false,
+      floating: 0,
+      floatDir: Math.random() > 0.5 ? 1 : -1
+    });
+  }
+  
+  // Configurar enemigos básicos
+  window.enemies = [];
+  for (let i = 0; i < level.enemies; i++) {
+    const enemyType = i % 3;
+    let sprite;
+    
+    switch (enemyType) {
+      case 0:
+        sprite = sprites.enemy1;
+        break;
+      case 1:
+        sprite = sprites.enemy2;
+        break;
+      case 2:
+        sprite = sprites.enemy3;
+        break;
+    }
+    
+    window.enemies.push({
+      x: 600 + (i * 100),
+      y: 380,
+      width: 60,
+      height: 60,
+      sprite: sprite,
+      direction: -1,
+      speed: 1 + Math.random() * 0.5,
+      damage: 1,
+      moveRange: 100 + Math.random() * 50,
+      startX: 600 + (i * 100),
+      moveCooldown: 0
+    });
+  }
+  
+  // Configurar items (miel)
+  window.items = [];
+  for (let i = 0; i < level.items; i++) {
+    window.items.push({
+      x: 150 + i * 200,
+      y: 250,
+      width: 30,
+      height: 30,
+      collected: false
+    });
+  }
+  
+  // Configurar corazones
+  window.hearts = [];
+  for (let i = 0; i < 3; i++) {
+    window.hearts.push({
+      x: 250 + i * 200,
+      y: 300,
+      width: 30,
+      height: 30,
+      collected: false
+    });
+  }
+  
+  // Configurar posición del oso
+  window.oso.x = 100;
+  window.oso.y = 380;
+  window.oso.vx = 0;
+  window.oso.vy = 0;
+  window.oso.grounded = false;
+  window.oso.hugging = false;
+  window.oso.hasUnicorn = false;
+  window.oso.invincible = 120;
+  
+  // Configurar unicornio
+  window.unicorn.active = false;
+  window.unicorn.power = 0;
+  
+  // Limpiar proyectiles y partículas
+  window.projectiles = [];
+  window.particles = [];
+  
+  // Mostrar indicación
+  showHint("Acércate a los amigos y presiona ESPACIO para abrazarlos", 5000);
+}
 
+function setupBossLevel() {
+  console.log("🐺 Configurando nivel de jefe");
+  
+  // Mostrar elementos de jefe
+  const bossHealthElement = document.getElementById('bossHealth');
+  const heartsCollectedElement = document.getElementById('heartsCollected');
+  const unicornPowerElement = document.getElementById('unicornPower');
+  
+  if (bossHealthElement) bossHealthElement.style.display = 'block';
+  if (heartsCollectedElement) heartsCollectedElement.style.display = 'block';
+  
+  // Configurar plataformas
+  window.platforms = [
+    { x: 0, y: 450, width: 800, height: 50 }
+  ];
+  
+  // Configurar jefe
+  window.boss = {
+    x: 600, y: 350,
+    width: 120, height: 120,
+    health: 5,
+    maxHealth: 5,
+    enraged: false,
+    phase: 1,
+    attackCooldown: 100,
+    warningTimer: 0,
+    fireballs: []
+  };
+  
+  // Configurar posición del oso
+  window.oso.x = 100;
+  window.oso.y = 380;
+  window.oso.vx = 0;
+  window.oso.vy = 0;
+  window.oso.grounded = false;
+  window.oso.hugging = false;
+  window.oso.invincible = 120;
+  
+  // Limpiar otros elementos
+  window.friends = [];
+  window.enemies = [];
+  window.items = [];
+  window.projectiles = [];
+  window.particles = [];
+  
+  // Mostrar indicación
+  showHint("¡Derrota al Lobo Feroz! Recolecta corazones para invocar al Unicornio.", 5000);
+  
+  // Actualizar salud del jefe
+  updateBossHealth();
+}
+
+function updateBossHealth() {
+  const bossHealthBar = document.getElementById('bossHealthBar');
+  const bossHealthText = document.getElementById('bossHealthText');
+  
+  if (bossHealthBar && bossHealthText) {
+    const healthPercent = (window.boss.health / window.boss.maxHealth) * 100;
+    bossHealthBar.style.width = `${healthPercent}%`;
+    bossHealthText.textContent = `${window.boss.health}/${window.boss.maxHealth}`;
+    
+    // Aplicar efecto de enfado si tiene poca vida
+    if (window.boss.health <= 2 && !window.boss.enraged) {
+      bossHealthBar.parentElement.classList.add('boss-enraged');
+    }
+  }
+}
+
+function gameLoop() {
+  if (window.gameState.gameStarted) {
+    update();
+    draw();
+  }
+  requestAnimationFrame(gameLoop);
+}
+
+function update() {
+  // Esta función necesita ser implementada
+  console.log("Actualizando juego...");
+}
+
+function draw() {
+  // Esta función necesita ser implementada
+  console.log("Dibujando juego...");
+}
 // ... (resto de las funciones del juego)
 
 // ============= INICIAR JUEGO =============
