@@ -1,104 +1,98 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Oso Abrazos - Aventura Completa</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oso Abrazos - Aventura Completa</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <div id="game-wrapper">
     <h1>🐻 Oso Abrazos - Aventura Completa</h1>
-    <p class="subtitle">¡Ayuda al Oso Abrazos a recolectar corazones y derrotar al Lobo Feroz con el poder del Unicornio!</p>
+    <p class="subtitle">¡Ayuda al Oso Abrazos a derrotar al Lobo Feroz en 6 niveles emocionantes!</p>
     
-    <div class="container">
-        <div class="game-wrapper">
-            <div id="gameContainer">
-                <canvas id="gameCanvas" width="800" height="500"></canvas>
-
-                <!-- UI del juego -->
-                <div id="ui">
-                    <div class="ui-item">⭐ Puntos: <span id="score">0</span></div>
-                    <div class="ui-item">❤️ Vidas: <span id="lives">3</span></div>
-                    <div class="ui-item">🗺️ Nivel: <span id="level">1-1</span></div>
-                    <div id="unicornPower" class="ui-item" style="display: none;">
-                        <span>🦄 Poder:</span>
-                        <div class="power-bar">
-                            <div class="power-level" id="unicornPowerLevel"></div>
-                        </div>
-                    </div>
-                    <div id="heartsCollected" class="ui-item" style="display: none;">
-                        <span>💕 Corazones: <span id="heartCount">0</span>/3</span>
-                    </div>
-                </div>
-
-                <!-- Barra de salud del jefe -->
-                <div id="bossHealth" class="boss-health">
-                    <div class="boss-health-bar" id="bossHealthBar">
-                        <div class="boss-health-text">🐺 Lobo Feroz - Vida: <span id="bossHealthText">5/5</span></div>
-                    </div>
-                </div>
-
-                <!-- Advertencia de ataque -->
-                <div id="fireWarning" class="fire-warning">
-                    ⚠️ ¡CUIDADO! El lobo va a atacar con fuego ⚠️
-                </div>
-
-                <div id="levelIndicator" class="level-indicator">Nivel 1-1</div>
-
-                <!-- Pantalla de inicio -->
-                <div id="startScreen">
-                    <img id="coverImage" src="https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/oso/oso_portada.png" alt="Portada del Juego">
-                    <button id="startButton">🎮 ¡Comenzar Aventura!</button>
-                </div>
-                
-                <!-- Pantalla de carga -->
-                <div id="loadingScreen" class="loading-screen">
-                    <h2>Cargando recursos del juego...</h2>
-                    <div class="progress-bar">
-                        <div class极="progress" id="loadingProgress"></div>
-                    </div>
-                    <p id="loadingText">0%</p>
-                </div>
-
-                <!-- Pantalla de victoria -->
-                <div id="victoryScreen" class="victory-animation">
-                    <h2 class="victory-title">🎉 ¡VICTORIA! 🎉</h2>
-                    <img id="victoryImage" class="victory-image" src="https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/oso/uniyosocombat.png" alt="Oso y Unicornio">
-                    <p style="font-size: 1.5rem; margin: 10px 0;">¡Has derrotado al Lobo Feroz!</p>
-                    <p style="font-size: 1.2rem; margin: 10px 0;">Puntuación final: <span id="finalScore">0</span></p>
-                    <button id="restartButton" style="margin-top: 20px; padding: 12px 24px; font-size: 1.2rem; background: #4CAF50; color: white; border: none; border-radius: 50px; cursor: pointer;">🔄 Jugar de nuevo</button>
-                </div>
-                
-                <button id="soundToggle">🔊</button>
-                
-                <div id="hint">💡 Usa los controles para moverte y abrazar a tus amigos</div>
-            </div>
+    <div id="gameContainer">
+      <canvas id="gameCanvas" width="800" height="500"></canvas>
+      
+      <!-- Elementos de UI -->
+      <div id="ui">
+        <div>Puntos: <span id="score">0</span></div>
+        <div>Vidas: <span id="lives">❤️❤️❤️</span></div>
+        <div>Nivel: <span id="level">1-1</span></div>
+        <div id="unicornPower" style="display: none;">
+          <span>🦄 Poder del Unicornio:</span>
+          <div class="power-bar">
+            <div class="power-level" id="unicornPowerLevel"></div>
+          </div>
         </div>
-
-        <!-- Controles tipo PlayStation -->
-        <div class="playstation-controls">
-            <div class="d-pad">
-                <div class="d-pad-button d-pad-up" id="upBtn">↑</div>
-                <div class="d-pad-button d-pad-down" id="downBtn">↓</div>
-                <div class="d-pad-button d-pad-left" id="leftBtn">←</div>
-                <div class="d-pad-button d-pad-right" id="rightBtn">→</div>
-            </div>
-            
-            <div class="action-buttons">
-                <div class="action-button action-button-x" id="jumpBtn">SALTAR</div>
-                <div class="action-button action-button-circle" id="hugBtn">ABRAZAR</div>
-                <div class="action-button action-button-square" id="unicornBtn">UNICORNIO</div>
-                <div class="action-button action-button-triangle" id="actionBtn">DISPARAR</div>
-            </div>
+        <div id="heartsCollected" style="display: none;">
+          <span>💕 Corazones: <span id="heartCount">0</span>/3</span>
         </div>
+      </div>
+
+      <!-- Barra de salud del jefe -->
+      <div id="bossHealth" class="boss-health">
+        <div class="boss-health-bar" id="bossHealthBar">
+          <div class="boss-health-text">🐺 Lobo Feroz - Vida: <span id="bossHealthText">5/5</span></div>
+        </div>
+      </div>
+
+      <!-- Advertencia de fuego -->
+      <div id="fireWarning" class="fire-warning">
+        <div style="text-align: center; color: white; font-weight: bold; padding-top: 10px;">
+          ⚠️ ¡CUIDADO! El lobo va a atacar con fuego ⚠️
+        </div>
+      </div>
+
+      <div id="levelIndicator" class="level-indicator">Nivel 1-1</div>
+
+      <!-- Pantallas del juego -->
+      <div id="startScreen">
+        <img id="coverImage" src="" alt="Portada del Juego">
+        <button id="startButton">🎮 ¡Comenzar Aventura!</button>
+      </div>
+      
+      <div id="loadingScreen">
+        <h2>Cargando recursos del juego...</h2>
+        <div class="progress-bar">
+          <div class="progress" id="loadingProgress"></div>
+        </div>
+        <p id="loadingText">0%</p>
+        <div id="loadingDetails"></div>
+      </div>
+
+      <div id="victoryScreen" class="victory-animation">
+        <h2 class="victory-title">🎉 ¡VICTORIA! 🎉</h2>
+        <img id="victoryImage" src="" alt="Celebración">
+        <p style="font-size: 1.5rem; margin-bottom: 20px;">¡Has derrotado al Lobo Feroz!</p>
+        <div style="font-size: 1.2rem; margin-bottom: 30px;">
+          <p>Puntuación Final: <span id="finalScore">0</span></p>
+          <p>Corazones Recolectados: <span id="finalHearts">0</span></p>
+        </div>
+        <button id="nextLevelBtn" class="celebration-btn">🚀 ¡Jugar de nuevo!</button>
+      </div>
+
+      <div id="storybook" style="display: none;">
+        <div class="storybook-content">
+          <h2>🐻 Oso Abrazos vs. 🐺 El Lobo Feroz</h2>
+          <!-- Contenido del storybook -->
+          <div class="storybook-controls">
+            <button id="startGame" class="storybook-btn">💪 ¡Entendido! ¡A salvar el bosque!</button>
+            <button id="backToMenu" class="storybook-btn">📋 Volver al menú</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="hint">Acércate a los amigos y presiona ESPACIO para abrazarlos</div>
+      <button id="soundToggle">🔊</button>
+
+      <!-- Controles móviles -->
+      <div class="mobile-controls">
+        <!-- Botones de control -->
+      </div>
     </div>
+  </div>
 
-    <!-- JavaScript dividido en módulos -->
-    <script src="config.js"></script>
-    <script src="game-init.js"></script>
-    <script src="game-loop.js"></script>
-    <script src="game-objects.js"></script>
-    <script src="ui-manager.js"></script>
-    <script src="input-handler.js"></script>
+  <script src="game.js"></script>
 </body>
 </html>
