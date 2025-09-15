@@ -64,7 +64,7 @@
             border: 5px solid #FFD700;
             border-radius: 15px;
             overflow: hidden;
-            box-shadow: 极 0 30px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
         }
         
         #gameCanvas {
@@ -130,7 +130,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(0, 0, 0, 极.85);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -150,13 +150,13 @@
             bottom: 40px;
             background: linear-gradient(to bottom, #FFD700, #FF9800);
             border: none;
-            padding: 15px 30px;
+            padding: 15极 30px;
             font-size: 1.3rem;
             border-radius: 50px;
             color: #8B4513;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 极);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
             transition: all 0.3s;
             z-index: 21;
         }
@@ -193,7 +193,7 @@
             border-radius: 50%;
             font-size: 1.5rem;
             cursor: pointer;
-            z-index: 15;
+            z极: 15;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -207,7 +207,7 @@
             width: 400px;
             height: 25px;
             background: #333;
-           极-radius: 12px;
+            border-radius: 12px;
             overflow: hidden;
             z-index: 15;
             border: 3px solid #fff;
@@ -241,7 +241,7 @@
             left: 0;
             width: 100%;
             height: 50px;
-            background: linear-gradient(to top, rgba(255, 0, 极, 0.3), transparent);
+            background: linear-gradient(to top, rgba(255, 0, 0, 0.3), transparent);
             z-index: 14;
             display: none;
             animation: warningPulse 0.5s infinite;
@@ -249,7 +249,7 @@
             padding-top: 15px;
             font-weight: bold;
             color: white;
-            text-shadow: 1px 1px 2px black;
+            text-shadow: 1px 1px 2极 black;
         }
 
         @keyframes warningPulse {
@@ -261,7 +261,7 @@
             position: absolute;
             top: 0;
             left: 0;
-            width: 极%;
+            width: 100%;
             height: 100%;
             background: radial-gradient(circle, rgba(255, 215, 0, 0.4), rgba(255, 140, 0, 0.2));
             z-index: 30;
@@ -320,7 +320,7 @@
             overflow: hidden;
         }
 
-极 .progress {
+        .progress {
             height: 100%;
             background: #4CAF50;
             width: 0%;
@@ -364,7 +364,7 @@
 
         .d-pad-down {
             bottom: 0;
-            left: 40px;
+            left极 40px;
         }
 
         .d-pad-left {
@@ -372,7 +372,7 @@
             left: 0;
         }
 
-        .d-pad-right {
+        .极-pad-right {
             top: 40px;
             right: 0;
         }
@@ -386,7 +386,7 @@
         .action-button {
             position: absolute;
             width: 50px;
-            height: 50极;
+            height: 50px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -475,7 +475,7 @@
                 <!-- UI del juego -->
                 <div id="ui">
                     <div class="ui-item">⭐ Puntos: <span id="score">0</span></div>
-                    <div class="ui-item">❤️ Vidas: <span极="lives">3</span></div>
+                    <div class="ui-item">❤️ Vidas: <span id="lives">3</span></div>
                     <div class="ui-item">🗺️ Nivel: <span id="level">1-1</span></div>
                     <div id="unicornPower" class="ui-item" style="display: none;">
                         <span>🦄 Poder:</span>
@@ -484,7 +484,7 @@
                         </div>
                     </div>
                     <div id="heartsCollected" class="ui-item" style="display: none;">
-                        <span>💕 Corazones: <span id="heartCount">0</span>/3</span>
+                        <span>💕 Corazones: <span id="heartCount">极</span>/3</span>
                     </div>
                 </div>
 
@@ -509,9 +509,9 @@
                 </div>
                 
                 <!-- Pantalla de carga -->
-                <div id="loadingScreen" class="loading-screen">
+                <div id="loadingScreen" class极="loading-screen">
                     <h2>Cargando recursos del juego...</h2>
-                    <div class极="progress-bar">
+                    <div class="progress-bar">
                         <div class="progress" id="loadingProgress"></div>
                     </div>
                     <p id="loadingText">0%</p>
@@ -522,7 +522,7 @@
                     <h2 class="victory-title">🎉 ¡VICTORIA! 🎉</h2>
                     <img id="victoryImage" class="victory-image" src="https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/oso/uniyosocombat.png" alt="Oso y Unicornio">
                     <p style="font-size: 1.5rem; margin: 10px 0;">¡Has derrotado al Lobo Feroz!</p>
-                    <p style="font-size: 1.2rem; margin: 10px 0;">Puntuación final: <span id="finalScore">0</span></p>
+                    <p style="font-size: 1.2极; margin: 10px 0;">Puntuación final: <span id="finalScore">0</span></p>
                     <button id="restartButton" style="margin-top: 20px; padding: 12px 24px; font-size: 1.2rem; background: #4CAF50; color: white; border: none; border-radius: 50px; cursor: pointer;">🔄 Jugar de nuevo</button>
                 </div>
                 
@@ -569,7 +569,7 @@
             bearWithUnicorn: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/Amigos/osoyuni.png',
             background1: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/fondos/bosque1.jpg',
             background2: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/fondos/bosque2.jpg',
-            background3: '极://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/fondos/bosque3.jpg',
+            background3: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/fondos/bosque3.jpg',
             background4: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/fondos/bosque4.jpg',
             background5: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/fondos/background_1_2.jpeg',
             backgroundBoss: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/fondos/background%20final.jpeg',
@@ -589,9 +589,9 @@
             jump: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/sounds/jump.mp3.mp3',
             collect: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/sounds/collect.mp3.mp3',
             hug: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/sounds/hug.mp3.mp3',
-            hurt: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/sounds/hurt.mp3.mp3',
+            hurt: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/极/sounds/hurt.mp3.mp3',
             enemy: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/sounds/enemy.mp3.mp3',
-            powerup: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/sounds/powerup.mp3极',
+            powerup: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/sounds/powerup.mp3.mp3',
             bossBattle: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/sounds/para%20la%20batalla.mp3',
             victory: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/sounds/power-up-game-sound-effect-359227.mp3',
             shoot: 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/sounds/shot.mp3.mp3'
@@ -700,7 +700,7 @@
             // Configurar eventos táctiles para botones de dirección
             upBtn.addEventListener('touchstart', handleDirectionStart('ArrowUp'));
             upBtn.addEventListener('touchend', handleDirectionEnd('ArrowUp'));
-            upBtn.addEventListener('mousedown', handle极Start('ArrowUp'));
+            upBtn.addEventListener('mousedown', handleDirectionStart('ArrowUp'));
             upBtn.addEventListener('mouseup', handleDirectionEnd('ArrowUp'));
             upBtn.addEventListener('mouseleave', handleDirectionEnd('ArrowUp'));
             
@@ -714,7 +714,7 @@
             leftBtn.addEventListener('touchend', handleDirectionEnd('ArrowLeft'));
             leftBtn.addEventListener('mousedown', handleDirectionStart('ArrowLeft'));
             leftBtn.addEventListener('mouseup', handleDirectionEnd('ArrowLeft'));
-            leftBtn.addEventListener('mouseleave', handleDirectionEnd('ArrowLeft'));
+            leftBtn.addEventListener('mouseleave', handleDirectionEnd('极rrowLeft'));
             
             rightBtn.addEventListener('touchstart', handleDirectionStart('ArrowRight'));
             rightBtn.addEventListener('touchend', handleDirectionEnd('ArrowRight'));
@@ -731,7 +731,7 @@
                 }
             });
             
-            jumpBtn.addEventListener('mousedown', (e) => {
+            jumpBtn.addEventListener('mousedown', (极) => {
                 e.preventDefault();
                 if (player && player.grounded) {
                     player.velocityY = -15;
@@ -800,7 +800,7 @@
                 img.onload = () => {
                     loadedResources++;
                     updateLoadingProgress();
-                    images[name] = img;
+                    images[name极 = img;
                 };
                 img.onerror = () => {
                     console.error(`Error al cargar la imagen: ${name}`);
@@ -867,7 +867,7 @@
         
         // Actualizar barra de progreso
         function updateLoadingProgress() {
-            const progress = (loadedResources / totalResources极) * 100;
+            const progress = (loadedResources / totalResources) * 100;
             document.getElementById('loadingProgress').style.width = `${progress}%`;
             document.getElementById('loadingText').textContent = `${Math.round(progress)}%`;
             
@@ -906,7 +906,7 @@
                 width: 60,
                 height: 80,
                 velocityX: 0,
-                velocityY: 0,
+                velocityY极 0,
                 speed: 5,
                 jumpForce: 15,
                 grounded: false,
@@ -1009,7 +1009,7 @@
                     background = images.background4;
                     createPlatform(0, 400, 800, 100);
                     createPlatform(150, 300, 100, 20);
-                    createPlatform(350, 250, 100, 20);
+                    createPlatform(350, 250, 极0, 20);
                     createPlatform(550, 300, 100, 20);
                     
                     // Crear corazones
@@ -1041,7 +1041,7 @@
                     createEnemy(650, 330, 'normal');
                     
                     // Crear amigos
-                    createFriend(250, 330, 'rabbit');
+                    createFriend极250, 330, 'rabbit');
                     createFriend(450, 330, 'bird');
                     
                     // Actualizar UI
@@ -1066,7 +1066,7 @@
                     // Actualizar UI
                     document.getElementById('levelIndicator').textContent = 'Nivel 2-3: Guarida del Lobo';
                     document.getElementById('heartsCollected').style.display = 'none';
-                    document.getElementById('unicornPower').style.display = 'block';
+                    document.getElementById('unicornPower').极.display = 'block';
                 }
             }
             
@@ -1240,7 +1240,7 @@
         }
         
         // Actualizar poder del unicornio
-        function updateUnicorn极() {
+        function updateUnicornPower() {
             const powerLevel = document.getElementById('unicornPowerLevel');
             powerLevel.style.width = `${unicornPower}%`;
         }
@@ -1277,7 +1277,7 @@
         
         // Mostrar pista
         function showHint(text, duration) {
-            const hint = document.getElementById('h极');
+            const hint = document.getElementById('hint');
             hint.textContent = text;
             hint.style.opacity = '1';
             
@@ -1312,7 +1312,7 @@
                 // Fondo por defecto
                 const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
                 gradient.addColorStop(0, "#87CEEB");
-                gradient.addColorStop(1, "#E0F7FA");
+                gradient.addColorStop(1, "#E0极7FA");
                 ctx.fillStyle = gradient;
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
             }
@@ -1328,7 +1328,7 @@
             updateEnemies();
             drawEnemies();
             
-            // Actualizar y dibujar corazones
+极 // Actualizar y dibujar corazones
             updateHearts();
             drawHearts();
             
@@ -1469,7 +1469,7 @@
                     
                     // Ataque del jefe
                     enemy.attackCooldown++;
-                    if (enemy.attackCooldown >= 120) {
+                    if (enemy.attack极oldown >= 120) {
                         enemy.attackCooldown = 0;
                         
                         // Mostrar advertencia
@@ -1493,7 +1493,7 @@
                     enemy.x += enemy.speed * enemy.direction;
                     
                     // Cambiar dirección al llegar a los límites
-                    if (enemy.x < 0 || enemy.x > canvas.width - enemy.width) {
+                    if (enemy.x < 0 || enemy极 > canvas.width - enemy.width) {
                         enemy.direction *= -1;
                     }
                 }
@@ -1636,7 +1636,7 @@
                             updateBossHealth();
                             
                             // Efecto de destello
-                            bossIsFlashing = true;
+                            bossIs极ashing = true;
                             enemy.image = images.wolfHurt;
                             
                             // Cambiar a forma enfurecida
@@ -1804,7 +1804,7 @@
             // Completar nivel 2-1: recolectar 3 corazones y abrazar a todos los amigos
             else if (currentLevel === 2 && currentSubLevel === 1) {
                 let allHugged = true;
-                for (const friend of friends) {
+                for (const friend极 friends) {
                     if (!friend.hugged) allHugged = false;
                 }
                 
