@@ -405,7 +405,66 @@ h1 {
     font-size: 1rem;
     padding: 0 10px;
   }
-  
+  <style>
+/* ESTILOS DE EMERGENCIA */
+body {
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  color: white;
+  text-align: center;
+  margin: 0;
+  padding: 20px;
+  overflow-x: hidden;
+}
+
+#gameContainer {
+  position: relative;
+  width: 800px;
+  height: 500px;
+  border: 5px solid #FFD700;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+  margin: 0 auto;
+}
+
+#gameCanvas {
+  display: block;
+  background: linear-gradient(to bottom, #87CEEB, #E0F7FA);
+}
+
+/* Estilos básicos para elementos de UI */
+#ui {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 10px;
+  border-radius: 10px;
+  color: white;
+  z-index: 10;
+}
+
+#startScreen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 20;
+}
+
+#coverImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+</style>
   .boss-health {
     width: 80%;
   }
