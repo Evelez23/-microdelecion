@@ -1,6 +1,63 @@
 // ============= CONFIGURACIÓN Y VARIABLES GLOBALES =============
 const baseUrl = "https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main";
+// SOLUCIÓN DE EMERGENCIA - Ejecutar esto primero
+console.log("Cargando solución de emergencia...");
 
+// Crear sprites básicos para evitar errores
+window.sprites = window.sprites || {};
+window.sounds = window.sounds || {};
+
+// Crear un sprite de portada de emergencia
+const emergencyCover = new Image();
+emergencyCover.onload = function() {
+    window.sprites.portada = emergencyCover;
+    console.log("Portada de emergencia cargada");
+};
+emergencyCover.src = 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/oso/oso_portada.png';
+
+// Reemplazar la función showStartScreen con una versión a prueba de errores
+window.showStartScreen = function() {
+    console.log("Mostrando pantalla de inicio (modo emergencia)");
+    const startScreen = document.getElementById('startScreen');
+    const coverImage = document.getElementById('coverImage');
+    
+    if (startScreen) startScreen.style.display = 'flex';
+    
+    // Usar imagen de emergencia si está disponible
+    if (coverImage) {
+        if (window.sprites.portada && window.sprites.portada.src) {
+            coverImage.src = window.sprites.portada.src;
+        } else {
+            // Imagen de respaldo directa desde GitHub
+            coverImage.src = 'https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/oso/oso_portada.png';
+        }
+    }
+    
+    // Solo intentar reproducir si el sonido está cargado
+    if (window.sounds.intro && typeof window.sounds.intro.play === 'function') {
+        try {
+            window.sounds.intro.loop = true;
+            window.sounds.intro.volume = 0.7;
+            window.sounds.intro.play();
+        } catch (e) {
+            console.log("Error reproduciendo audio:", e);
+        }
+    }
+};
+
+// Reemplazar la función init para usar nuestra versión segura
+window.init = function() {
+    console.log("Inicializando en modo seguro");
+    // Llamar a showStartScreen después de un breve retraso
+    setTimeout(window.showStartScreen, 100);
+};
+
+// Iniciar cuando el DOM esté listo
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', window.init);
+} else {
+    window.init();
+}
 // Configuración de recursos
 const RESOURCES = {
  const loadImage = (key, url) => {
