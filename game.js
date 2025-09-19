@@ -687,6 +687,26 @@ function nextLevel() {
   }
 }
 
+// Agregar esta función para manejar el toggle de sonido
+function toggleSound() {
+  window.gameState.soundEnabled = !window.gameState.soundEnabled;
+  
+  // Actualizar todos los sonidos
+  for (let key in sounds) {
+    if (sounds[key]) {
+      sounds[key].muted = !window.gameState.soundEnabled;
+    }
+  }
+  
+  // Actualizar el texto del botón
+  const soundToggle = document.getElementById('soundToggle');
+  if (soundToggle) {
+    soundToggle.textContent = window.gameState.soundEnabled ? '🔊 Sonido' : '🔇 Silencio';
+  }
+  
+  console.log("Sonido " + (window.gameState.soundEnabled ? "activado" : "desactivado"));
+}
+
 function gameOver() {
   console.log("💀 Game Over");
   window.gameState.gameStarted = false;
