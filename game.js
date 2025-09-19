@@ -628,3 +628,106 @@ function draw() {
 
 // ============= INICIAR JUEGO =============
 console.log("Juego Oso Abrazos cargado correctamente");
+// Después de cargar los recursos, verifica cuales fallaron
+function createMissingSprites() {
+  const missingSprites = [];
+  
+  for (let key in sprites) {
+    if (!sprites[key].complete || sprites[key].naturalHeight === 0) {
+      missingSprites.push(key);
+      console.warn("Creando placeholder para:", key);
+      
+      // Crear un placeholder de color según el tipo
+      const canvas = document.createElement('canvas');
+      canvas.width = 100;
+      canvas.height = 100;
+      const ctx = canvas.getContext('2d');
+      
+      if (key.includes('background') || key.includes('fondo')) {
+        ctx.fillStyle = '#87CEEB';
+        ctx.fillRect(0, 0, 100, 100);
+      } else if (key.includes('oso')) {
+        ctx.fillStyle = '#8B4513';
+        ctx.fillRect(0, 0, 100, 100);
+      } else if (key.includes('lobo')) {
+        ctx.fillStyle = '#808080';
+        ctx.fillRect(0, 0, 100, 100);
+      } else {
+        ctx.fillStyle = '#FF6B6B';
+        ctx.fillRect(0, 0, 100, 100);
+      }
+      
+      ctx.fillStyle = '#000';
+      ctx.font = '12px Arial';
+      ctx.fillText(key, 10, 50);
+      
+      sprites[key].src = canvas.toDataURL();
+    }
+  }
+  
+  if (missingSprites.length > 0) {
+    console.log("Sprites con placeholders:", missingSprites);
+  }
+}
+function loadResources() {
+  const loadingScreen = document.getElementById('loadingScreen');
+  const loadingProgress = document.getElementById('loadingProgress');
+  const loadingText = document.getElementById('loadingText');
+  const loadingDetails = document.getElementById('loadingDetails');
+  const startScreen = document.getElementById('startScreen');
+  const coverImage = document.getElementById('coverImage');
+  
+  // Cargar imagen de portada directamente primero
+  if (coverImage) {
+    coverImage.src = `${baseUrl}/img/oso/oso_portada.png`;
+    console.log("Cargando portada:", `${baseUrl}/img/oso/oso_portada.png`);
+  }
+  
+  for (let key in imageUrls) {
+    console.log("Intentando cargar:", key, "desde:", imageUrls[key]);
+    
+    sprites[key].onload = () => {
+      loadedResources++;
+      const progress = Math.floor((loadedResources / totalResources) * 100);
+      if (loadingProgress) loadingProgress.style.width = `${progress}%`;
+      if (loadingText) loadingText.textContent = `${progress}%`;
+      
+      console.log("✅ Imagen cargada:", key);
+      
+      if (loadedResources === totalResources) {
+        setTimeout(() => {
+          if (loadingScreen) loadingScreen.style.display = "none";
+          if (startScreen) startScreen.style.display = "flex";
+          console.log("✅ Todos los recursos cargados");
+        }, 500);
+      }
+    };
+    
+    sprites[key].onerror = () => {
+      loadedResources++;
+      failedResources++;
+      
+      const progress = Math.floor((loadedResources / totalResources) * 100);
+      if (loadingProgress) loadingProgress.style.width = `${progress}%`;
+      if (loadingText) loadingText.textContent = `${progress}%`;
+      
+      console.error("❌ Error cargando:", key, "desde:", imageUrls[key]);
+      
+      if (loadingDetails) {
+        loadingDetails.innerHTML += `<p class="error-message">Error cargando: ${key} - <a href="${imageUrls[key]}" target="_blank">Ver URL</a></p>`;
+      }
+      
+      if (loadedResources === totalResources) {
+        if (loadingScreen) loadingScreen.style.display = "none";
+        if (startScreen) startScreen.style.display = "flex";
+        
+        // Mostrar advertencia si hay errores
+        if (failedResources > 0) {
+          alert(`⚠️ Algunos recursos no se pudieron cargar (${failedResources}/${totalResources}). El juego puede no verse correctamente.`);
+        }
+      }
+    };
+    
+    sprites[key].src = imageUrls[key];
+  }
+}
