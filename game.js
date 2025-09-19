@@ -686,6 +686,21 @@ function getNextLevel(currentLevel) {
   if (currentIndex < levelKeys.length - 1) {
     return levelKeys[currentIndex + 1];
   }
+  function nextLevel() {
+  const nextLevelKey = getNextLevel(window.gameState.currentLevel);
+  if (nextLevelKey) {
+    // Ocultar pantalla de victoria
+    const victoryScreen = document.getElementById('victoryScreen');
+    if (victoryScreen) victoryScreen.style.display = 'none';
+    
+    // Configurar el siguiente nivel
+    setupLevel(nextLevelKey);
+    window.gameState.gameStarted = true;
+  } else {
+    // No hay más niveles, reiniciar juego
+    startGame();
+  }
+}
   
   return null; // No hay más niveles
 }
