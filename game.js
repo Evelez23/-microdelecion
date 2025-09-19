@@ -672,21 +672,18 @@ function victory() {
   playSound("collect");
 }
 
+// AGREGAR ESTA FUNCIÓN PARA RESOLVER EL ERROR
 function nextLevel() {
-  // Ocultar pantalla de victoria
   const victoryScreen = document.getElementById('victoryScreen');
   if (victoryScreen) victoryScreen.style.display = 'none';
   
-  // Obtener el siguiente nivel
   const nextLevelKey = getNextLevel(window.gameState.currentLevel);
-  
   if (nextLevelKey) {
-    // Configurar el siguiente nivel
     setupLevel(nextLevelKey);
     window.gameState.gameStarted = true;
   } else {
-    // No hay más niveles, reiniciar juego
-    startGame();
+    // No hay más niveles, volver al menú principal
+    backToMenu();
   }
 }
 
