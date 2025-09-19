@@ -223,511 +223,677 @@ window.addEventListener('load', function() {
 });
 
 // ============= FUNCIONES DE INTERFAZ =============
-function showStorybook() {
-  const startScreen = document.getElementById('startScreen');
-  const storybook = document.getElementById('storybook');
-  
-  if (startScreen) startScreen.style.display = 'none';
-  if (storybook) storybook.style.display = 'flex';
-}
-
-function backToMenu() {
-  const storybook = document.getElementById('storybook');
-  const startScreen = document.getElementById('startScreen');
-  
-  if (storybook) storybook.style.display = 'none';
-  if (startScreen) startScreen.style.display = 'flex';
-}
-
-function startGame() {
-  const storybook = document.getElementById('storybook');
-  if (storybook) storybook.style.display = 'none';
-  
-  window.gameState.gameStarted = true;
-  window.gameState.score = 0;
-  window.gameState.lives = 3;
-  window.gameState.heartsCollected = 0;
-  
-  // Iniciar música de fondo si está habilitada
-  if (window.gameState.soundEnabled && sounds.background) {
-    sounds.background.play().catch(e => console.log("Audio autoplay prevented: ", e));
+function update() {
+  // Actualizar amigos (animación flotante)
+  for (let friend of window.friends) {
+    friend.floating += 0.05;
+    friend.y += Math.sin(friend.floating) * 0.5 * friend.floatDir;
   }
   
-  // Configurar nivel inicial
-  setupLevel("1-1");
-  
-  // Iniciar bucle del juego
-  if (!window.gameLoopRunning) {
-    window.gameLoopRunning = true;
-    gameLoop();
-  }
-}
-
-function nextLevel() {
-  const victoryScreen = document.getElementById('victoryScreen');
-  if (victoryScreen) victoryScreen.style.display = 'none';
-  
-  const nextLevelKey = getNextLevel(window.gameState.currentLevel);
-  
-  if (nextLevelKey) {
-    setupLevel(nextLevelKey);
-  } else {
-    // Reiniciar juego si no hay más niveles
-    startGame();
-  }
-}
-
-function toggleSound() {
-  window.gameState.soundEnabled = !window.gameState.soundEnabled;
-  const soundToggle = document.getElementById('soundToggle');
-  
-  if (soundToggle) {
-    soundToggle.textContent = window.gameState.soundEnabled ? "🔊" : "🔇";
-  }
-  
-  if (window.gameState.soundEnabled && sounds.background) {
-    sounds.background.play().catch(e => console.log("Audio autoplay prevented: ", e));
-  } else if (sounds.background) {
-    sounds.background.pause();
-  }
-}
-
-function showHint(text, duration) {
-  const hintElement = document.getElementById('hint');
-  if (!hintElement) return;
-  
-  hintElement.textContent = text;
-  hintElement.style.opacity = '1';
-  
-  setTimeout(() => {
-    hintElement.style.opacity = '0';
-  }, duration);
-}
-
-function playSound(soundName) {
-  if (window.gameState.soundEnabled && sounds[soundName]) {
-    try {
-      const sound = new Audio(sounds[soundName].src);
-      sound.volume = sounds[soundName].volume;
-      sound.play().catch(e => console.log("Sound error: ", e));
-    } catch (e) {
-      console.log("Error reproduciendo sonido: ", e);
+  // Actualizar enemigos
+  for (let enemy of window.enemies) {
+    if (enemy.moveCooldown > 0) {
+      enemy.moveCooldown--;
+    }
+    
+    if (enemy.moveCooldown <= 0) {
+      enemy.x += enemy.speed * enemy.direction;
+    }
+    
+    if (enemy.x <= 50) {
+      enemy.direction = 1;
+      enemy.moveCooldown = 60;
+    }
+    
+    if (enemy.moveCooldown === 0 && enemy.direction > 0) {
+      enemy.direction = -1;
+    }
+    
+    // Solo verificar colisiones si el oso no es invencible
+    if (window.oso.invincible <= 0 && checkCollision(window.oso, enemy) && !window.oso.hugging) {
+      takeDamage(enemy.damage);
     }
   }
-}
-
-// ============= FUNCIONES DE CARGA =============
-function loadResources() {
-  const loadingScreen = document.getElementById('loadingScreen');
-  const loadingProgress = document.getElementById('loadingProgress');
-  const loadingText = document.getElementById('loadingText');
-  const loadingDetails = document.getElementById('loadingDetails');
-  const startScreen = document.getElementById('startScreen');
-  const coverImage = document.getElementById('coverImage');
   
-  // Cargar imagen de portada directamente primero
-  if (coverImage) {
-    coverImage.src = "https://raw.githubusercontent.com/Evelez23/-oso.abrazos-/main/img/oso/oso_portada.png";
+  // Actualizar jefe si está en nivel de jefe
+  if (window.gameState.bossFight) {
+    updateBoss();
   }
   
-  for (let key in imageUrls) {
-    sprites[key].onload = () => {
-      loadedResources++;
-      const progress = Math.floor((loadedResources / totalResources) * 100);
-      if (loadingProgress) loadingProgress.style.width = `${progress}%`;
-      if (loadingText) loadingText.textContent = `${progress}%`;
-      
-      if (loadedResources === totalResources) {
-        setTimeout(() => {
-          if (loadingScreen) loadingScreen.style.display = "none";
-          if (startScreen) startScreen.style.display = "flex";
-        }, 500);
-      }
-    };
-    
-    sprites[key].onerror = () => {
-      loadedResources++;
-      failedResources++;
-      
-      const progress = Math.floor((loadedResources / totalResources) * 100);
-      if (loadingProgress) loadingProgress.style.width = `${progress}%`;
-      if (loadingText) loadingText.textContent = `${progress}%`;
-      
-      if (loadingDetails) {
-        loadingDetails.innerHTML += `<p class="error-message">Error cargando: ${key} - <a href="${imageUrls[key]}" target="_blank">Ver URL</a></p>`;
-      }
-      
-      if (loadedResources === totalResources) {
-        if (loadingScreen) loadingScreen.style.display = "none";
-        if (startScreen) startScreen.style.display = "flex";
-        
-        // Mostrar advertencia si hay errores
-        if (failedResources > 0) {
-          alert(`⚠️ Algunos recursos no se pudieron cargar (${failedResources}/${totalResources}). El juego puede no verse correctamente.`);
-        }
-      }
-    };
-    
-    sprites[key].src = imageUrls[key];
-  }
-}
-
-// ============= FUNCIONES PRINCIPALES DEL JUEGO =============
-function setupLevel(levelKey) {
-  console.log(`🎯 Configurando nivel: ${levelKey}`);
+  // Actualizar posición del oso
+  updateOso();
   
-  const level = window.LEVELS[levelKey];
-  if (!level) {
-    console.error("❌ Nivel no encontrado:", levelKey);
-    return;
-  }
+  // Actualizar proyectiles
+  updateProjectiles();
   
-  window.gameState.currentLevel = levelKey;
-  window.gameState.bossFight = level.hasBoss;
+  // Actualizar partículas
+  updateParticles();
+  
+  // Comprobar condiciones de victoria/derrota
+  checkGameConditions();
   
   // Actualizar UI
-  const levelElement = document.getElementById('level');
-  if (levelElement) {
-    levelElement.textContent = `${levelKey} - ${level.name}`;
-  }
-  
-  const levelIndicator = document.getElementById('levelIndicator');
-  if (levelIndicator) {
-    levelIndicator.textContent = `Nivel ${levelKey}`;
-  }
-  
-  if (level.hasBoss) {
-    setupBossLevel();
-  } else {
-    setupNormalLevel(level);
-  }
-}
-function setupNormalLevel(level) {
-  console.log("🌲 Configurando nivel normal");
-  
-  // Ocultar elementos de jefe
-  const bossHealthElement = document.getElementById('bossHealth');
-  const fireWarningElement = document.getElementById('fireWarning');
-  const heartsCollectedElement = document.getElementById('heartsCollected');
-  const unicornPowerElement = document.getElementById('unicornPower');
-  
-  if (bossHealthElement) bossHealthElement.style.display = 'none';
-  if (fireWarningElement) fireWarningElement.style.display = 'none';
-  if (heartsCollectedElement) heartsCollectedElement.style.display = 'none';
-  if (unicornPowerElement) unicornPowerElement.style.display = 'none';
-  
-  // Configurar plataformas básicas
-  window.platforms = [
-    { x: 0, y: 450, width: 800, height: 50 },
-    { x: 200, y: 350, width: 100, height: 20 },
-    { x: 400, y: 300, width: 100, height: 20 },
-    { x: 600, y: 350, width: 100, height: 20 }
-  ];
-  
-  // Configurar amigos
-  window.friends = [];
-  for (let i = 0; i < level.friends; i++) {
-    const friendType = i % 3;
-    let sprite;
-    let friendName;
-    
-    switch (friendType) {
-      case 0:
-        sprite = sprites.squirrel;
-        friendName = "ardilla";
-        break;
-      case 1:
-        sprite = sprites.rabbit;
-        friendName = "conejo";
-        break;
-      case 2:
-        sprite = sprites.bird;
-        friendName = "pájaro";
-        break;
-    }
-    
-    window.friends.push({
-      x: 150 + i * 150,
-      y: 380,
-      width: 50,
-      height: 50,
-      sprite: sprite,
-      type: friendType,
-      name: friendName,
-      hugged: false,
-      floating: 0,
-      floatDir: Math.random() > 0.5 ? 1 : -1
-    });
-  }
-  
-  // Configurar enemigos básicos
-  window.enemies = [];
-  for (let i = 0; i < level.enemies; i++) {
-    const enemyType = i % 3;
-    let sprite;
-    
-    switch (enemyType) {
-      case 0:
-        sprite = sprites.enemy1;
-        break;
-      case 1:
-        sprite = sprites.enemy2;
-        break;
-      case 2:
-        sprite = sprites.enemy3;
-        break;
-    }
-    
-    window.enemies.push({
-      x: 600 + (i * 100),
-      y: 380,
-      width: 60,
-      height: 60,
-      sprite: sprite,
-      direction: -1,
-      speed: 1 + Math.random() * 0.5,
-      damage: 1,
-      moveRange: 100 + Math.random() * 50,
-      startX: 600 + (i * 100),
-      moveCooldown: 0
-    });
-  }
-  
-  // Configurar items (miel)
-  window.items = [];
-  for (let i = 0; i < level.items; i++) {
-    window.items.push({
-      x: 150 + i * 200,
-      y: 250,
-      width: 30,
-      height: 30,
-      collected: false
-    });
-  }
-  
-  // Configurar corazones
-  window.hearts = [];
-  for (let i = 0; i < 3; i++) {
-    window.hearts.push({
-      x: 250 + i * 200,
-      y: 300,
-      width: 30,
-      height: 30,
-      collected: false
-    });
-  }
-  
-  // Configurar posición del oso
-  window.oso.x = 100;
-  window.oso.y = 380;
-  window.oso.vx = 0;
-  window.oso.vy = 0;
-  window.oso.grounded = false;
-  window.oso.hugging = false;
-  window.oso.hasUnicorn = false;
-  window.oso.invincible = 120;
-  
-  // Configurar unicornio
-  window.unicorn.active = false;
-  window.unicorn.power = 0;
-  
-  // Limpiar proyectiles y partículas
-  window.projectiles = [];
-  window.particles = [];
-  
-  // Mostrar indicación
-  showHint("Acércate a los amigos y presiona ESPACIO para abrazarlos", 5000);
-}
-
-function setupBossLevel() {
-  console.log("🐺 Configurando nivel de jefe");
-  
-  // Mostrar elementos de jefe
-  const bossHealthElement = document.getElementById('bossHealth');
-  const heartsCollectedElement = document.getElementById('heartsCollected');
-  const unicornPowerElement = document.getElementById('unicornPower');
-  
-  if (bossHealthElement) bossHealthElement.style.display = 'block';
-  if (heartsCollectedElement) heartsCollectedElement.style.display = 'block';
-  
-  // Configurar plataformas
-  window.platforms = [
-    { x: 0, y: 450, width: 800, height: 50 }
-  ];
-  
-  // Configurar jefe
-  window.boss = {
-    x: 600, y: 350,
-    width: 120, height: 120,
-    health: 5,
-    maxHealth: 5,
-    enraged: false,
-    phase: 1,
-    attackCooldown: 100,
-    warningTimer: 0,
-    fireballs: []
-  };
-  
-  // Configurar posición del oso
-  window.oso.x = 100;
-  window.oso.y = 380;
-  window.oso.vx = 0;
-  window.oso.vy = 0;
-  window.oso.grounded = false;
-  window.oso.hugging = false;
-  window.oso.invincible = 120;
-  
-  // Limpiar otros elementos
-  window.friends = [];
-  window.enemies = [];
-  window.items = [];
-  window.projectiles = [];
-  window.particles = [];
-  
-  // Mostrar indicación
-  showHint("¡Derrota al Lobo Feroz! Recolecta corazones para invocar al Unicornio.", 5000);
-  
-  // Actualizar salud del jefe
-  updateBossHealth();
-}
-
-function updateBossHealth() {
-  const bossHealthBar = document.getElementById('bossHealthBar');
-  const bossHealthText = document.getElementById('bossHealthText');
-  
-  if (bossHealthBar && bossHealthText) {
-    const healthPercent = (window.boss.health / window.boss.maxHealth) * 100;
-    bossHealthBar.style.width = `${healthPercent}%`;
-    bossHealthText.textContent = `${window.boss.health}/${window.boss.maxHealth}`;
-    
-    // Aplicar efecto de enfado si tiene poca vida
-    if (window.boss.health <= 2 && !window.boss.enraged) {
-      bossHealthBar.parentElement.classList.add('boss-enraged');
-    }
-  }
-}
-
-function gameLoop() {
-  if (window.gameState.gameStarted) {
-    update();
-    draw();
-  }
-  requestAnimationFrame(gameLoop);
-}
-
-function update() {
-  // Esta función necesita ser implementada
-  console.log("Actualizando juego...");
+  updateUI();
 }
 
 function draw() {
-  // Esta función necesita ser implementada
-  console.log("Dibujando juego...");
-}
-// ... (resto de las funciones del juego)
-
-// ============= INICIAR JUEGO =============
-console.log("Juego Oso Abrazos cargado correctamente");
-// Después de cargar los recursos, verifica cuales fallaron
-function createMissingSprites() {
-  const missingSprites = [];
+  const ctx = window.gameCtx;
+  const canvas = document.getElementById('gameCanvas');
   
-  for (let key in sprites) {
-    if (!sprites[key].complete || sprites[key].naturalHeight === 0) {
-      missingSprites.push(key);
-      console.warn("Creando placeholder para:", key);
-      
-      // Crear un placeholder de color según el tipo
-      const canvas = document.createElement('canvas');
-      canvas.width = 100;
-      canvas.height = 100;
-      const ctx = canvas.getContext('2d');
-      
-      if (key.includes('background') || key.includes('fondo')) {
-        ctx.fillStyle = '#87CEEB';
-        ctx.fillRect(0, 0, 100, 100);
-      } else if (key.includes('oso')) {
-        ctx.fillStyle = '#8B4513';
-        ctx.fillRect(0, 0, 100, 100);
-      } else if (key.includes('lobo')) {
-        ctx.fillStyle = '#808080';
-        ctx.fillRect(0, 0, 100, 100);
-      } else {
-        ctx.fillStyle = '#FF6B6B';
-        ctx.fillRect(0, 0, 100, 100);
+  if (!ctx || !canvas) {
+    console.error("❌ Canvas no encontrado");
+    return;
+  }
+  
+  // Limpiar canvas
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  // Dibujar fondo según el nivel
+  drawBackground();
+  
+  // Dibujar plataformas
+  drawPlatforms();
+  
+  // Dibujar items (miel)
+  drawItems();
+  
+  // Dibujar amigos
+  drawFriends();
+  
+  // Dibujar enemigos
+  drawEnemies();
+  
+  // Dibujar corazones
+  drawHearts();
+  
+  // Dibujar proyectiles
+  drawProjectiles();
+  
+  // Dibujar bolas de fuego del jefe
+  drawFireballs();
+  
+  // Dibujar partículas
+  drawParticles();
+  
+  // Dibujar jefe si está activo
+  if (window.gameState.bossFight) {
+    drawBoss();
+  }
+  
+  // Dibujar oso
+  drawOso();
+  
+  // Dibujar efectos especiales
+  drawSpecialEffects();
+}
+function updateOso() {
+  // Aplicar gravedad
+  window.oso.vy += window.oso.gravity;
+  
+  // Movimiento horizontal
+  if (window.keys["ArrowLeft"] || window.keys["a"]) {
+    window.oso.vx = -window.oso.speed;
+    window.oso.direction = -1;
+  } else if (window.keys["ArrowRight"] || window.keys["d"]) {
+    window.oso.vx = window.oso.speed;
+    window.oso.direction = 1;
+  } else {
+    window.oso.vx *= 0.8;
+  }
+  
+  // Saltar
+  if ((window.keys["ArrowUp"] || window.keys["w"]) && window.oso.grounded) {
+    window.oso.vy = -window.oso.jumpForce;
+    window.oso.grounded = false;
+    playSound("jump");
+  }
+  
+  // Abrazar
+  if (window.keys[" "] && window.oso.hugCooldown <= 0 && window.oso.grounded) {
+    window.oso.hugging = true;
+    window.oso.hugCooldown = 30;
+    playSound("hug");
+    
+    // Comprobar colisión con amigos
+    for (let friend of window.friends) {
+      if (!friend.hugged && checkCollision(window.oso, friend)) {
+        friend.hugged = true;
+        window.gameState.score += 100;
+        createParticles(friend.x + friend.width/2, friend.y + friend.height/2, 10, '#FF69B4');
+        playSound("collect");
       }
-      
-      ctx.fillStyle = '#000';
-      ctx.font = '12px Arial';
-      ctx.fillText(key, 10, 50);
-      
-      sprites[key].src = canvas.toDataURL();
+    }
+  } else {
+    window.oso.hugging = false;
+    if (window.oso.hugCooldown > 0) window.oso.hugCooldown--;
+  }
+  
+  // Disparar con unicornio
+  if ((window.keys["z"] || window.keys["Z"]) && window.unicorn.active && window.unicorn.cooldown <= 0 && window.unicorn.power > 0) {
+    window.projectiles.push({
+      x: window.oso.x + window.oso.width/2,
+      y: window.oso.y + window.oso.height/2,
+      vx: window.oso.direction * 10,
+      vy: 0,
+      radius: 8,
+      type: 'unicorn',
+      damage: 1
+    });
+    
+    window.unicorn.cooldown = 15;
+    window.unicorn.power -= 5;
+    
+    if (window.unicorn.power <= 0) {
+      window.unicorn.active = false;
+      window.oso.hasUnicorn = false;
+    }
+    
+    playSound("shot");
+  }
+  
+  if (window.unicorn.cooldown > 0) window.unicorn.cooldown--;
+  
+  // Actualizar posición
+  window.oso.x += window.oso.vx;
+  window.oso.y += window.oso.vy;
+  
+  // Limitar a los bordes de la pantalla
+  if (window.oso.x < 0) window.oso.x = 0;
+  if (window.oso.x > 800 - window.oso.width) window.oso.x = 800 - window.oso.width;
+  if (window.oso.y > 500) {
+    // Caer fuera de la pantalla
+    window.oso.y = 100;
+    window.oso.x = 100;
+    takeDamage(1);
+  }
+  
+  // Comprobar colisión con plataformas
+  window.oso.grounded = false;
+  for (let platform of window.platforms) {
+    if (window.oso.x + window.oso.width > platform.x && 
+        window.oso.x < platform.x + platform.width &&
+        window.oso.y + window.oso.height > platform.y && 
+        window.oso.y + window.oso.height < platform.y + 10) {
+      window.oso.y = platform.y - window.oso.height;
+      window.oso.vy = 0;
+      window.oso.grounded = true;
     }
   }
   
-  if (missingSprites.length > 0) {
-    console.log("Sprites con placeholders:", missingSprites);
+  // Comprobar colisión con enemigos
+  if (window.oso.invincible <= 0) {
+    for (let enemy of window.enemies) {
+      if (checkCollision(window.oso, enemy)) {
+        takeDamage(enemy.damage);
+        window.oso.invincible = 60;
+      }
+    }
+  } else {
+    window.oso.invincible--;
+  }
+  
+  // Comprobar colisión con corazones
+  for (let heart of window.hearts) {
+    if (!heart.collected && checkCollision(window.oso, heart)) {
+      heart.collected = true;
+      window.gameState.heartsCollected++;
+      window.gameState.score += 50;
+      createParticles(heart.x + heart.width/2, heart.y + heart.height/2, 15, '#FF69B4');
+      playSound("collect");
+      
+      // Si se recolectan 3 corazones, activar unicornio
+      if (window.gameState.heartsCollected >= 3 && !window.unicorn.active) {
+        window.unicorn.active = true;
+        window.oso.hasUnicorn = true;
+        window.unicorn.power = 100;
+        const unicornPowerElement = document.getElementById('unicornPower');
+        if (unicornPowerElement) unicornPowerElement.style.display = 'block';
+        showHint("¡Unicornio de la Amistad activado! Presiona Z para disparar rayos de amistad.", 5000);
+      }
+    }
+  }
+  
+  // Comprobar colisión con items (miel)
+  for (let item of window.items) {
+    if (!item.collected && checkCollision(window.oso, item)) {
+      item.collected = true;
+      window.gameState.score += 30;
+      createParticles(item.x + item.width/2, item.y + item.height/2, 8, '#FF9800');
+      playSound("powerup");
+    }
   }
 }
-function loadResources() {
-  const loadingScreen = document.getElementById('loadingScreen');
-  const loadingProgress = document.getElementById('loadingProgress');
-  const loadingText = document.getElementById('loadingText');
-  const loadingDetails = document.getElementById('loadingDetails');
-  const startScreen = document.getElementById('startScreen');
-  const coverImage = document.getElementById('coverImage');
-  
-  // Cargar imagen de portada directamente primero
-  if (coverImage) {
-    coverImage.src = `${baseUrl}/img/oso/oso_portada.png`;
-    console.log("Cargando portada:", `${baseUrl}/img/oso/oso_portada.png`);
-  }
-  
-  for (let key in imageUrls) {
-    console.log("Intentando cargar:", key, "desde:", imageUrls[key]);
+
+function updateProjectiles() {
+  for (let i = window.projectiles.length - 1; i >= 0; i--) {
+    const proj = window.projectiles[i];
+    proj.x += proj.vx;
     
-    sprites[key].onload = () => {
-      loadedResources++;
-      const progress = Math.floor((loadedResources / totalResources) * 100);
-      if (loadingProgress) loadingProgress.style.width = `${progress}%`;
-      if (loadingText) loadingText.textContent = `${progress}%`;
-      
-      console.log("✅ Imagen cargada:", key);
-      
-      if (loadedResources === totalResources) {
-        setTimeout(() => {
-          if (loadingScreen) loadingScreen.style.display = "none";
-          if (startScreen) startScreen.style.display = "flex";
-          console.log("✅ Todos los recursos cargados");
-        }, 500);
-      }
-    };
+    // Eliminar proyectiles fuera de pantalla
+    if (proj.x < 0 || proj.x > 800) {
+      window.projectiles.splice(i, 1);
+      continue;
+    }
     
-    sprites[key].onerror = () => {
-      loadedResources++;
-      failedResources++;
-      
-      const progress = Math.floor((loadedResources / totalResources) * 100);
-      if (loadingProgress) loadingProgress.style.width = `${progress}%`;
-      if (loadingText) loadingText.textContent = `${progress}%`;
-      
-      console.error("❌ Error cargando:", key, "desde:", imageUrls[key]);
-      
-      if (loadingDetails) {
-        loadingDetails.innerHTML += `<p class="error-message">Error cargando: ${key} - <a href="${imageUrls[key]}" target="_blank">Ver URL</a></p>`;
-      }
-      
-      if (loadedResources === totalResources) {
-        if (loadingScreen) loadingScreen.style.display = "none";
-        if (startScreen) startScreen.style.display = "flex";
-        
-        // Mostrar advertencia si hay errores
-        if (failedResources > 0) {
-          alert(`⚠️ Algunos recursos no se pudieron cargar (${failedResources}/${totalResources}). El juego puede no verse correctamente.`);
+    // Comprobar colisión de proyectiles con enemigos
+    if (proj.type === 'unicorn') {
+      for (let j = window.enemies.length - 1; j >= 0; j--) {
+        const enemy = window.enemies[j];
+        if (Math.abs(proj.x - (enemy.x + enemy.width/2)) < proj.radius + enemy.width/2 &&
+            Math.abs(proj.y - (enemy.y + enemy.height/2)) < proj.radius + enemy.height/2) {
+          // Eliminar enemigo y proyectil
+          window.enemies.splice(j, 1);
+          window.projectiles.splice(i, 1);
+          window.gameState.score += 50;
+          createParticles(enemy.x + enemy.width/2, enemy.y + enemy.height/2, 15, '#FF69B4');
+          break;
         }
       }
-    };
-    
-    sprites[key].src = imageUrls[key];
+      
+      // Comprobar colisión con el jefe
+      if (window.gameState.bossFight && window.boss.health > 0) {
+        if (Math.abs(proj.x - (window.boss.x + window.boss.width/2)) < proj.radius + window.boss.width/2 &&
+            Math.abs(proj.y - (window.boss.y + window.boss.height/2)) < proj.radius + window.boss.height/2) {
+          // Dañar al jefe
+          window.boss.health--;
+          window.projectiles.splice(i, 1);
+          window.gameState.score += 100;
+          createParticles(window.boss.x + window.boss.width/2, window.boss.y + window.boss.height/2, 20, '#FF69B4');
+          updateBossHealth();
+          
+          // Hacer enojar al jefe si tiene poca vida
+          if (window.boss.health <= 2 && !window.boss.enraged) {
+            window.boss.enraged = true;
+            window.boss.speed = 2;
+            showHint("¡El lobo se ha enfurecido! ¡Ten cuidado!", 3000);
+          }
+          
+          break;
+        }
+      }
+    }
   }
+  
+  // Actualizar bolas de fuego del jefe
+  for (let i = window.boss.fireballs.length - 1; i >= 0; i--) {
+    const fireball = window.boss.fireballs[i];
+    fireball.x += fireball.vx;
+    
+    // Eliminar bolas de fuego fuera de pantalla
+    if (fireball.x < 0 || fireball.x > 800) {
+      window.boss.fireballs.splice(i, 1);
+      continue;
+    }
+    
+    // Comprobar colisión con el oso
+    if (Math.abs(fireball.x - (window.oso.x + window.oso.width/2)) < fireball.radius + window.oso.width/2 &&
+        Math.abs(fireball.y - (window.oso.y + window.oso.height/2)) < fireball.radius + window.oso.height/2 &&
+        window.oso.invincible <= 0) {
+      takeDamage(1);
+      window.boss.fireballs.splice(i, 1);
+    }
+  }
+}
+
+function updateParticles() {
+  for (let i = window.particles.length - 1; i >= 0; i--) {
+    const p = window.particles[i];
+    p.x += p.vx;
+    p.y += p.vy;
+    p.life--;
+    
+    if (p.life <= 0) {
+      window.particles.splice(i, 1);
+    }
+  }
+}
+
+function checkCollision(obj1, obj2) {
+  return obj1.x < obj2.x + obj2.width &&
+         obj1.x + obj1.width > obj2.x &&
+         obj1.y < obj2.y + obj2.height &&
+         obj1.y + obj1.height > obj2.y;
+}
+
+function takeDamage(amount) {
+  if (window.oso.invincible > 0) return;
+  
+  window.gameState.lives -= amount;
+  playSound("hurt");
+  
+  if (window.gameState.lives <= 0) {
+    window.gameState.lives = 0;
+    gameOver();
+  }
+  
+  // Efecto de parpadeo al recibir daño
+  window.oso.invincible = 60;
+}
+
+function createParticles(x, y, count, color) {
+  for (let i = 0; i < count; i++) {
+    window.particles.push({
+      x: x,
+      y: y,
+      vx: (Math.random() - 0.5) * 5,
+      vy: (Math.random() - 0.5) * 5,
+      size: Math.random() * 5 + 2,
+      color: color,
+      life: 30,
+      maxLife: 30
+    });
+  }
+}
+
+function updateUI() {
+  // Actualizar puntuación
+  const scoreElement = document.getElementById('score');
+  if (scoreElement) {
+    scoreElement.textContent = window.gameState.score;
+  }
+  
+  // Actualizar vidas
+  const livesElement = document.getElementById('lives');
+  if (livesElement) {
+    let livesText = '';
+    for (let i = 0; i < window.gameState.lives; i++) {
+      livesText += '❤️';
+    }
+    livesElement.textContent = livesText;
+  }
+  
+  // Actualizar nivel
+  const levelElement = document.getElementById('level');
+  if (levelElement) {
+    levelElement.textContent = window.gameState.currentLevel;
+  }
+  
+  // Actualizar poder del unicornio
+  const unicornPowerLevelElement = document.getElementById('unicornPowerLevel');
+  if (unicornPowerLevelElement) {
+    unicornPowerLevelElement.style.width = `${window.unicorn.power}%`;
+  }
+  
+  // Actualizar corazones recolectados
+  const heartCountElement = document.getElementById('heartCount');
+  if (heartCountElement) {
+    heartCountElement.textContent = window.gameState.heartsCollected;
+  }
+}
+
+function checkGameConditions() {
+  // Comprobar victoria en nivel normal
+  if (!window.gameState.bossFight) {
+    const allFriendsHugged = window.friends.every(friend => friend.hugged);
+    if (allFriendsHugged && window.friends.length > 0) {
+      levelComplete();
+    }
+  }
+  
+  // Comprobar victoria en jefe
+  if (window.gameState.bossFight && window.boss.health <= 0) {
+    victory();
+  }
+}
+
+function levelComplete() {
+  console.log("✅ Nivel completado");
+  window.gameState.gameStarted = false;
+  
+  // Mostrar mensaje de nivel completado
+  showHint("¡Nivel completado! Próximo nivel...", 3000);
+  
+  // Avanzar al siguiente nivel después de un breve retraso
+  setTimeout(() => {
+    const nextLevelKey = getNextLevel(window.gameState.currentLevel);
+    if (nextLevelKey) {
+      setupLevel(nextLevelKey);
+      window.gameState.gameStarted = true;
+    } else {
+      // No hay más niveles, reiniciar juego
+      startGame();
+    }
+  }, 3000);
+}
+
+function victory() {
+  console.log("🎉 ¡Victoria!");
+  window.gameState.gameStarted = false;
+  
+  const victoryScreen = document.getElementById('victoryScreen');
+  const finalScore = document.getElementById('finalScore');
+  const finalHearts = document.getElementById('finalHearts');
+  
+  if (victoryScreen) victoryScreen.style.display = 'flex';
+  if (finalScore) finalScore.textContent = window.gameState.score;
+  if (finalHearts) finalHearts.textContent = window.gameState.heartsCollected;
+  
+  // Reproducir sonido de victoria
+  playSound("collect");
+}
+
+function gameOver() {
+  console.log("💀 Game Over");
+  window.gameState.gameStarted = false;
+  
+  showHint("¡Game Over! Presiona F5 para reintentar.", 5000);
+}
+
+function getNextLevel(currentLevel) {
+  const levelKeys = Object.keys(window.LEVELS);
+  const currentIndex = levelKeys.indexOf(currentLevel);
+  
+  if (currentIndex < levelKeys.length - 1) {
+    return levelKeys[currentIndex + 1];
+  }
+  
+  return null; // No hay más niveles
+}
+function drawBackground() {
+  const ctx = window.gameCtx;
+  const canvas = document.getElementById('gameCanvas');
+  
+  // Dibujar fondo según el nivel
+  const bgImage = sprites[`background_${window.gameState.currentLevel.replace('-', '_')}`];
+  if (bgImage && bgImage.complete) {
+    ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
+  } else {
+    // Fondo por defecto si la imagen no está cargada
+    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    gradient.addColorStop(0, "#87CEEB");
+    gradient.addColorStop(1, "#E0F7FA");
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
+}
+
+function drawPlatforms() {
+  const ctx = window.gameCtx;
+  
+  for (let platform of window.platforms) {
+    ctx.fillStyle = '#8D6E63';
+    ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
+    ctx.fillStyle = '#5D4037';
+    ctx.fillRect(platform.x, platform.y, platform.width, 5);
+  }
+}
+
+function drawItems() {
+  const ctx = window.gameCtx;
+  
+  for (let item of window.items) {
+    if (!item.collected) {
+      if (sprites.honey && sprites.honey.complete) {
+        ctx.drawImage(sprites.honey, item.x, item.y, item.width, item.height);
+      } else {
+        ctx.fillStyle = '#FFB300';
+        ctx.beginPath();
+        ctx.arc(item.x + item.width/2, item.y + item.height/2, item.width/2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+  }
+}
+
+function drawFriends() {
+  const ctx = window.gameCtx;
+  
+  for (let friend of window.friends) {
+    if (!friend.hugged && friend.sprite && friend.sprite.complete) {
+      ctx.drawImage(friend.sprite, friend.x, friend.y, friend.width, friend.height);
+    }
+  }
+}
+
+function drawEnemies() {
+  const ctx = window.gameCtx;
+  
+  for (let enemy of window.enemies) {
+    if (enemy.sprite && enemy.sprite.complete) {
+      // Enemigos siempre mirando hacia la izquierda
+      ctx.save();
+      ctx.scale(-1, 1);
+      ctx.drawImage(enemy.sprite, -enemy.x - enemy.width, enemy.y, enemy.width, enemy.height);
+      ctx.restore();
+    } else {
+      // Placeholder si el sprite no está cargado
+      ctx.fillStyle = '#F44336';
+      ctx.beginPath();
+      ctx.arc(enemy.x + enemy.width/2, enemy.y + enemy.height/2, enemy.width/2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+}
+
+function drawHearts() {
+  const ctx = window.gameCtx;
+  
+  for (let heart of window.hearts) {
+    if (!heart.collected) {
+      if (sprites.heart && sprites.heart.complete) {
+        ctx.drawImage(sprites.heart, heart.x, heart.y, heart.width, heart.height);
+      } else {
+        ctx.fillStyle = '#FF69B4';
+        ctx.beginPath();
+        ctx.moveTo(heart.x + heart.width/2, heart.y);
+        ctx.bezierCurveTo(
+          heart.x + heart.width, heart.y,
+          heart.x + heart.width, heart.y + heart.height,
+          heart.x + heart.width/2, heart.y + heart.height
+        );
+        ctx.bezierCurveTo(
+          heart.x, heart.y + heart.height,
+          heart.x, heart.y,
+          heart.x + heart.width/2, heart.y
+        );
+        ctx.fill();
+      }
+    }
+  }
+}
+
+function drawProjectiles() {
+  const ctx = window.gameCtx;
+  
+  for (let proj of window.projectiles) {
+    if (proj.type === 'unicorn') {
+      ctx.fillStyle = '#9370DB';
+      ctx.beginPath();
+      ctx.arc(proj.x, proj.y, proj.radius, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+}
+
+function drawFireballs() {
+  const ctx = window.gameCtx;
+  
+  for (let fireball of window.boss.fireballs) {
+    if (sprites.fire && sprites.fire.complete) {
+      ctx.drawImage(sprites.fire, fireball.x - fireball.radius, fireball.y - fireball.radius, fireball.radius * 2, fireball.radius * 2);
+    } else {
+      ctx.fillStyle = '#FF4500';
+      ctx.beginPath();
+      ctx.arc(fireball.x, fireball.y, fireball.radius, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+}
+
+function drawParticles() {
+  const ctx = window.gameCtx;
+  
+  for (let particle of window.particles) {
+    ctx.globalAlpha = particle.life / particle.maxLife;
+    ctx.fillStyle = particle.color;
+    ctx.beginPath();
+    ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+}
+
+function drawOso() {
+  const ctx = window.gameCtx;
+  
+  // Dibujar oso - CON UNICORNIO si está activo
+  if (window.oso.hasUnicorn && sprites.osoyuni && sprites.osoyuni.complete) {
+    // Usar imagen de oso con unicornio
+    ctx.save();
+    if (window.oso.direction === -1) {
+      ctx.scale(-1, 1);
+      ctx.drawImage(sprites.osoyuni, -window.oso.x - window.oso.width, window.oso.y, window.oso.width, window.oso.height);
+    } else {
+      ctx.drawImage(sprites.osoyuni, window.oso.x, window.oso.y, window.oso.width, window.oso.height);
+    }
+    ctx.restore();
+  } else {
+    // Dibujar oso normal
+    let osoSprite = sprites.idle;
+    
+    if (window.oso.hugging) {
+      osoSprite = sprites.hug;
+    } else if (!window.oso.grounded) {
+      osoSprite = sprites.jump;
+    } else if (Math.abs(window.oso.vx) > 0) {
+      osoSprite = window.oso.vx > window.oso.speed * 0.7 ? sprites.run : sprites.walk;
+    }
+    
+    if (osoSprite && osoSprite.complete) {
+      // Voltear sprite según la dirección
+      ctx.save();
+      if (window.oso.direction === -1) {
+        ctx.scale(-1, 1);
+        ctx.drawImage(osoSprite, -window.oso.x - window.oso.width, window.oso.y, window.oso.width, window.oso.height);
+      } else {
+        ctx.drawImage(osoSprite, window.oso.x, window.oso.y, window.oso.width, window.oso.height);
+      }
+      ctx.restore();
+    } else {
+      // Dibujar placeholder si el sprite no está cargado
+      ctx.fillStyle = '#8B4513';
+      ctx.fillRect(window.oso.x, window.oso.y, window.oso.width, window.oso.height);
+    }
+  }
+  
+  // Efecto de abrazo
+  if (window.oso.hugging) {
+    ctx.strokeStyle = "#FFD700";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(window.oso.x + window.oso.width/2, window.oso.y + window.oso.height/2, 60, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+  
+  // Efecto de invencibilidad (parpadeo)
+  if (window.oso.invincible > 0 && window.oso.invincible % 10 < 5) {
+    ctx.globalAlpha = 0.5;
+    ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+    ctx.fillRect(window.oso.x, window.oso.y, window.oso.width, window.oso.height);
+    ctx.globalAlpha = 1;
+  }
+}
+
+function drawSpecialEffects() {
+  // Aquí puedes agregar efectos especiales adicionales
 }
