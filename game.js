@@ -100,7 +100,34 @@ let failedResources = 0;
 
 // Esperar a que se cargue la página
 window.addEventListener('load', function() {
-  console.log("🎮 Inicializando juego Oso Abrazos...");
+  console.log("✅ Juego inicializado correctamente");
+});
+
+// ============= FUNCIONES DE INTERFAZ =============
+// Agregar toggleSound aquí, antes de cualquier event listener que la use
+function toggleSound() {
+  if (!window.gameState) return;
+  
+  window.gameState.soundEnabled = !window.gameState.soundEnabled;
+  
+  // Actualizar todos los sonidos
+  for (let key in sounds) {
+    if (sounds[key]) {
+      sounds[key].muted = !window.gameState.soundEnabled;
+    }
+  }
+  
+  // Actualizar el texto del botón
+  const soundToggle = document.getElementById('soundToggle');
+  if (soundToggle) {
+    soundToggle.textContent = window.gameState.soundEnabled ? '🔊 Sonido' : '🔇 Silencio';
+  }
+  
+  console.log("Sonido " + (window.gameState.soundEnabled ? "activado" : "desactivado"));
+}
+
+// Luego continúan las otras funciones como update(), draw(), etc.
+function update() {
   
   // Inicializar variables globales
   window.gameState = {
